@@ -299,7 +299,17 @@
   stickyAdd.addEventListener("click", () => {
     if (!current) return;
     window.dispatchEvent(new CustomEvent("sapa:add-to-cart", { detail: { ...currentProduct(), openDrawer: true } }));
+    flashBtn(stickyAdd);
   });
+
+  /* —— Button success flash —— */
+  function flashBtn(btn) {
+    if (!btn) return;
+    const orig = btn.textContent;
+    btn.textContent = "✓ Đã thêm!";
+    btn.classList.add("is-success");
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove("is-success"); }, 1200);
+  }
 
   /* —— Add to cart / buy now —— */
   function currentProduct() {
@@ -315,20 +325,18 @@
     };
   }
 
-  $("#pdp-add")?.addEventListener("click", () => {
+  const addBtn = $("#pdp-add");
+  addBtn?.addEventListener("click", () => {
     if (!current) return;
-    window.dispatchEvent(
-      new CustomEvent("sapa:add-to-cart", { detail: currentProduct() })
-    );
+    window.dispatchEvent(new CustomEvent("sapa:add-to-cart", { detail: currentProduct() }));
+    flashBtn(addBtn);
   });
 
-  $("#pdp-buy-now")?.addEventListener("click", () => {
+  const buyNowBtn = $("#pdp-buy-now");
+  buyNowBtn?.addEventListener("click", () => {
     if (!current) return;
-    window.dispatchEvent(
-      new CustomEvent("sapa:add-to-cart", {
-        detail: { ...currentProduct(), openDrawer: true },
-      })
-    );
+    window.dispatchEvent(new CustomEvent("sapa:add-to-cart", { detail: { ...currentProduct(), openDrawer: true } }));
+    flashBtn(buyNowBtn);
   });
 
   /* —— Load products and apply —— */

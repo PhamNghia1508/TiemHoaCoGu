@@ -406,6 +406,10 @@
       );
     };
     bump();
+    if (cartCountEl && window.__sapaConfetti) {
+      const r = cartCountEl.getBoundingClientRect();
+      window.__sapaConfetti(r.left + r.width / 2, r.top + r.height / 2);
+    }
   }
 
   function productFromCard(el) {
@@ -543,6 +547,15 @@
     }
   });
 
+  /* ---------- Button success flash ---------- */
+  function flashBtnSuccess(btn) {
+    if (!btn) return;
+    const orig = btn.textContent;
+    btn.textContent = "✓ Đã thêm!";
+    btn.classList.add("is-success");
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove("is-success"); }, 1200);
+  }
+
   /* ---------- Product cards: quick view + add ---------- */
   $$(".product-card").forEach((el) => {
     el.querySelector("[data-quick]")?.addEventListener("click", (e) => {
@@ -555,8 +568,9 @@
         desc: el.dataset.desc || "",
       });
     });
-    el.querySelector("[data-add]")?.addEventListener("click", () => {
+    el.querySelector("[data-add]")?.addEventListener("click", (e) => {
       addToCart(productFromCard(el));
+      flashBtnSuccess(e.currentTarget);
     });
     el.querySelector("[data-book]")?.addEventListener("click", () => {
       openQuick({
@@ -707,6 +721,7 @@
       price: p.price,
       img: p.img,
       slot: p.slot || "",
+      qty: p.qty || 1,
       // workshop bookings: unit price already covers the group
       fixedQty: p.skipQty ? true : false,
     });

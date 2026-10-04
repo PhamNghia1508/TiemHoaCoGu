@@ -461,4 +461,44 @@
     closeBtn.addEventListener("click", closeExit);
     modal.addEventListener("click", (e) => { if (e.target === modal) closeExit(); });
   }
+
+  /* ===== Confetti burst ===== */
+  const CONFETTI_COLORS = ["#2d5f4a", "#c9a0a6", "#b8723c", "#5fa888", "#d49262", "#fdfbf7"];
+  window.__sapaConfetti = function(x, y) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement("div");
+      p.className = "confetti-piece";
+      p.style.left = x + "px";
+      p.style.top = y + "px";
+      p.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      const angle = (Math.PI * 2 * i) / 28 + Math.random() * 0.5;
+      const dist = 60 + Math.random() * 80;
+      p.style.setProperty("--cx", Math.cos(angle) * dist + "px");
+      p.style.setProperty("--cy", Math.sin(angle) * dist - 40 + "px");
+      p.style.setProperty("--cr", Math.random() * 720 - 360 + "deg");
+      const sz = 5 + Math.random() * 6;
+      p.style.width = sz + "px";
+      p.style.height = sz + "px";
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 1000);
+    }
+  };
+
+  /* ===== Page fade-in ===== */
+  document.body.classList.add("is-loaded");
+
+  /* ===== Friendly empty cart ===== */
+  function enhanceEmptyCart() {
+    const empty = $("#cart-empty");
+    if (!empty || empty.dataset.enhanced) return;
+    empty.dataset.enhanced = "1";
+    empty.className = "cart-empty--friendly";
+    empty.innerHTML = `
+      <span class="cart-empty--friendly__emoji">🌸</span>
+      <p class="cart-empty--friendly__title">Giỏ vẫn còn trống</p>
+      <p class="cart-empty--friendly__sub">Chọn một bó hoa hoặc workshop để bắt đầu nhé!</p>
+      <a class="cart-empty--friendly__cta" href="shop.html">Khám phá sản phẩm</a>`;
+  }
+  enhanceEmptyCart();
 })();
