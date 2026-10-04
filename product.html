@@ -22,7 +22,8 @@
   <header class="nav nav--on-light" id="nav">
     <a class="logo" href="index.html" aria-label="SÁPA Studio">SÁPA</a>
     <nav class="nav-links nav-links--left" aria-label="Mua sắm">
-      <a href="index.html#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+      <a href="shop.html" class="is-active"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
       <a href="index.html#workshops"><span>Workshop</span><i aria-hidden="true"></i></a>
@@ -52,13 +53,23 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="index.html#shop">Cửa hàng</a>
+    <a href="shop.html">Cửa hàng</a>
+    <a href="gallery.html">Trưng bày</a>
     <a href="index.html#workshops">Workshop</a>
     <a href="index.html#story">Về xưởng</a>
     <a href="index.html#contact">Liên hệ</a>
   </div>
 
   <main id="top">
+    <!-- Breadcrumb -->
+    <nav class="pdp-crumb" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <a href="shop.html">Cửa hàng</a>
+      <span aria-hidden="true">/</span>
+      <span id="crumb-name">Sản phẩm</span>
+    </nav>
+
     <!-- PDP hero: gallery + buy panel -->
     <section class="pdp">
       <div class="pdp-gallery">
@@ -82,8 +93,8 @@
       </div>
 
       <div class="pdp-buy">
-        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Hoa sáp thủ công</p>
-        <h1 class="pdp-title">Bó Trăng Non</h1>
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> <span id="pdp-kicker">Hoa sáp thủ công</span></p>
+        <h1 class="pdp-title" id="pdp-title">Bó Trăng Non</h1>
         <div class="pdp-rating" aria-label="Đánh giá 4.9 trên 5">
           <span class="stars" aria-hidden="true">★★★★★</span>
           <span class="score">4.9</span>
@@ -92,17 +103,17 @@
 
         <div class="pdp-price">
           <strong id="pdp-price">420.000₫</strong>
-          <s>520.000₫</s>
-          <span class="badge-inline">-19%</span>
+          <s id="pdp-was">520.000₫</s>
+          <span class="badge-inline" id="pdp-badge">-19%</span>
         </div>
 
-        <p class="pdp-desc">
+        <p class="pdp-desc" id="pdp-desc">
           Bó hoa sáp kem – blush, nặn tay từng cánh từ sáp ong &amp; sáp đậu nành.
           Gói giấy kraft, nơ linen, thiệp viết tay — sẵn sàng mang đi tặng.
           Hoa không héo, để được nhiều năm nếu tránh nắng gắt.
         </p>
 
-        <div class="pdp-field">
+        <div class="pdp-field" id="pdp-field-size">
           <p class="pdp-label">Chọn size</p>
           <div class="pdp-variants" role="group" aria-label="Size">
             <button type="button" class="variant" data-size="S" data-price="320000">S · 5 bông</button>
@@ -111,7 +122,7 @@
           </div>
         </div>
 
-        <div class="pdp-field">
+        <div class="pdp-field" id="pdp-field-color">
           <p class="pdp-label">Màu chủ đạo</p>
           <div class="pdp-variants" role="group" aria-label="Màu">
             <button type="button" class="variant is-active" data-color="Kem">Kem</button>
@@ -331,46 +342,10 @@
     <section class="section products" id="related">
       <div class="section-head reveal">
         <h2>Sản phẩm khác</h2>
-        <a class="link-underline" href="index.html#shop">(Xem tất cả)</a>
+        <a class="link-underline" href="shop.html">(Xem tất cả)</a>
       </div>
-      <div class="product-grid">
-        <article class="product-card reveal">
-          <a class="product-card__media" href="product.html">
-            <img src="assets/prod-jar.webp" alt="Lọ Sương Sớm" width="900" height="900" loading="lazy" />
-          </a>
-          <div class="product-card__foot">
-            <h3>Lọ Sương Sớm</h3>
-            <p class="price">289.000₫</p>
-          </div>
-        </article>
-        <article class="product-card reveal">
-          <a class="product-card__media" href="index.html#shop">
-            <span class="badge">-12%</span>
-            <img src="assets/prod-kit.webp" alt="Set DIY Cơ Bản" width="900" height="900" loading="lazy" />
-          </a>
-          <div class="product-card__foot">
-            <h3>Set DIY Cơ Bản</h3>
-            <p class="price">350.000₫ <s>399.000₫</s></p>
-          </div>
-        </article>
-        <article class="product-card reveal">
-          <a class="product-card__media" href="index.html#shop">
-            <img src="assets/prod-gift.webp" alt="Thẻ Quà SÁPA" width="900" height="900" loading="lazy" />
-          </a>
-          <div class="product-card__foot">
-            <h3>Thẻ Quà SÁPA</h3>
-            <p class="price">500.000₫</p>
-          </div>
-        </article>
-        <article class="product-card reveal">
-          <a class="product-card__media" href="index.html#shop">
-            <img src="assets/studio-lineup.webp" alt="Combo Workshop + Bó" width="1536" height="1024" loading="lazy" />
-          </a>
-          <div class="product-card__foot">
-            <h3>Combo WS + Bó</h3>
-            <p class="price">990.000₫</p>
-          </div>
-        </article>
+      <div class="product-grid" id="related-grid" aria-busy="true">
+        <!-- related cards injected by js/product.js -->
       </div>
     </section>
 
