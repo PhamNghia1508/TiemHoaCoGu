@@ -16,6 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/shop.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
 </head>
 <body>
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
@@ -33,6 +34,10 @@
       <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
       <div class="locale-wrap">
         <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
           <span id="locale-label">HCM</span>
@@ -52,12 +57,12 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="shop.html">Sản phẩm</a>
-    <a href="gallery.html">Trưng bày</a>
-    <a href="workshop.html">Workshop</a>
-    <a href="ve-xuong.html">Về xưởng</a>
-    <a href="cau-chuyen.html">Câu chuyện</a>
-    <a href="lien-he.html">Liên hệ</a>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bó hoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
   </div>
 
   <main id="top">
@@ -122,6 +127,22 @@
         <button type="button" class="chip" data-sfilter="diy">Set &amp; phụ kiện</button>
       </div>
 
+      <div class="shop-search reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="search" id="shop-search-input" placeholder="Tìm sản phẩm theo tên…" autocomplete="off" />
+      </div>
+
+      <div class="shop-sort reveal">
+        <label for="shop-sort-select">Sắp xếp:</label>
+        <select id="shop-sort-select">
+          <option value="default">Mặc định</option>
+          <option value="price-asc">Giá thấp → cao</option>
+          <option value="price-desc">Giá cao → thấp</option>
+          <option value="bestseller">Bán chạy nhất</option>
+          <option value="newest">Mới nhất</option>
+        </select>
+      </div>
+
       <div class="product-grid" id="shop-grid" aria-busy="true">
         <!-- cards injected by js/shop.js -->
       </div>
@@ -180,7 +201,8 @@
         <a href="gallery.html">Trưng bày</a>
         <a href="cau-chuyen.html">Bảo quản hoa sáp</a>
         <a href="lien-he.html">Giao &amp; đổi trả</a>
-        <a href="lien-he.html">Câu hỏi thường gặp</a>
+        <a href="faq.html">Câu hỏi thường gặp</a>
+        <a href="blog.html">Blog &amp; mẹo</a>
       </div>
       <div>
         <h4>Liên hệ</h4>
@@ -225,6 +247,7 @@
   <script>document.documentElement.classList.add("js");</script>
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
   <script src="js/shop.js" defer></script>
 </body>
 </html>

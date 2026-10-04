@@ -6,12 +6,17 @@
     "price": 420000,
     "oldPrice": 520000,
     "image": "assets/prod-bouquet.webp",
-    "description": "Bó hoa sáp kem – blush, gói giấy kraft, nơ linen. Tặng tốt nghiệp / 8/3.",
+    "description": "Bóhoa sáp kem – blush, gói giấy kraft, nơ linen. Tặng tốt nghiệp / 8/3.",
     "badge": "-19%",
+    "badgeType": "sale",
     "href": "product.html",
     "section": "arrivals",
     "featured": true,
-    "inStock": true
+    "inStock": true,
+    "stock": 5,
+    "soldCount": 128,
+    "isNew": false,
+    "isBestseller": true
   },
   {
     "id": "suong-som",
@@ -22,10 +27,15 @@
     "image": "assets/prod-jar.webp",
     "description": "Hoa sáp trắng – vàng nhạt trong lọ thủy tinh, để bàn làm việc.",
     "badge": null,
+    "badgeType": null,
     "href": null,
     "section": "arrivals",
     "featured": true,
-    "inStock": true
+    "inStock": true,
+    "stock": 8,
+    "soldCount": 64,
+    "isNew": false,
+    "isBestseller": false
   },
   {
     "id": "kit-co-ban",
@@ -36,10 +46,15 @@
     "image": "assets/prod-kit.webp",
     "description": "Molds, giấy sáp, kẽm, kéo — làm 6–8 bông tại nhà.",
     "badge": "-12%",
+    "badgeType": "sale",
     "href": null,
     "section": "arrivals",
     "featured": true,
-    "inStock": true
+    "inStock": true,
+    "stock": 12,
+    "soldCount": 42,
+    "isNew": true,
+    "isBestseller": false
   },
   {
     "id": "anh-trang",
@@ -50,10 +65,15 @@
     "image": "assets/prod-bouquet.webp",
     "description": "Bó lớn 15 bông sáp, hộp quà cứng, thiệp viết tay.",
     "badge": null,
+    "badgeType": null,
     "href": null,
     "section": "arrivals",
     "featured": false,
-    "inStock": true
+    "inStock": true,
+    "stock": 3,
+    "soldCount": 87,
+    "isNew": false,
+    "isBestseller": true
   },
   {
     "id": "nen-hoa",
@@ -64,10 +84,15 @@
     "image": "assets/prod-candle.webp",
     "description": "Nến thơm hình hoa, cháy ~20 giờ.",
     "badge": null,
+    "badgeType": null,
     "href": null,
     "section": "discover",
     "featured": false,
-    "inStock": true
+    "inStock": true,
+    "stock": 15,
+    "soldCount": 35,
+    "isNew": true,
+    "isBestseller": false
   },
   {
     "id": "hop-qua",
@@ -78,10 +103,15 @@
     "image": "assets/prod-kit.webp",
     "description": "Hộp + nơ + thiệp, size M/L.",
     "badge": null,
+    "badgeType": null,
     "href": null,
     "section": "discover",
     "featured": false,
-    "inStock": true
+    "inStock": true,
+    "stock": 20,
+    "soldCount": 52,
+    "isNew": false,
+    "isBestseller": false
   },
   {
     "id": "combo",
@@ -92,10 +122,15 @@
     "image": "assets/prod-bouquet.webp",
     "description": "1 slot lớp cơ bản + bó size S mang về.",
     "badge": "Tiết kiệm",
+    "badgeType": "deal",
     "href": null,
     "section": "discover",
     "featured": false,
-    "inStock": true
+    "inStock": true,
+    "stock": 6,
+    "soldCount": 29,
+    "isNew": false,
+    "isBestseller": false
   },
   {
     "id": "gift",
@@ -106,9 +141,14 @@
     "image": "assets/prod-gift.webp",
     "description": "Thẻ quà digital / in, hạn 6 tháng.",
     "badge": null,
+    "badgeType": null,
     "href": null,
     "section": "discover",
     "featured": false,
-    "inStock": true
+    "inStock": true,
+    "stock": 50,
+    "soldCount": 73,
+    "isNew": false,
+    "isBestseller": true
   }
 ]

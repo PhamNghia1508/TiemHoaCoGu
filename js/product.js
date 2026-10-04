@@ -261,6 +261,8 @@
       const p = all.find((x) => x.id === productId) || all[0];
       if (!p) return;
       applyProduct(p, all);
+      // Dispatch event for recently-viewed tracking
+      window.dispatchEvent(new CustomEvent("sapa:product-loaded", { detail: p }));
     })
     .catch(() => {
       /* keep static fallback content already in HTML */
