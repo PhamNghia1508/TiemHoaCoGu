@@ -1,0 +1,218 @@
+{
+  "$description": "SÁPA Studio Design Tokens — Botanical Blush palette. Nguồn sự thật duy nhất cho mọi giá trị thiết kế.",
+  "$version": "1.0.0",
+  "$palette": "Botanical Blush",
+
+  "color": {
+    "bg": {
+      "value": "#fdf6f0",
+      "type": "color",
+      "rgb": "253, 246, 240",
+      "description": "Nền chính — kem hồng nhẹ, ấm áp"
+    },
+    "surface": {
+      "value": "#f5e8e0",
+      "type": "color",
+      "rgb": "245, 232, 224",
+      "description": "Bề mặt card, section phụ — ấm hồng hơn nền"
+    },
+    "ink": {
+      "value": "#3d2b2b",
+      "type": "color",
+      "rgb": "61, 43, 43",
+      "description": "Text chính — nâu sô-cô-la đậm, thay thế đen thuần"
+    },
+    "inkSoft": {
+      "value": "rgba(61, 43, 43, 0.68)",
+      "type": "color",
+      "description": "Text phụ — ink với độ trong suốt 68%"
+    },
+    "inkMid": {
+      "value": "rgba(61, 43, 43, 0.8)",
+      "type": "color",
+      "description": "Text trung bình — ink với độ trong suốt 80%"
+    },
+    "cream": {
+      "value": "#fffaf7",
+      "type": "color",
+      "rgb": "255, 250, 247",
+      "description": "Off-white ấm — nền card sáng, text trên nền tối"
+    },
+    "line": {
+      "value": "rgba(61, 43, 43, 0.15)",
+      "type": "color",
+      "description": "Đường kẻ, border — ink 15% trong suốt"
+    },
+    "accent": {
+      "value": "#d98a8a",
+      "type": "color",
+      "rgb": "217, 138, 138",
+      "description": "Hồng dusty rose — CTA chính, badge nổi bật, focus ring"
+    },
+    "accent2": {
+      "value": "#a8c4a0",
+      "type": "color",
+      "rgb": "168, 196, 160",
+      "description": "Xanh sage — tag workshop, trạng thái thành công nhẹ"
+    },
+    "sale": {
+      "value": "#c9785f",
+      "type": "color",
+      "rgb": "201, 120, 95",
+      "description": "Cam đất — giá sale, nhãn khuyến mãi, cảnh báo slot thấp"
+    },
+    "danger": {
+      "value": "#a64545",
+      "type": "color",
+      "rgb": "166, 69, 69",
+      "description": "Đỏ ấm — lỗi, huỷ, trạng thái nguy hiểm"
+    },
+    "ok": {
+      "value": "#6b8e5a",
+      "type": "color",
+      "rgb": "107, 142, 90",
+      "description": "Xanh sage đậm — thành công, xác nhận, slot còn chỗ"
+    },
+    "focus": {
+      "value": "#3d2b2b",
+      "type": "color",
+      "description": "Màu focus ring — đồng bộ với ink"
+    }
+  },
+
+  "colorOverlay": {
+    "dark": {
+      "value": "rgba(61, 43, 43, {opacity})",
+      "type": "color",
+      "description": "Overlay trên ảnh hero/banner — dùng ink với độ trong suốt thay đổi"
+    },
+    "cream": {
+      "value": "rgba(255, 250, 247, {opacity})",
+      "type": "color",
+      "description": "Overlay cream trên nền tối — glass, border, placeholder"
+    }
+  },
+
+  "colorFormMsgDark": {
+    "okOnDark": {
+      "value": "#b8d8a8",
+      "type": "color",
+      "description": "Thông báo thành công trên nền tối"
+    },
+    "errOnDark": {
+      "value": "#e8b8b8",
+      "type": "color",
+      "description": "Thông báo lỗi trên nền tối"
+    }
+  },
+
+  "typography": {
+    "fontDisplay": {
+      "value": "\"Hedvig Letters Serif\", \"Times New Roman\", serif",
+      "type": "fontFamily",
+      "description": "Font serif cho tiêu đề, logo, quote — cảm giác handcrafted"
+    },
+    "fontBody": {
+      "value": "\"Inter\", system-ui, sans-serif",
+      "type": "fontFamily",
+      "description": "Font sans-serif cho body text, UI — sạch, hiện đại"
+    },
+    "fsBody": {
+      "value": "0.9375rem",
+      "type": "fontSize",
+      "description": "Body text — 15px"
+    },
+    "fsQuote": {
+      "value": "clamp(1rem, 1.3vw, 1.125rem)",
+      "type": "fontSize",
+      "description": "Quote text — responsive"
+    },
+    "scale": {
+      "h1": { "value": "clamp(1.85rem, 4vw, 3.15rem)", "type": "fontSize" },
+      "h2": { "value": "clamp(1.65rem, 2.8vw, 2.35rem)", "type": "fontSize" },
+      "h3": { "value": "clamp(1.45rem, 2.2vw, 2rem)", "type": "fontSize" },
+      "lead": { "value": "clamp(1.35rem, 2.4vw, 1.95rem)", "type": "fontSize" },
+      "body": { "value": "0.9375rem", "type": "fontSize" },
+      "small": { "value": "0.8125rem", "type": "fontSize" },
+      "caption": { "value": "0.75rem", "type": "fontSize" }
+    }
+  },
+
+  "spacing": {
+    "pad": {
+      "value": "clamp(1rem, 2.22vw, 2rem)",
+      "type": "spacing",
+      "description": "Padding responsive cho section"
+    },
+    "max": {
+      "value": "1360px",
+      "type": "dimension",
+      "description": "Chiều rộng tối đa container"
+    },
+    "navH": {
+      "value": "64px",
+      "type": "dimension",
+      "description": "Chiều cao navbar"
+    },
+    "hit": {
+      "value": "44px",
+      "type": "dimension",
+      "description": "Kích thước tối thiểu vùng chạm (touch target)"
+    },
+    "scale": {
+      "xs": { "value": "0.25rem", "type": "spacing" },
+      "sm": { "value": "0.5rem", "type": "spacing" },
+      "md": { "value": "1rem", "type": "spacing" },
+      "lg": { "value": "1.5rem", "type": "spacing" },
+      "xl": { "value": "2rem", "type": "spacing" },
+      "2xl": { "value": "2.75rem", "type": "spacing" },
+      "3xl": { "value": "4.5rem", "type": "spacing" }
+    }
+  },
+
+  "radius": {
+    "none": { "value": "0", "type": "borderRadius" },
+    "sm": { "value": "2px", "type": "borderRadius", "description": "Button, input, chip" },
+    "md": { "value": "4px", "type": "borderRadius", "description": "Card, panel" },
+    "lg": { "value": "6px", "type": "borderRadius", "description": "Modal, section lớn" },
+    "xl": { "value": "8px", "type": "borderRadius", "description": "Hero card, sticky bar" },
+    "pill": { "value": "999px", "type": "borderRadius", "description": "Chip, pill, variant" }
+  },
+
+  "shadow": {
+    "card": {
+      "value": "0 12px 40px rgba(0,0,0,0.18)",
+      "type": "shadow",
+      "description": "Hero card, floating element"
+    },
+    "drawer": {
+      "value": "-12px 0 40px rgba(0,0,0,0.12)",
+      "type": "shadow",
+      "description": "Cart drawer"
+    },
+    "dropdown": {
+      "value": "0 12px 32px rgba(0,0,0,0.12)",
+      "type": "shadow",
+      "description": "Locale menu, dropdown"
+    },
+    "sticky": {
+      "value": "0 12px 40px rgba(61, 43, 43, 0.12)",
+      "type": "shadow",
+      "description": "Sticky book bar"
+    }
+  },
+
+  "motion": {
+    "ease": {
+      "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "type": "easing",
+      "description": "Easing chính — smooth, decelerate"
+    },
+    "duration": {
+      "fast": { "value": "0.2s", "type": "duration", "description": "Hover, color change" },
+      "normal": { "value": "0.35s", "type": "duration", "description": "Transform, toggle" },
+      "slow": { "value": "0.45s", "type": "duration", "description": "Reveal, slide" },
+      "slower": { "value": "0.85s", "type": "duration", "description": "Page reveal" }
+    }
+  }
+}

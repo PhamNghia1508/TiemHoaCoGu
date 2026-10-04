@@ -26,7 +26,7 @@
 .ws-hero__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(5, 5, 5, 0.3) 0%, rgba(5, 5, 5, 0.15) 40%, rgba(5, 5, 5, 0.55) 100%);
+  background: linear-gradient(180deg, rgba(61, 43, 43, 0.3) 0%, rgba(61, 43, 43, 0.15) 40%, rgba(61, 43, 43, 0.55) 100%);
 }
 
 .ws-hero__copy {
@@ -101,7 +101,7 @@
 
 .ws-class:hover {
   transform: translate3d(0, -4px, 0);
-  box-shadow: 0 16px 40px rgba(5, 5, 5, 0.06);
+  box-shadow: 0 16px 40px rgba(61, 43, 43, 0.06);
 }
 
 .ws-class__media {
@@ -142,7 +142,7 @@
   max-height: min(92vh, 900px);
   overflow: auto;
   grid-template-columns: 0.95fr 1.05fr;
-  background: #faf8f5;
+  background: #fffaf7;
 }
 
 .ws-detail__media {
@@ -435,7 +435,7 @@
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--line);
   border-radius: 4px;
-  background: #fff;
+  background: #fffaf7;
   font: inherit;
   width: 100%;
   color: var(--ink);
@@ -443,7 +443,7 @@
 
 .ws-form input::placeholder,
 .ws-form textarea::placeholder {
-  color: rgba(5, 5, 5, 0.45);
+  color: rgba(61, 43, 43, 0.45);
 }
 
 .ws-form textarea {
@@ -1051,7 +1051,7 @@ body[data-page="studio"] main {
   padding: 0.45rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 4px;
-  background: #fff;
+  background: #fffaf7;
   font: inherit;
 }
 
@@ -1075,7 +1075,7 @@ body[data-page="studio"] main {
   background: var(--cream);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: 0 12px 40px rgba(5, 5, 5, 0.12);
+  box-shadow: 0 12px 40px rgba(61, 43, 43, 0.12);
 }
 
 .sticky-book[hidden] {
