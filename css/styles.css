@@ -103,7 +103,13 @@ h1, h2, h3, h4, .logo, .quote, .hero-title, .formula-lead, .story-lead {
   color: var(--cream);
   transition: color 0.35s ease, transform 0.45s var(--ease);
 }
-.nav--on-light { color: var(--ink); }
+.nav--on-light {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
 .nav.is-hidden { transform: translate3d(0, -110%, 0); }
 .nav > .logo { margin-right: 0.25rem; }
 .nav-links--left { margin-right: auto; margin-left: 1.5rem; }
