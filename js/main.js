@@ -382,6 +382,7 @@
   }
 
   function addToCart(product) {
+    const addQty = product.qty || 1;
     const existing = cart.find((i) => i.id === product.id);
     if (existing) {
       if (product.fixedQty) {
@@ -390,10 +391,10 @@
         existing.slot = product.slot || existing.slot;
         existing.name = product.name || existing.name;
       } else {
-        existing.qty += 1;
+        existing.qty += addQty;
       }
     } else {
-      cart.push({ ...product, qty: 1 });
+      cart.push({ ...product, qty: addQty });
     }
     renderCart();
     toast(`${product.name} đã vào giỏ`);

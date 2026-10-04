@@ -221,6 +221,86 @@
     });
   });
 
+  /* —— Quantity selector —— */
+  let qty = 1;
+  const qtyField = document.createElement("div");
+  qtyField.className = "pdp-qty";
+  qtyField.innerHTML = `
+    <span class="pdp-qty__label">Số lượng</span>
+    <div class="pdp-qty__ctrl">
+      <button type="button" data-qty-dec aria-label="Giảm">−</button>
+      <input type="number" value="1" min="1" max="99" aria-label="Số lượng" data-qty-input />
+      <button type="button" data-qty-inc aria-label="Tăng">+</button>
+    </div>`;
+  const actionsEl = $(".pdp-actions");
+  if (actionsEl) actionsEl.parentNode.insertBefore(qtyField, actionsEl);
+  const qtyInput = qtyField.querySelector("[data-qty-input]");
+  qtyField.querySelector("[data-qty-dec]").addEventListener("click", () => {
+    qty = Math.max(1, qty - 1); qtyInput.value = qty;
+  });
+  qtyField.querySelector("[data-qty-inc]").addEventListener("click", () => {
+    qty = Math.min(99, qty + 1); qtyInput.value = qty;
+  });
+  qtyInput.addEventListener("change", () => {
+    qty = Math.max(1, Math.min(99, parseInt(qtyInput.value) || 1)); qtyInput.value = qty;
+  });
+
+  /* —— Image lightbox —— */
+  const lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
+  lightbox.innerHTML = `<button class="lightbox__close" aria-label="Đóng">✕</button><img alt="" />`;
+  document.body.appendChild(lightbox);
+  const lbImg = lightbox.querySelector("img");
+  const lbClose = lightbox.querySelector(".lightbox__close");
+  mainImg?.addEventListener("click", () => {
+    if (!mainImg.src) return;
+    lbImg.src = mainImg.src; lbImg.alt = mainImg.alt || "";
+    lightbox.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  });
+  function closeLightbox() { lightbox.classList.remove("is-open"); document.body.style.overflow = ""; }
+  lbClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lightbox.classList.contains("is-open")) closeLightbox();
+  });
+
+  /* —— Sticky add-to-cart bar —— */
+  const stickyBar = document.createElement("div");
+  stickyBar.className = "pdp-sticky-bar";
+  stickyBar.innerHTML = `
+    <img class="pdp-sticky-bar__thumb" alt="" width="48" height="48" />
+    <div class="pdp-sticky-bar__info">
+      <div class="pdp-sticky-bar__name"></div>
+      <div class="pdp-sticky-bar__price"></div>
+    </div>
+    <button type="button" class="btn btn--dark">Thêm vào giỏ</button>`;
+  document.body.appendChild(stickyBar);
+  const stickyThumb = stickyBar.querySelector(".pdp-sticky-bar__thumb");
+  const stickyName = stickyBar.querySelector(".pdp-sticky-bar__name");
+  const stickyPrice = stickyBar.querySelector(".pdp-sticky-bar__price");
+  const stickyAdd = stickyBar.querySelector("button");
+  function updateStickyBar() {
+    if (!current) return;
+    stickyThumb.src = mainImg ? mainImg.getAttribute("src") : current.image;
+    stickyThumb.alt = current.name;
+    stickyName.textContent = current.name;
+    stickyPrice.textContent = formatVND(selectedPrice || current.price);
+  }
+  const buyPanel = $(".pdp-buy");
+  if (buyPanel) {
+    new IntersectionObserver((entries) => {
+      if (!current) return;
+      const shouldShow = buyPanel.getBoundingClientRect().bottom < 0;
+      stickyBar.classList.toggle("is-visible", shouldShow);
+      if (shouldShow) updateStickyBar();
+    }, { threshold: 0 }).observe(buyPanel);
+  }
+  stickyAdd.addEventListener("click", () => {
+    if (!current) return;
+    window.dispatchEvent(new CustomEvent("sapa:add-to-cart", { detail: { ...currentProduct(), openDrawer: true } }));
+  });
+
   /* —— Add to cart / buy now —— */
   function currentProduct() {
     if (!current) return {};
@@ -231,6 +311,7 @@
       name: `${current.name}${size}${color}`,
       price: selectedPrice || current.price,
       img: mainImg ? mainImg.getAttribute("src") : current.image,
+      qty: qty,
     };
   }
 

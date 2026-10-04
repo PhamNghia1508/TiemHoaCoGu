@@ -360,4 +360,105 @@
     drawerFoot.insertBefore(steps, drawerFoot.firstChild);
   }
   renderCheckoutSteps();
+
+  /* ===== Scroll progress indicator ===== */
+  const progress = document.createElement("div");
+  progress.className = "scroll-progress";
+  document.body.appendChild(progress);
+  function updateProgress() {
+    const y = lenis ? lenis.scroll : window.scrollY;
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? Math.min(100, (y / h) * 100) : 0) + "%";
+  }
+  if (lenis) lenis.on("scroll", updateProgress);
+  else window.addEventListener("scroll", updateProgress, { passive: true });
+  updateProgress();
+
+  /* ===== Free shipping progress bar ===== */
+  const FREE_SHIP = 500000;
+  function fmtVND(n) {
+    return Number(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "₫";
+  }
+  function renderShipBar() {
+    const drawerBody = $("#cart-lines");
+    if (!drawerBody) return;
+    let bar = drawerBody.querySelector(".ship-bar");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.className = "ship-bar";
+      drawerBody.insertBefore(bar, drawerBody.firstChild);
+    }
+    const totalEl = $("#cart-total");
+    const total = Number((totalEl ? totalEl.textContent : "0").replace(/[^\d]/g, "")) || 0;
+    if (total === 0) { bar.style.display = "none"; return; }
+    bar.style.display = "";
+    const remaining = Math.max(0, FREE_SHIP - total);
+    const pct = Math.min(100, (total / FREE_SHIP) * 100);
+    bar.classList.toggle("is-done", remaining === 0);
+    bar.innerHTML = `
+      <p class="ship-bar__text">${remaining > 0
+        ? `Thêm <strong>${fmtVND(remaining)}</strong> để được <strong>miễn phí ship</strong>`
+        : `<strong>🎉 Đã đạt miễn phí ship!</strong>`}</p>
+      <div class="ship-bar__track"><div class="ship-bar__fill" style="width:${pct}%"></div></div>`;
+  }
+  const shipObs = new MutationObserver(renderShipBar);
+  const cartTotalEl = $("#cart-total");
+  if (cartTotalEl) shipObs.observe(cartTotalEl, { childList: true, subtree: true, characterData: true });
+  renderShipBar();
+
+  /* ===== Exit-intent popup ===== */
+  const EXIT_KEY = "sapa-exit-popup";
+  if (!localStorage.getItem(EXIT_KEY) && !window.matchMedia("(hover: none)").matches) {
+    const modal = document.createElement("div");
+    modal.className = "exit-modal";
+    modal.innerHTML = `
+      <div class="exit-modal__panel">
+        <button class="exit-modal__close" aria-label="Đóng">✕</button>
+        <h3>Đừng rời đi! 🌸</h3>
+        <p>Để lại email — nhận mã giảm <strong>10%</strong> cho đơn đầu tiên tại SÁPA Studio.</p>
+        <form class="exit-modal__form" novalidate>
+          <input type="email" placeholder="Email của bạn" required aria-label="Email" />
+          <button type="submit">Nhận mã</button>
+        </form>
+        <p class="exit-modal__msg" role="status" aria-live="polite"></p>
+      </div>`;
+    document.body.appendChild(modal);
+    const form = modal.querySelector(".exit-modal__form");
+    const msg = modal.querySelector(".exit-modal__msg");
+    const closeBtn = modal.querySelector(".exit-modal__close");
+
+    function closeExit() {
+      modal.classList.remove("is-open");
+      localStorage.setItem(EXIT_KEY, "dismissed");
+      setTimeout(() => modal.remove(), 300);
+    }
+
+    let exitShown = false;
+    document.addEventListener("mouseleave", (e) => {
+      if (exitShown || e.clientY > 10) return;
+      exitShown = true;
+      modal.classList.add("is-open");
+      form.querySelector("input")?.focus();
+    });
+    setTimeout(() => {
+      if (!exitShown) { exitShown = true; modal.classList.add("is-open"); }
+    }, 60000);
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = form.querySelector("input").value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.textContent = "Vui lòng nhập email hợp lệ.";
+        msg.className = "exit-modal__msg is-err";
+        return;
+      }
+      msg.textContent = "✓ Cảm ơn! Mã giảm đã gửi vào email của bạn.";
+      msg.className = "exit-modal__msg is-ok";
+      localStorage.setItem(EXIT_KEY, "subscribed");
+      setTimeout(closeExit, 2000);
+    });
+
+    closeBtn.addEventListener("click", closeExit);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeExit(); });
+  }
 })();
