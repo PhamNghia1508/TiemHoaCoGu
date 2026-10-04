@@ -425,6 +425,166 @@
   transform: translateX(4px);
 }
 
+/* —— Custom / Pre-order section —— */
+.custom-order {
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.custom-order__panel {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2.5rem 3rem;
+  padding: 2.25rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--cream);
+}
+
+.custom-order__intro .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.85rem;
+}
+
+.custom-order__intro .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.custom-order__intro h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.custom-order__note {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 38ch;
+  margin-bottom: 1.5rem;
+}
+
+.custom-order__perks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.custom-order__perks li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.custom-order__perks li svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+/* —— Form —— */
+.co-form {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.co-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.95rem;
+}
+
+.co-form__row {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.co-form label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.co-form .req {
+  color: var(--danger);
+}
+
+.co-form input,
+.co-form select,
+.co-form textarea {
+  min-height: 46px;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fdfbf7;
+  font: inherit;
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+}
+
+.co-form input::placeholder,
+.co-form textarea::placeholder {
+  color: rgba(31, 46, 35, 0.45);
+}
+
+.co-form textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.co-form input:focus-visible,
+.co-form select:focus-visible,
+.co-form textarea:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.co-form__note {
+  margin: 0.35rem 0 0;
+  font-size: 0.825rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* honeypot (bot trap) — hidden off-screen */
+.hp-field {
+  position: absolute !important;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* —— Responsive —— */
+@media (max-width: 860px) {
+  .custom-order__panel {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .co-form__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* —— Loading skeleton —— */
 #shop-grid[aria-busy="true"]::after {
   content: "Đang tải sản phẩm…";

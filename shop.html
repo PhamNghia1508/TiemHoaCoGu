@@ -182,6 +182,102 @@
       </div>
     </section>
 
+    <!-- Custom / Pre-order -->
+    <section class="section custom-order" id="custom-order">
+      <div class="custom-order__panel reveal">
+        <div class="custom-order__intro">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đặt trước · Custom theo ý</p>
+          <h2>Hoa theo ý bạn — SÁPA làm</h2>
+          <p class="custom-order__note">Không tìm thấy bó hoa ưng ý trong cửa hàng? Bạn muốn màu riêng, size riêng, gói quà cho dịp đặc biệt? Để lại yêu cầu — xưởng SÁPA sẽ nặn từng cánh theo ý bạn và báo giá trong 30 phút.</p>
+          <ul class="custom-order__perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Chọn màu, loại hoa, size &amp; gói quà</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Báo giá minh bạch trước khi làm</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Giao nội thành 2–4 giờ · Ship toàn quốc</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Thiệp viết tay miễn phí</li>
+          </ul>
+        </div>
+        <form class="co-form" id="co-form" novalidate>
+          <div class="co-form__grid">
+            <div class="co-form__row">
+              <label for="co-type">Loại hoa</label>
+              <select id="co-type" required>
+                <option value="">Chọn loại…</option>
+                <option value="Bó hoa">Bó hoa sáp</option>
+                <option value="Lọ hoa">Lọ hoa</option>
+                <option value="Set DIY">Set DIY</option>
+                <option value="Nến">Nến thơm</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="co-form__row">
+              <label for="co-occasion">Dịp / Mục đích</label>
+              <select id="co-occasion" required>
+                <option value="">Chọn dịp…</option>
+                <option value="Sinh nhật">Sinh nhật</option>
+                <option value="Tốt nghiệp">Tốt nghiệp</option>
+                <option value="Kỷ niệm">Kỷ niệm</option>
+                <option value="Cưới">Cưới hỏi</option>
+                <option value="Khai trương">Khai trương</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+          </div>
+          <div class="co-form__grid">
+            <div class="co-form__row">
+              <label for="co-color">Màu sắc yêu thích</label>
+              <input id="co-color" type="text" placeholder="Ví dụ: pastel hồng, trắng kem…" />
+            </div>
+            <div class="co-form__row">
+              <label for="co-budget">Ngân sách dự kiến</label>
+              <select id="co-budget">
+                <option value="Dưới 300k">Dưới 300.000₫</option>
+                <option value="300k-600k">300.000–600.000₫</option>
+                <option value="600k-1tr">600.000–1.000.000₫</option>
+                <option value="Trên 1tr">Trên 1.000.000₫</option>
+                <option value="Tự vấn">Để xưởng tư vấn</option>
+              </select>
+            </div>
+          </div>
+          <div class="co-form__grid">
+            <div class="co-form__row">
+              <label for="co-date">Ngày cần nhận</label>
+              <input id="co-date" type="date" />
+            </div>
+            <div class="co-form__row">
+              <label for="co-qty">Số lượng</label>
+              <input id="co-qty" type="number" min="1" value="1" inputmode="numeric" />
+            </div>
+          </div>
+          <div class="co-form__row">
+            <label for="co-detail">Mô tả chi tiết yêu cầu</label>
+            <textarea id="co-detail" rows="3" placeholder="Ví dụ: bó 9 bông hồng sáp pastel, gói giấy kraft, kèm thiệp chúc mừng sinh nhật…"></textarea>
+          </div>
+          <div class="co-form__grid">
+            <div class="co-form__row">
+              <label for="co-name">Họ tên <span class="req">*</span></label>
+              <input id="co-name" type="text" autocomplete="name" required placeholder="Nguyễn An" />
+            </div>
+            <div class="co-form__row">
+              <label for="co-phone">Số điện thoại <span class="req">*</span></label>
+              <input id="co-phone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxx" />
+            </div>
+          </div>
+          <div class="co-form__row">
+            <label for="co-email">Email</label>
+            <input id="co-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+          </div>
+          <!-- honeypot / bot trap -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="co-website">Website</label>
+            <input id="co-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <button type="submit" class="btn btn--dark btn--block">Gửi yêu cầu custom</button>
+          <p class="co-form__note">SÁPA sẽ liên hệ báo giá &amp; xác nhận trong 30 phút qua Zalo/SMS. Đặt cọc 30% sau khi chốt thiết kế.</p>
+          <p class="form-msg" id="co-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
     <!-- CTA -->
     <section class="gal-cta reveal">
       <h2>Thích tự tay làm?</h2>
@@ -281,5 +377,6 @@
   <script src="js/enhancements.js" defer></script>
   <script src="js/shop.js" defer></script>
   <script src="js/features.js" defer></script>
+  <script src="js/custom-order.js" defer></script>
 </body>
 </html>
