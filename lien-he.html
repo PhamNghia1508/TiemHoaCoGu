@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cửa hàng — SÁPA Studio</title>
-  <meta name="description" content="Toàn bộ sản phẩm hoa sáp thủ công SÁPA Studio — bó hoa, lọ hoa, set DIY, nến và thẻ quà. Bấm vào sản phẩm để xem chi tiết." />
+  <title>Liên hệ — SÁPA Studio</title>
+  <meta name="description" content="Liên hệ SÁPA Studio — đặt lịch ghé xưởng, hỏi workshop riêng, đăng ký nhận lịch tháng và mã quà." />
   <meta name="theme-color" content="#f8f6f1" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f8f6f1' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%231f2e23'%3ES%3C/text%3E%3C/svg%3E" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Cửa hàng — SÁPA Studio" />
-  <meta property="og:description" content="Toàn bộ sản phẩm hoa sáp thủ công SÁPA Studio." />
+  <meta property="og:title" content="Liên hệ — SÁPA Studio" />
+  <meta property="og:description" content="Đặt lịch ghé xưởng, hỏi workshop riêng, đăng ký nhận lịch SÁPA." />
   <meta property="og:image" content="assets/hero-wax.webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/shop.css" />
+  <link rel="stylesheet" href="css/page.css" />
 </head>
 <body>
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
@@ -23,14 +23,14 @@
   <header class="nav" id="nav">
     <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
     <nav class="nav-links nav-links--left" aria-label="Mua sắm">
-      <a href="shop.html" class="is-active"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
       <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
       <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
       <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
       <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
-      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html" class="is-active"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
       <div class="locale-wrap">
@@ -61,91 +61,90 @@
   </div>
 
   <main id="top">
-    <!-- Shop hero -->
-    <section class="shop-hero" data-nav="dark">
-      <div class="shop-hero__bg">
-        <img src="assets/collection.webp" alt="" width="1536" height="1024" fetchpriority="high" />
-        <div class="shop-hero__overlay"></div>
+    <!-- Hero -->
+    <section class="page-hero" data-nav="dark">
+      <div class="page-hero__bg">
+        <img src="assets/hero-wax.webp" alt="Bó hoa sáp thủ công trên bàn vải lanh" width="1536" height="1024" fetchpriority="high" />
+        <div class="page-hero__overlay"></div>
       </div>
-      <div class="shop-hero__content">
-        <p class="shop-hero__kicker">Hoa sáp thủ công · Gói quà sẵn</p>
-        <h1 class="shop-hero__title">Cửa hàng<br />SÁPA Studio</h1>
-        <p class="shop-hero__sub">Toàn bộ bó hoa, lọ hoa, set DIY và phụ kiện — nặn tay từng cánh từ sáp ong. Bấm vào sản phẩm để xem chi tiết và chọn size.</p>
-        <p class="shop-hero__cue">
-          Khám phá bộ sưu tập
-          <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M6 1v11M1 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="page-hero__content">
+        <p class="page-hero__kicker">Liên hệ &amp; ghé xưởng</p>
+        <h1 class="page-hero__title">Liên hệ SÁPA</h1>
+        <p class="page-hero__sub">Đặt lịch ghé xưởng, hỏi workshop riêng, hoặc để lại email nhận lịch tháng và mã quà.</p>
+      </div>
+    </section>
+
+    <!-- Contact info -->
+    <section class="section">
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Thông tin liên hệ</p>
+      <h2 class="formula-lead reveal" style="max-width: 36ch; margin-bottom: 2rem;">
+        SÁPA ở TP. Hồ Chí Minh — ghé xưởng hoặc nhắn tin, xưởng trả lời trong 30 phút.
+      </h2>
+      <div class="contact-grid">
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Hotline</span>
+          <span class="contact-item__value"><a href="tel:0900000000">09xx xxx xxx</a></span>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Email</span>
+          <span class="contact-item__value"><a href="mailto:hello@sapa.studio">hello@sapa.studio</a></span>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Địa chỉ xưởng</span>
+          <span class="contact-item__value">TP. Hồ Chí Minh</span>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Giờ mở cửa</span>
+          <span class="contact-item__value">Thứ 2–CN · 9:00–18:00</span>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Zalo OA</span>
+          <span class="contact-item__value"><a href="https://zalo.me/" target="_blank" rel="noopener noreferrer">Nhắn Zalo</a></span>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item__label">Instagram</span>
+          <span class="contact-item__value"><a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">@sapa.studio</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Store / visit -->
+    <section class="store" id="store">
+      <div class="store-media" data-nav="dark">
+        <img src="assets/hero-wax.webp" alt="Không gian xưởng hoa sáp" width="1536" height="1024" loading="lazy" />
+        <p class="eyebrow eyebrow--light store-label"><span class="dot dot--light" aria-hidden="true"></span> Xưởng &amp; Showroom</p>
+      </div>
+      <div class="store-copy reveal">
+        <h2>Ghé xưởng — ngắm hoa, uống trà, hẹn workshop.</h2>
+        <p style="color: var(--ink-soft); max-width: 40ch;">
+          Đặt lịch trước để xưởng chuẩn bị bàn và dụng cụ. Nhóm từ 8 người — email hello@sapa.studio để xưởng lên format riêng.
         </p>
+        <a class="link-underline" href="workshop.html">(Xem lịch workshop)</a>
       </div>
     </section>
 
-    <!-- Trust bar -->
-    <section class="shop-trust" aria-label="Cam kết">
-      <div class="shop-trust__inner">
-        <span class="shop-trust__item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-          Giao nội thành 2–4 giờ
-        </span>
-        <span class="shop-trust__sep" aria-hidden="true"></span>
-        <span class="shop-trust__item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8l8-5 8 5v8l-8 5-8-5z"/><path d="M4 8l8 5 8-5"/></svg>
-          Gói quà sẵn · Thiệp viết tay
-        </span>
-        <span class="shop-trust__sep" aria-hidden="true"></span>
-        <span class="shop-trust__item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 4v5h-5"/></svg>
-          Đổi màu / size trong 3 ngày
-        </span>
-        <span class="shop-trust__sep" aria-hidden="true"></span>
-        <span class="shop-trust__item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg>
-          Ship toàn quốc
-        </span>
-      </div>
-    </section>
-
-    <!-- Editorial quote -->
-    <section class="shop-quote reveal">
-      <p class="shop-quote__text">Mỗi bông hoa là một <em>khoảnh khắc</em> bạn muốn giữ — không héo, không vội.</p>
-    </section>
-
-    <!-- Products -->
-    <section class="section shop-section" id="shop">
-      <div class="section-head reveal">
-        <h2>Tất cả sản phẩm</h2>
-        <p class="shop-count" id="shop-count" role="status" aria-live="polite"></p>
-      </div>
-
-      <div class="shop-filters reveal" role="group" aria-label="Lọc theo loại">
-        <button type="button" class="chip is-on" data-sfilter="all">Tất cả</button>
-        <button type="button" class="chip" data-sfilter="bo">Bó hoa</button>
-        <button type="button" class="chip" data-sfilter="lo">Lọ &amp; nến</button>
-        <button type="button" class="chip" data-sfilter="diy">Set &amp; phụ kiện</button>
-      </div>
-
-      <div class="product-grid" id="shop-grid" aria-busy="true">
-        <!-- cards injected by js/shop.js -->
-      </div>
-
-      <p class="shop-empty" id="shop-empty" hidden>Chưa có sản phẩm trong nhóm này.</p>
-    </section>
-
-    <!-- CTA -->
-    <section class="gal-cta reveal">
-      <h2>Thích tự tay làm?</h2>
-      <p>Tham gia workshop làm hoa sáp tại xưởng — tự nặn một bông mang về.</p>
-      <div class="gal-cta__actions">
-        <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
-        <a class="btn btn--dark" href="gallery.html">Xem trưng bày</a>
+    <!-- Email signup -->
+    <section class="club" id="contact" data-nav="dark">
+      <img class="club-bg" src="assets/hero-wax.webp" alt="" width="1536" height="1024" loading="lazy" />
+      <div class="club-shade"></div>
+      <p class="club-label reveal"><span class="dot dot--light" aria-hidden="true"></span> Đăng ký nhận lịch</p>
+      <div class="club-copy reveal">
+        <h2>Để lại email — SÁPA gửi lịch workshop mới, mã quà và mẹo bảo quản hoa sáp mỗi tháng 1 lần.</h2>
+        <form class="club-form" id="club-form" novalidate>
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Email của bạn" autocomplete="email" required aria-describedby="email-msg" />
+          <button type="submit">Gửi</button>
+        </form>
+        <p class="form-msg" id="email-msg" role="status" aria-live="polite"></p>
       </div>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer class="footer" id="contact-footer">
     <div class="footer-top">
       <div class="footer-brand">
         <a class="logo" href="index.html">SÁPA</a>
-        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội · Ship toàn quốc.</p>
+        <p>Studio hoa sáp thủ công &amp; workshop. TP. Hồ Chí Minh · Ship toàn quốc.</p>
         <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
       </div>
       <div class="footer-social">
@@ -163,7 +162,7 @@
     <div class="footer-cols">
       <div>
         <h4>Sản phẩm</h4>
-        <a href="shop.html">Bó hoa sáp</a>
+        <a href="shop.html">Bóhoa sáp</a>
         <a href="shop.html">Lọ &amp; nến</a>
         <a href="shop.html">Set DIY</a>
         <a href="shop.html">Thẻ quà</a>
@@ -187,7 +186,7 @@
         <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
         <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
         <a href="lien-he.html">Zalo OA</a>
-        <a href="ve-xuong.html#store">Ghé xưởng (HCM)</a>
+        <a href="#store">Ghé xưởng (HCM)</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -203,28 +202,10 @@
     </div>
   </footer>
 
-  <!-- Cart drawer (shared) -->
-  <div class="overlay" id="overlay" hidden></div>
-  <aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
-    <header class="drawer__head">
-      <h2 id="cart-title">Giỏ hàng</h2>
-      <button type="button" class="icon-btn" id="cart-close" aria-label="Đóng giỏ">✕</button>
-    </header>
-    <div class="drawer__body" id="cart-lines">
-      <p class="cart-empty" id="cart-empty">Giỏ trống — chọn một bó hoa hoặc slot workshop để bắt đầu.</p>
-    </div>
-    <footer class="drawer__foot">
-      <div class="cart-total"><span>Tạm tính</span><strong id="cart-total">0₫</strong></div>
-      <button type="button" class="btn btn--dark btn--block" id="checkout-btn">Thanh toán</button>
-      <p class="cart-note" id="cart-note" role="status" aria-live="polite"></p>
-    </footer>
-  </aside>
-
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script>document.documentElement.classList.add("js");</script>
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
-  <script src="js/shop.js" defer></script>
 </body>
 </html>

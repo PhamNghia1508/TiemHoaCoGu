@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Câu chuyện — SÁPA Studio</title>
+  <meta name="description" content="Hoa sáp SÁPA được nặn tay từ sáp ong và sáp đậu nành — mềm, thơm nhẹ, bền màu nhiều năm." />
+  <meta name="theme-color" content="#f8f6f1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f8f6f1' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%231f2e23'%3ES%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Câu chuyện — SÁPA Studio" />
+  <meta property="og:description" content="Chất liệu và triết lý làm hoa sáp thủ công SÁPA." />
+  <meta property="og:image" content="assets/workshop-hands.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/page.css" />
+</head>
+<body>
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav" id="nav">
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html" class="is-active"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HCM</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="shop.html">Sản phẩm</a>
+    <a href="gallery.html">Trưng bày</a>
+    <a href="workshop.html">Workshop</a>
+    <a href="ve-xuong.html">Về xưởng</a>
+    <a href="cau-chuyen.html">Câu chuyện</a>
+    <a href="lien-he.html">Liên hệ</a>
+  </div>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="page-hero" data-nav="dark">
+      <div class="page-hero__bg">
+        <img src="assets/workshop-hands.webp" alt="Đôi tay nặn cánh hoa sáp" width="1400" height="933" fetchpriority="high" />
+        <div class="page-hero__overlay"></div>
+      </div>
+      <div class="page-hero__content">
+        <p class="page-hero__kicker">Về chất liệu</p>
+        <h1 class="page-hero__title">Câu chuyện SÁPA</h1>
+        <p class="page-hero__sub">Hoa sáp nặn tay từ sáp ong và sáp đậu nành — mềm, thơm nhẹ, bền màu nhiều năm nếu tránh nắng gắt.</p>
+      </div>
+    </section>
+
+    <!-- Quote -->
+    <section class="quote-block reveal">
+      <h2 class="quote">
+        Hoa tươi héo theo ngày — hoa sáp ở lại, nhắc nhở một khoảnh khắc bạn muốn giữ.
+      </h2>
+    </section>
+
+    <!-- Formula / materials -->
+    <section class="section formula" id="about">
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Về chất liệu</p>
+      <h2 class="formula-lead reveal">
+        Hoa sáp SÁPA được nặn tay từ sáp ong và sáp đậu nành — mềm, thơm nhẹ, bền màu nhiều năm nếu tránh nắng gắt.
+      </h2>
+      <div class="formula-grid">
+        <div class="formula-media reveal">
+          <img src="assets/workshop-hands.webp" alt="Đôi tay nặn cánh hoa sáp" width="1400" height="933" loading="lazy" />
+        </div>
+        <ul class="motto" id="motto">
+          <li class="motto-item is-open">
+            <button type="button" class="motto-trigger" aria-expanded="true">
+              <span class="motto-num">I.</span>
+              <span class="motto-title">Sáp tự nhiên</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Pha sáp ong &amp; sáp đậu nành, không nhựa PVC, an toàn khi chạm tay (cả trẻ em có giám sát).</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">II.</span>
+              <span class="motto-title">Nặn tay từng cánh</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Mỗi bông đều có độ lệch nhẹ — dấu vết thủ công, không đúc hàng loạt.</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">III.</span>
+              <span class="motto-title">Màu bền, thơm dịu</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Màu khoáng nhẹ, hương sáp tự nhiên (tuỳ chọn thêm tinh dầu sả chanh / hoa nhài).</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">IV.</span>
+              <span class="motto-title">Đóng gói quà sẵn</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Hộp cứng, nơ linen, thiệp viết tay — nhận là tặng được ngay.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Beliefs -->
+    <section class="section">
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Triết lý</p>
+      <h2 class="formula-lead reveal" style="max-width: 36ch;">
+        Bốn điều chúng tôi tin trong từng bông hoa và từng buổi học.
+      </h2>
+      <ol class="belief-list" style="list-style: none; padding: 0; max-width: 640px;">
+        <li class="reveal" style="display: flex; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--line);">
+          <span style="font-family: var(--font-display); font-size: 1.15rem; color: var(--ink-soft); flex: 0 0 3rem;">I.</span>
+          <div style="font-family: var(--font-display); font-size: 1.15rem;">Chậm còn hơn hoàn hảo</div>
+        </li>
+        <li class="reveal" style="display: flex; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--line);">
+          <span style="font-family: var(--font-display); font-size: 1.15rem; color: var(--ink-soft); flex: 0 0 3rem;">II.</span>
+          <div style="font-family: var(--font-display); font-size: 1.15rem;">Tay làm thì não nghỉ</div>
+        </li>
+        <li class="reveal" style="display: flex; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--line);">
+          <span style="font-family: var(--font-display); font-size: 1.15rem; color: var(--ink-soft); flex: 0 0 3rem;">III.</span>
+          <div style="font-family: var(--font-display); font-size: 1.15rem;">Thành phẩm mang về là của bạn</div>
+        </li>
+        <li class="reveal" style="display: flex; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+          <span style="font-family: var(--font-display); font-size: 1.15rem; color: var(--ink-soft); flex: 0 0 3rem;">IV.</span>
+          <div style="font-family: var(--font-display); font-size: 1.15rem;">Xưởng là nơi để ở, không phải để vội</div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- CTA -->
+    <section class="banner reveal" data-nav="dark">
+      <img src="assets/workshop-hands.webp" alt="" width="1400" height="933" loading="lazy" />
+      <div class="banner-shade"></div>
+      <div class="banner-copy">
+        <h3>Thích tự tay làm? Tham gia workshop</h3>
+        <a class="btn btn--glass" href="workshop.html">Xem lịch lớp</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. TP. Hồ Chí Minh · Ship toàn quốc.</p>
+        <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.5l.5-3H13v-2c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a href="https://zalo.me/" target="_blank" rel="noopener noreferrer" aria-label="Zalo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16v10H8l-4 3V6z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Sản phẩm</h4>
+        <a href="shop.html">Bóhoa sáp</a>
+        <a href="shop.html">Lọ &amp; nến</a>
+        <a href="shop.html">Set DIY</a>
+        <a href="shop.html">Thẻ quà</a>
+      </div>
+      <div>
+        <h4>Workshop</h4>
+        <a href="workshop.html">Lớp cơ bản</a>
+        <a href="workshop.html">Lớp nâng cao</a>
+        <a href="workshop.html">Workshop gia đình</a>
+        <a href="lien-he.html">Đặt lịch riêng</a>
+      </div>
+      <div>
+        <h4>Tham khảo</h4>
+        <a href="gallery.html">Trưng bày</a>
+        <a href="cau-chuyen.html">Bảo quản hoa sáp</a>
+        <a href="lien-he.html">Giao &amp; đổi trả</a>
+        <a href="lien-he.html">Câu hỏi thường gặp</a>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+        <a href="lien-he.html">Zalo OA</a>
+        <a href="ve-xuong.html#store">Ghé xưởng (HCM)</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="locale-wrap">
+        <button class="locale" type="button" data-locale-open aria-haspopup="listbox">
+          HCM <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <p class="footer-note">© 2026 SÁPA Studio.<br />Hoa sáp thủ công · Workshop tại xưởng.</p>
+      <div class="pay-icons" aria-label="Thanh toán">
+        <span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

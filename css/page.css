@@ -1,0 +1,78 @@
+/* SÁPA Studio — shared page hero & layout for ve-xuong / cau-chuyen / lien-he */
+
+.page-hero {
+  position: relative;
+  min-height: 58vh;
+  display: flex;
+  align-items: flex-end;
+  color: var(--cream);
+  overflow: hidden;
+}
+.page-hero__bg { position: absolute; inset: 0; }
+.page-hero__bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.04);
+  animation: heroZoom 8s var(--ease) forwards;
+}
+.page-hero__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(31,46,35,0.3) 0%, rgba(31,46,35,0.1) 40%, rgba(31,46,35,0.5) 100%);
+}
+.page-hero__content {
+  position: relative; z-index: 1;
+  padding: 0 var(--pad) 3rem;
+  max-width: 720px;
+  opacity: 0.001;
+  transform: translate3d(0, 28px, 0);
+  transition: opacity 1s var(--ease) 0.15s, transform 1.1s var(--ease) 0.15s;
+}
+.page-hero.is-ready .page-hero__content { opacity: 1; transform: none; }
+.page-hero__kicker {
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.85rem;
+}
+.page-hero__title {
+  font-size: clamp(1.85rem, 4vw, 3.15rem);
+  margin-bottom: 1rem;
+}
+.page-hero__sub {
+  font-size: 1rem;
+  max-width: 48ch;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+/* Contact info grid */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 3rem;
+}
+.contact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--line);
+}
+.contact-item:last-child { border-bottom: 1px solid var(--line); }
+.contact-item__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.contact-item__value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+.contact-item__value a { border-bottom: 1px solid var(--line); }
+.contact-item__value a:hover { opacity: 0.6; }
+
+@media (max-width: 800px) {
+  .contact-grid { grid-template-columns: 1fr; }
+}
