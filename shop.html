@@ -128,50 +128,56 @@
         <p class="shop-count" id="shop-count" role="status" aria-live="polite"></p>
       </div>
 
-      <div class="shop-filters reveal" role="group" aria-label="Lọc theo loại">
-        <button type="button" class="chip is-on" data-sfilter="all">Tất cả</button>
-        <button type="button" class="chip" data-sfilter="bo">Bó hoa</button>
-        <button type="button" class="chip" data-sfilter="lo">Lọ &amp; nến</button>
-        <button type="button" class="chip" data-sfilter="diy">Set &amp; phụ kiện</button>
-      </div>
+      <div class="shop-layout">
+        <aside class="shop-sidebar">
+          <div class="shop-filters reveal" role="group" aria-label="Lọc theo loại">
+            <button type="button" class="chip is-on" data-sfilter="all">Tất cả</button>
+            <button type="button" class="chip" data-sfilter="bo">Bó hoa</button>
+            <button type="button" class="chip" data-sfilter="lo">Lọ &amp; nến</button>
+            <button type="button" class="chip" data-sfilter="diy">Set &amp; phụ kiện</button>
+          </div>
 
-      <div class="shop-search reveal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="search" id="shop-search-input" placeholder="Tìm sản phẩm theo tên…" autocomplete="off" />
-      </div>
+          <div class="shop-search reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" id="shop-search-input" placeholder="Tìm sản phẩm theo tên…" autocomplete="off" />
+          </div>
 
-      <div class="shop-sort reveal">
-        <label for="shop-sort-select">Sắp xếp:</label>
-        <select id="shop-sort-select">
-          <option value="default">Mặc định</option>
-          <option value="price-asc">Giá thấp → cao</option>
-          <option value="price-desc">Giá cao → thấp</option>
-          <option value="bestseller">Bán chạy nhất</option>
-          <option value="newest">Mới nhất</option>
-        </select>
-      </div>
+          <div class="shop-sort reveal">
+            <label for="shop-sort-select">Sắp xếp</label>
+            <select id="shop-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá thấp → cao</option>
+              <option value="price-desc">Giá cao → thấp</option>
+              <option value="bestseller">Bán chạy nhất</option>
+              <option value="newest">Mới nhất</option>
+            </select>
+          </div>
 
-      <div class="price-range reveal" id="price-range">
-        <div class="price-range__head">
-          <span>Khoảng giá</span>
-          <span class="price-range__values"><span id="price-min-label">0₫</span> — <span id="price-max-label">1.200.000₫</span></span>
+          <div class="price-range reveal" id="price-range">
+            <div class="price-range__head">
+              <span>Khoảng giá</span>
+              <span class="price-range__values"><span id="price-min-label">0₫</span> — <span id="price-max-label">1.200.000₫</span></span>
+            </div>
+            <div class="price-range__track">
+              <div class="price-range__fill"></div>
+              <div class="price-range__slider" data-slider="min" aria-label="Giá tối thiểu" role="slider" tabindex="0"></div>
+              <div class="price-range__slider" data-slider="max" aria-label="Giá tối đa" role="slider" tabindex="0"></div>
+            </div>
+            <div class="price-range__inputs">
+              <label>Từ <input type="number" id="price-min" value="0" min="0" max="1200000" step="10000" /></label>
+              <label>Đến <input type="number" id="price-max" value="1200000" min="0" max="1200000" step="10000" /></label>
+            </div>
+          </div>
+        </aside>
+
+        <div class="shop-main">
+          <div class="product-grid" id="shop-grid" aria-busy="true">
+            <!-- cards injected by js/shop.js -->
+          </div>
+
+          <p class="shop-empty" id="shop-empty" hidden>Chưa có sản phẩm trong nhóm này.</p>
         </div>
-        <div class="price-range__track">
-          <div class="price-range__fill"></div>
-          <div class="price-range__slider" data-slider="min" aria-label="Giá tối thiểu" role="slider" tabindex="0"></div>
-          <div class="price-range__slider" data-slider="max" aria-label="Giá tối đa" role="slider" tabindex="0"></div>
-        </div>
-        <div class="price-range__inputs">
-          <label>Từ <input type="number" id="price-min" value="0" min="0" max="1200000" step="10000" /></label>
-          <label>Đến <input type="number" id="price-max" value="1200000" min="0" max="1200000" step="10000" /></label>
-        </div>
       </div>
-
-      <div class="product-grid" id="shop-grid" aria-busy="true">
-        <!-- cards injected by js/shop.js -->
-      </div>
-
-      <p class="shop-empty" id="shop-empty" hidden>Chưa có sản phẩm trong nhóm này.</p>
     </section>
 
     <!-- CTA -->

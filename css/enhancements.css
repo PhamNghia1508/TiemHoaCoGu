@@ -17,7 +17,6 @@ html[data-theme="dark"] {
 html[data-theme="dark"] body { background: var(--bg); }
 html[data-theme="dark"] .nav { background: rgba(26, 36, 32, 0.9); }
 html[data-theme="dark"] .nav.nav--on-light { color: var(--ink); }
-html[data-theme="dark"] .shop-filters,
 html[data-theme="dark"] .day-group__title {
   background: color-mix(in srgb, var(--bg) 85%, transparent);
 }
