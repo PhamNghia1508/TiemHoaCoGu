@@ -102,6 +102,53 @@
         el.classList.add("is-in")
       );
     });
+
+    // Sticky mobile booking CTA
+    initStickyCTA(ws);
+  }
+
+  function initStickyCTA(ws) {
+    const sticky = $("#wsd-sticky-book");
+    if (!sticky) return;
+    const stickyName = $("#wsd-sticky-name");
+    const stickyPrice = $("#wsd-sticky-price");
+    if (stickyName) stickyName.textContent = ws.name;
+    if (stickyPrice) stickyPrice.textContent = ws.priceLabel;
+
+    const hero = $("#wsd-hero");
+    const bookSection = $("#book");
+    let heroPassed = false;
+    let bookVisible = false;
+
+    function update() {
+      const show = heroPassed && !bookVisible && window.innerWidth <= 860;
+      sticky.hidden = !show;
+      document.body.classList.toggle("has-wsd-sticky", show);
+    }
+
+    if (hero) {
+      const heroObs = new IntersectionObserver(
+        ([entry]) => {
+          heroPassed = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+          update();
+        },
+        { threshold: 0 }
+      );
+      heroObs.observe(hero);
+    }
+
+    if (bookSection) {
+      const bookObs = new IntersectionObserver(
+        ([entry]) => {
+          bookVisible = entry.isIntersecting;
+          update();
+        },
+        { threshold: 0.15 }
+      );
+      bookObs.observe(bookSection);
+    }
+
+    window.addEventListener("resize", update);
   }
 
   function renderSchedule(classId) {

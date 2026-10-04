@@ -167,23 +167,39 @@
   background: var(--surface);
   border-radius: 6px;
   padding: 1.75rem 1.85rem;
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 1.5rem;
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
 
-.wsd-for__panel h3 {
+.wsd-for__icon {
+  flex: 0 0 2.75rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+
+.wsd-for__content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.wsd-for__content h3 {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-soft);
-  margin: 0;
+  margin: 0 0 0.35rem;
 }
 
-.wsd-for__panel p {
+.wsd-for__content p {
   margin: 0;
   font-size: 1.05rem;
   line-height: 1.6;
@@ -337,6 +353,53 @@
   100% { background-position: -100% 0; }
 }
 
+/* Sticky mobile booking CTA */
+.wsd-sticky-book {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: min(560px, calc(100% - 1.5rem));
+  padding: 0.85rem 1rem 0.85rem 1.25rem;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(31, 46, 35, 0.12);
+  transition: transform 0.35s var(--ease), opacity 0.35s ease;
+}
+
+.wsd-sticky-book[hidden] {
+  display: none !important;
+}
+
+.wsd-sticky-book__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.wsd-sticky-book__info strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wsd-sticky-book__info span {
+  display: block;
+  font-size: 0.825rem;
+  color: var(--ink-soft);
+}
+
+.wsd-sticky-book .btn {
+  flex-shrink: 0;
+}
+
 @media (max-width: 860px) {
   .wsd-split {
     grid-template-columns: 1fr;
@@ -353,11 +416,26 @@
     grid-template-columns: 1fr;
   }
   .wsd-for__panel {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
+    padding: 1.35rem 1.35rem;
   }
   .wsd-related-grid {
     grid-template-columns: 1fr 1fr;
+  }
+  body.has-wsd-sticky {
+    padding-bottom: 5.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .wsd-related-grid {
+    grid-template-columns: 1fr;
+  }
+  .wsd-sticky-book {
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+  .wsd-sticky-book .btn {
+    width: 100%;
   }
 }
 
