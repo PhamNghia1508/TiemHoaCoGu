@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trưng bày — SÁPA Studio</title>
+  <meta name="description" content="Trưng bày các mẫu hoa sáp thủ công của SÁPA Studio — bó hoa, lọ hoa, set quà và cảnh xưởng." />
+  <meta name="theme-color" content="#f8f6f1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f8f6f1' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%231f2e23'%3ES%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Trưng bày — SÁPA Studio" />
+  <meta property="og:description" content="Tham khảo phong cách hoa sáp thủ công SÁPA." />
+  <meta property="og:image" content="assets/hero-wax.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/gallery.css" />
+</head>
+<body>
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav nav--on-light" id="nav">
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="index.html#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html" class="is-active"><span>Trưng bày</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="index.html#story"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="index.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HN</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HN">Hà Nội</button></li>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+          <li><button type="button" role="option" data-locale="DN">Đà Nẵng</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="index.html#shop">Cửa hàng</a>
+    <a href="gallery.html">Trưng bày</a>
+    <a href="workshop.html">Workshop</a>
+    <a href="index.html#story">Về xưởng</a>
+    <a href="index.html#contact">Liên hệ</a>
+  </div>
+
+  <main id="top">
+    <!-- Gallery hero -->
+    <section class="gal-hero" data-nav="dark">
+      <div class="gal-hero__bg">
+        <img src="assets/collection.webp" alt="" width="1536" height="1024" fetchpriority="high" />
+        <div class="gal-hero__overlay"></div>
+      </div>
+      <div class="gal-hero__content">
+        <p class="gal-hero__kicker">Tham khảo phong cách</p>
+        <h1 class="gal-hero__title">Bộ sưu tập<br />hoa sáp SÁPA</h1>
+        <p class="gal-hero__sub">Mỗi bông hoa là một câu chuyện — nặn tay, không đúc khuôn. Dạo xem các mẫu để cảm nhận phong cách của xưởng.</p>
+      </div>
+    </section>
+
+    <!-- Intro quote -->
+    <section class="gal-quote reveal">
+      <p class="gal-quote__text">Không hai bông nào giống nhau — đó là dấu vết thủ công.</p>
+    </section>
+
+    <!-- Filters -->
+    <section class="gal-section" id="gallery">
+      <div class="gal-filters reveal" role="group" aria-label="Lọc theo phong cách">
+        <button type="button" class="chip is-on" data-gfilter="all">Tất cả</button>
+        <button type="button" class="chip" data-gfilter="bo">Bó hoa</button>
+        <button type="button" class="chip" data-gfilter="lo">Lọ hoa</button>
+        <button type="button" class="chip" data-gfilter="quà">Set quà</button>
+        <button type="button" class="chip" data-gfilter="xưởng">Cảnh xưởng</button>
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="gal-grid" id="gal-grid">
+        <figure class="gal-item gal-item--tall reveal" data-cat="bo" data-img="assets/prod-bouquet.webp" data-title="Bó Trăng Non" data-desc="Hoa sáp kem – blush, gói kraft, nơ linen.">
+          <img src="assets/prod-bouquet.webp" alt="Bó Trăng Non — hoa sáp kem blush" width="900" height="1200" loading="lazy" />
+          <figcaption>
+            <h3>Bó Trăng Non</h3>
+            <p>Hoa sáp kem – blush, gói kraft, nơ linen</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="lo" data-img="assets/prod-jar.webp" data-title="Lọ Sương Sớm" data-desc="Hoa sáp trắng – vàng nhạt trong lọ thủy tinh.">
+          <img src="assets/prod-jar.webp" alt="Lọ Sương Sớm — hoa sáp trong lọ thủy tinh" width="900" height="900" loading="lazy" />
+          <figcaption>
+            <h3>Lọ Sương Sớm</h3>
+            <p>Hoa sáp trắng – vàng nhạt trong lọ thủy tinh</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item gal-item--wide reveal" data-cat="xưởng" data-img="assets/workshop-hands.webp" data-title="Bàn nặn hoa" data-desc="Đôi tay nặn cánh hoa sáp tại xưởng.">
+          <img src="assets/workshop-hands.webp" alt="Bàn nặn hoa sáp tại xưởng" width="1400" height="933" loading="lazy" />
+          <figcaption>
+            <h3>Bàn nặn hoa</h3>
+            <p>Đôi tay nặn cánh hoa sáp tại xưởng</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="quà" data-img="assets/prod-kit.webp" data-title="Set DIY Cơ Bản" data-desc="Molds, giấy sáp, kẽm, kéo — làm tại nhà.">
+          <img src="assets/prod-kit.webp" alt="Set DIY Cơ Bản — bộ làm hoa sáp tại nhà" width="900" height="900" loading="lazy" />
+          <figcaption>
+            <h3>Set DIY Cơ Bản</h3>
+            <p>Molds, giấy sáp, kẽm, kéo — làm tại nhà</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item gal-item--tall reveal" data-cat="lo" data-img="assets/prod-candle.webp" data-title="Nến Hoa Sáp" data-desc="Nến thơm hình hoa, cháy ~20 giờ.">
+          <img src="assets/prod-candle.webp" alt="Nến Hoa Sáp — nến thơm hình hoa" width="900" height="1200" loading="lazy" />
+          <figcaption>
+            <h3>Nến Hoa Sáp</h3>
+            <p>Nến thơm hình hoa, cháy ~20 giờ</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="bo" data-img="assets/hero-wax.webp" data-title="Bó Ánh Trăng" data-desc="Bó lớn 15 bông sáp, hộp quà cứng, thiệp viết tay.">
+          <img src="assets/hero-wax.webp" alt="Bó Ánh Trăng — bó hoa sáp lớn" width="1536" height="1024" loading="lazy" />
+          <figcaption>
+            <h3>Bó Ánh Trăng</h3>
+            <p>Bó lớn 15 bông sáp, hộp quà cứng, thiệp viết tay</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item gal-item--wide reveal" data-cat="xưởng" data-img="assets/ws-gallery.webp" data-title="Không gian xưởng" data-desc="Góc trưng bày sản phẩm tại showroom SÁPA.">
+          <img src="assets/ws-gallery.webp" alt="Không gian xưởng SÁPA" width="1400" height="933" loading="lazy" />
+          <figcaption>
+            <h3>Không gian xưởng</h3>
+            <p>Góc trưng bày sản phẩm tại showroom SÁPA</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="quà" data-img="assets/prod-gift.webp" data-title="Thẻ Quà SÁPA" data-desc="Thẻ quà digital / in, hạn 6 tháng.">
+          <img src="assets/prod-gift.webp" alt="Thẻ Quà SÁPA" width="900" height="900" loading="lazy" />
+          <figcaption>
+            <h3>Thẻ Quà SÁPA</h3>
+            <p>Thẻ quà digital / in, hạn 6 tháng</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item gal-item--tall reveal" data-cat="bo" data-img="assets/collection.webp" data-title="Bộ sưu tập Mùa Hè" data-desc="Phối màu kem – sage – blush cho mùa hè.">
+          <img src="assets/collection.webp" alt="Bộ sưu tập Mùa Hè" width="900" height="1200" loading="lazy" />
+          <figcaption>
+            <h3>Bộ sưu tập Mùa Hè</h3>
+            <p>Phối màu kem – sage – blush cho mùa hè</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="lo" data-img="assets/moss.webp" data-title="Lọ Rêu Xanh" data-desc="Hoa sáp xanh rêu phối lá moss tự nhiên.">
+          <img src="assets/moss.webp" alt="Lọ Rêu Xanh — hoa sáp xanh rêu" width="900" height="900" loading="lazy" />
+          <figcaption>
+            <h3>Lọ Rêu Xanh</h3>
+            <p>Hoa sáp xanh rêu phối lá moss tự nhiên</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item gal-item--wide reveal" data-cat="xưởng" data-img="assets/ws-studio.webp" data-title="Bàn làm việc" data-desc="Góc làm việc với sáp, mold và dụng cụ.">
+          <img src="assets/ws-studio.webp" alt="Bàn làm việc tại xưởng SÁPA" width="1400" height="933" loading="lazy" />
+          <figcaption>
+            <h3>Bàn làm việc</h3>
+            <p>Góc làm việc với sáp, mold và dụng cụ</p>
+          </figcaption>
+        </figure>
+
+        <figure class="gal-item reveal" data-cat="quà" data-img="assets/note-linen.webp" data-title="Set Quà Linen" data-desc="Bó hoa sáp nhỏ, nơ linen, thiệp viết tay.">
+          <img src="assets/note-linen.webp" alt="Set Quà Linen — bó hoa sáp nhỏ" width="900" height="900" loading="lazy" />
+          <figcaption>
+            <h3>Set Quà Linen</h3>
+            <p>Bó hoa sáp nhỏ, nơ linen, thiệp viết tay</p>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p class="gal-empty" id="gal-empty" hidden>Chưa có mẫu trong phong cách này.</p>
+    </section>
+
+    <!-- CTA -->
+    <section class="gal-cta reveal">
+      <h2>Thấy mẫu nào ưng?</h2>
+      <p>Đặt bó hoa sáp hoặc đến workshop tự tay nặn một bông mang về.</p>
+      <div class="gal-cta__actions">
+        <a class="btn btn--dark" href="index.html#shop">Mua hoa</a>
+        <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title" hidden>
+    <button type="button" class="lightbox__close" id="lightbox-close" aria-label="Đóng">✕</button>
+    <button type="button" class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" aria-label="Ảnh trước">←</button>
+    <figure class="lightbox__figure">
+      <img id="lightbox-img" src="" alt="" />
+      <figcaption>
+        <h3 id="lightbox-title"></h3>
+        <p id="lightbox-desc"></p>
+      </figcaption>
+    </figure>
+    <button type="button" class="lightbox__nav lightbox__nav--next" id="lightbox-next" aria-label="Ảnh sau">→</button>
+  </div>
+
+  <!-- Footer (same as index) -->
+  <footer class="footer" id="contact-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội · Ship toàn quốc.</p>
+        <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.5l.5-3H13v-2c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a href="https://zalo.me/" target="_blank" rel="noopener noreferrer" aria-label="Zalo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16v10H8l-4 3V6z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Sản phẩm</h4>
+        <a href="index.html#shop">Bóhoa sáp</a>
+        <a href="index.html#shop">Lọ &amp; nến</a>
+        <a href="index.html#shop">Set DIY</a>
+        <a href="index.html#shop">Thẻ quà</a>
+      </div>
+      <div>
+        <h4>Workshop</h4>
+        <a href="workshop.html">Lớp cơ bản</a>
+        <a href="workshop.html">Lớp nâng cao</a>
+        <a href="workshop.html">Workshop gia đình</a>
+        <a href="index.html#contact">Đặt lịch riêng</a>
+      </div>
+      <div>
+        <h4>Tham khảo</h4>
+        <a href="gallery.html">Trưng bày</a>
+        <a href="index.html#about">Bảo quản hoa sáp</a>
+        <a href="index.html#contact">Giao &amp; đổi trả</a>
+        <a href="index.html#contact">Câu hỏi thường gặp</a>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+        <a href="index.html#contact">Zalo OA</a>
+        <a href="index.html#store">Ghé xưởng (HN)</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="locale-wrap">
+        <button class="locale" type="button" data-locale-open aria-haspopup="listbox">
+          HN <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <p class="footer-note">© 2026 SÁPA Studio.<br />Hoa sáp thủ công · Workshop tại xưởng.</p>
+      <div class="pay-icons" aria-label="Thanh toán">
+        <span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/gallery.js" defer></script>
+</body>
+</html>
