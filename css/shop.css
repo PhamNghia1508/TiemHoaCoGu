@@ -609,8 +609,8 @@
 }
 
 .co-option__icon {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -622,14 +622,8 @@
   transition: transform 0.3s var(--ease);
 }
 
-.co-option:nth-child(1) .sticker { transform: rotate(-2deg); }
-.co-option:nth-child(2) .sticker { transform: rotate(1.5deg); }
-.co-option:nth-child(3) .sticker { transform: rotate(-1deg); }
-.co-option:nth-child(4) .sticker { transform: rotate(2deg); }
-.co-option:nth-child(5) .sticker { transform: rotate(-1.5deg); }
-
 .co-option.is-selected .sticker {
-  transform: rotate(0) scale(1.08);
+  transform: scale(1.08);
 }
 
 .co-option__label {
