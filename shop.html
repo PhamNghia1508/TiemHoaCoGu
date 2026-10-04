@@ -182,13 +182,13 @@
       </div>
     </section>
 
-    <!-- Custom / Pre-order -->
+    <!-- Custom / Pre-order — Wizard -->
     <section class="section custom-order" id="custom-order">
       <div class="custom-order__panel reveal">
         <div class="custom-order__intro">
           <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đặt trước · Custom theo ý</p>
           <h2>Hoa theo ý bạn — SÁPA làm</h2>
-          <p class="custom-order__note">Không tìm thấy bó hoa ưng ý trong cửa hàng? Bạn muốn màu riêng, size riêng, gói quà cho dịp đặc biệt? Để lại yêu cầu — xưởng SÁPA sẽ nặn từng cánh theo ý bạn và báo giá trong 30 phút.</p>
+          <p class="custom-order__note">Không tìm thấy bó hoa ưng ý? Bạn muốn màu riêng, size riêng, gói quà cho dịp đặc biệt? Chọn từng bước — xưởng SÁPA sẽ nặn theo ý bạn và báo giá trong 30 phút.</p>
           <ul class="custom-order__perks">
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Chọn màu, loại hoa, size &amp; gói quà</li>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Báo giá minh bạch trước khi làm</li>
@@ -196,85 +196,142 @@
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Thiệp viết tay miễn phí</li>
           </ul>
         </div>
-        <form class="co-form" id="co-form" novalidate>
-          <div class="co-form__grid">
-            <div class="co-form__row">
-              <label for="co-type">Loại hoa</label>
-              <select id="co-type" required>
-                <option value="">Chọn loại…</option>
-                <option value="Bó hoa">Bó hoa sáp</option>
-                <option value="Lọ hoa">Lọ hoa</option>
-                <option value="Set DIY">Set DIY</option>
-                <option value="Nến">Nến thơm</option>
-                <option value="Khác">Khác</option>
-              </select>
-            </div>
-            <div class="co-form__row">
-              <label for="co-occasion">Dịp / Mục đích</label>
-              <select id="co-occasion" required>
-                <option value="">Chọn dịp…</option>
-                <option value="Sinh nhật">Sinh nhật</option>
-                <option value="Tốt nghiệp">Tốt nghiệp</option>
-                <option value="Kỷ niệm">Kỷ niệm</option>
-                <option value="Cưới">Cưới hỏi</option>
-                <option value="Khai trương">Khai trương</option>
-                <option value="Khác">Khác</option>
-              </select>
+
+        <div class="co-wizard" id="co-wizard" data-step="1">
+          <!-- Progress -->
+          <div class="co-progress" aria-hidden="true">
+            <div class="co-progress__bar"><i id="co-progress-fill"></i></div>
+            <div class="co-progress__labels">
+              <span data-plabel="1" class="is-on">Loại hoa</span>
+              <span data-plabel="2">Dịp</span>
+              <span data-plabel="3">Màu &amp; giá</span>
+              <span data-plabel="4">Liên hệ</span>
             </div>
           </div>
-          <div class="co-form__grid">
-            <div class="co-form__row">
-              <label for="co-color">Màu sắc yêu thích</label>
-              <input id="co-color" type="text" placeholder="Ví dụ: pastel hồng, trắng kem…" />
-            </div>
-            <div class="co-form__row">
-              <label for="co-budget">Ngân sách dự kiến</label>
-              <select id="co-budget">
-                <option value="Dưới 300k">Dưới 300.000₫</option>
-                <option value="300k-600k">300.000–600.000₫</option>
-                <option value="600k-1tr">600.000–1.000.000₫</option>
-                <option value="Trên 1tr">Trên 1.000.000₫</option>
-                <option value="Tự vấn">Để xưởng tư vấn</option>
-              </select>
+
+          <!-- Step 1: Loại hoa -->
+          <div class="co-step is-active" data-co-step="1">
+            <p class="co-step__q">Bạn muốn loại hoa nào?</p>
+            <div class="co-options" role="group" aria-label="Chọn loại hoa">
+              <button type="button" class="co-option" data-co-select="type" data-value="Bó hoa sáp">
+                <span class="co-option__icon" aria-hidden="true">💐</span>
+                <span class="co-option__label">Bó hoa sáp</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Lọ hoa">
+                <span class="co-option__icon" aria-hidden="true">🪴</span>
+                <span class="co-option__label">Lọ hoa</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Set DIY">
+                <span class="co-option__icon" aria-hidden="true">🎁</span>
+                <span class="co-option__label">Set DIY</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Nến thơm">
+                <span class="co-option__icon" aria-hidden="true">🕯️</span>
+                <span class="co-option__label">Nến thơm</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Khác">
+                <span class="co-option__icon" aria-hidden="true">✨</span>
+                <span class="co-option__label">Khác</span>
+              </button>
             </div>
           </div>
-          <div class="co-form__grid">
-            <div class="co-form__row">
+
+          <!-- Step 2: Dịp -->
+          <div class="co-step" data-co-step="2" hidden>
+            <p class="co-step__q">Hoa dành cho dịp nào?</p>
+            <div class="co-options" role="group" aria-label="Chọn dịp">
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Sinh nhật">
+                <span class="co-option__icon" aria-hidden="true">🎂</span>
+                <span class="co-option__label">Sinh nhật</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Tốt nghiệp">
+                <span class="co-option__icon" aria-hidden="true">🎓</span>
+                <span class="co-option__label">Tốt nghiệp</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Kỷ niệm">
+                <span class="co-option__icon" aria-hidden="true">💕</span>
+                <span class="co-option__label">Kỷ niệm</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Cưới hỏi">
+                <span class="co-option__icon" aria-hidden="true">💍</span>
+                <span class="co-option__label">Cưới hỏi</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Khai trương">
+                <span class="co-option__icon" aria-hidden="true">🎊</span>
+                <span class="co-option__label">Khai trương</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Khác">
+                <span class="co-option__icon" aria-hidden="true">✨</span>
+                <span class="co-option__label">Khác</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Màu & ngân sách -->
+          <div class="co-step" data-co-step="3" hidden>
+            <p class="co-step__q">Chọn tone màu &amp; ngân sách</p>
+            <div class="co-colors" role="group" aria-label="Chọn màu">
+              <button type="button" class="co-color" data-co-select="color" data-value="Pastel hồng" style="--sw:#e8b4c4"><span class="co-color__name">Pastel hồng</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Trắng kem" style="--sw:#f5ede0"><span class="co-color__name">Trắng kem</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Vàng ấm" style="--sw:#e8c879"><span class="co-color__name">Vàng ấm</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Xanh lá" style="--sw:#8ca98c"><span class="co-color__name">Xanh lá</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Tím pastel" style="--sw:#b8a4cc"><span class="co-color__name">Tím pastel</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Đỏ rực" style="--sw:#c45a5a"><span class="co-color__name">Đỏ rực</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Mix tự chọn" style="--sw:linear-gradient(135deg,#e8b4c4,#e8c879,#8ca98c)"><span class="co-color__name">Mix tự chọn</span></button>
+            </div>
+            <div class="co-budgets" role="group" aria-label="Chọn ngân sách">
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Dưới 300k">Dưới 300.000₫</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="300k-600k">300–600k</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="600k-1tr">600k–1tr</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Trên 1tr">Trên 1tr</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Tự vấn">Để xưởng tư vấn</button>
+            </div>
+            <div class="co-step__grid">
               <label for="co-date">Ngày cần nhận</label>
               <input id="co-date" type="date" />
-            </div>
-            <div class="co-form__row">
               <label for="co-qty">Số lượng</label>
               <input id="co-qty" type="number" min="1" value="1" inputmode="numeric" />
             </div>
           </div>
-          <div class="co-form__row">
-            <label for="co-detail">Mô tả chi tiết yêu cầu</label>
-            <textarea id="co-detail" rows="3" placeholder="Ví dụ: bó 9 bông hồng sáp pastel, gói giấy kraft, kèm thiệp chúc mừng sinh nhật…"></textarea>
-          </div>
-          <div class="co-form__grid">
-            <div class="co-form__row">
-              <label for="co-name">Họ tên <span class="req">*</span></label>
-              <input id="co-name" type="text" autocomplete="name" required placeholder="Nguyễn An" />
+
+          <!-- Step 4: Liên hệ & tóm tắt -->
+          <div class="co-step" data-co-step="4" hidden>
+            <p class="co-step__q">Để lại liên hệ — SÁPA báo giá ngay</p>
+            <div class="co-summary" id="co-summary"></div>
+            <div class="co-contact">
+              <div class="co-contact__row">
+                <label for="co-name">Họ tên <span class="req">*</span></label>
+                <input id="co-name" type="text" autocomplete="name" placeholder="Nguyễn An" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-phone">Số điện thoại <span class="req">*</span></label>
+                <input id="co-phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxx" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-email">Email</label>
+                <input id="co-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-detail">Mô tả thêm</label>
+                <textarea id="co-detail" rows="2" placeholder="Ví dụ: bó 9 bông, gói giấy kraft, kèm thiệp…"></textarea>
+              </div>
+              <!-- honeypot -->
+              <div class="hp-field" aria-hidden="true">
+                <label for="co-website">Website</label>
+                <input id="co-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
             </div>
-            <div class="co-form__row">
-              <label for="co-phone">Số điện thoại <span class="req">*</span></label>
-              <input id="co-phone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxx" />
-            </div>
           </div>
-          <div class="co-form__row">
-            <label for="co-email">Email</label>
-            <input id="co-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+
+          <!-- Nav -->
+          <div class="co-nav">
+            <button type="button" class="btn btn--ghost-dark" id="co-back" disabled>← Quay lại</button>
+            <button type="button" class="btn btn--dark" id="co-next">Tiếp theo →</button>
+            <button type="submit" class="btn btn--dark" id="co-submit" hidden>Gửi yêu cầu</button>
           </div>
-          <!-- honeypot / bot trap -->
-          <div class="hp-field" aria-hidden="true">
-            <label for="co-website">Website</label>
-            <input id="co-website" name="website" type="text" tabindex="-1" autocomplete="off" />
-          </div>
-          <button type="submit" class="btn btn--dark btn--block">Gửi yêu cầu custom</button>
           <p class="co-form__note">SÁPA sẽ liên hệ báo giá &amp; xác nhận trong 30 phút qua Zalo/SMS. Đặt cọc 30% sau khi chốt thiết kế.</p>
           <p class="form-msg" id="co-msg" role="status" aria-live="polite"></p>
-        </form>
+        </div>
       </div>
     </section>
 
