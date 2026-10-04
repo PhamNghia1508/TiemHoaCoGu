@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
   <link rel="preload" as="image" href="assets/hero-wax.webp" />
 </head>
 <body>
@@ -24,24 +25,27 @@
   <header class="nav" id="nav">
     <a class="logo" href="#top" aria-label="SÁPA Studio trang chủ">SÁPA</a>
     <nav class="nav-links nav-links--left" aria-label="Mua sắm">
-      <a href="#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
       <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
-      <a href="#story"><span>Về xưởng</span><i aria-hidden="true"></i></a>
-      <a href="#about"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
-      <a href="#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
       <div class="locale-wrap">
         <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
-          <span id="locale-label">HN</span>
+          <span id="locale-label">HCM</span>
           <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
         </button>
         <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
-          <li><button type="button" role="option" data-locale="HN">Hà Nội</button></li>
           <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
-          <li><button type="button" role="option" data-locale="DN">Đà Nẵng</button></li>
         </ul>
       </div>
       <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
@@ -54,12 +58,12 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="#shop">Cửa hàng</a>
-    <a href="workshop.html">Workshop</a>
-    <a href="#story">Về xưởng</a>
-    <a href="#about">Câu chuyện</a>
-    <a href="#contact">Liên hệ</a>
-    <a href="#shop">Bó hot</a>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bóhoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
   </div>
 
   <main id="top">
@@ -102,11 +106,11 @@
     <section class="section products" id="shop">
       <div class="section-head reveal">
         <h2>Bó &amp; Set quà</h2>
-        <a class="link-underline" href="#shop">(Xem tất cả)</a>
+        <a class="link-underline" href="shop.html">(Xem tất cả)</a>
       </div>
       <div class="product-grid" id="grid-arrivals">
-        <article class="product-card reveal" data-id="trang-non" data-name="Bó Trăng Non" data-price="420000" data-cat="bo" data-img="assets/prod-bouquet.webp" data-desc="Bó hoa sáp kem – blush, gói giấy kraft, nơ linen. Tặng tốt nghiệp / 8/3." data-href="product.html">
-          <a class="product-card__media" href="product.html" data-quick>
+        <article class="product-card reveal" data-id="trang-non" data-name="Bó Trăng Non" data-price="420000" data-cat="bo" data-img="assets/prod-bouquet.webp" data-desc="Bó hoa sáp kem – blush, gói giấy kraft, nơ linen. Tặng tốt nghiệp / 8/3." data-href="product.html?id=trang-non">
+          <a class="product-card__media" href="product.html?id=trang-non" data-quick>
             <span class="badge">-19%</span>
             <img src="assets/prod-bouquet.webp" alt="Bó Trăng Non" width="900" height="900" loading="lazy" />
           </a>
@@ -275,7 +279,7 @@
     <section class="section products" id="discover">
       <div class="section-head reveal">
         <h2>Set &amp; phụ kiện</h2>
-        <a class="link-underline" href="#shop">(Xem tất cả)</a>
+        <a class="link-underline" href="shop.html">(Xem tất cả)</a>
       </div>
       <div class="product-grid">
         <article class="product-card reveal" data-id="nen-hoa" data-name="Nến Hoa Sáp" data-price="199000" data-cat="lo" data-img="assets/prod-candle.webp" data-desc="Nến thơm hình hoa, cháy ~20 giờ.">
@@ -348,7 +352,7 @@
       <div class="explore-media">
         <img src="assets/studio-lineup.webp" alt="Bộ sản phẩm hoa sáp tại xưởng SÁPA" width="1536" height="1024" loading="lazy" />
       </div>
-      <a class="link-underline" href="#about">(Tìm hiểu thêm)</a>
+      <a class="link-underline" href="cau-chuyen.html">(Tìm hiểu thêm)</a>
     </section>
 
     <!-- Store / visit -->
@@ -359,7 +363,7 @@
       </div>
       <div class="store-copy reveal">
         <h2>Ghé xưởng — ngắm hoa, uống trà, hẹn workshop.</h2>
-        <a class="link-underline" href="#contact">(Đặt lịch ghé)</a>
+        <a class="link-underline" href="lien-he.html">(Đặt lịch ghé)</a>
       </div>
     </section>
 
@@ -370,7 +374,7 @@
         <h2 class="story-lead reveal">
           SÁPA bắt đầu từ một bàn gỗ nhỏ và những cánh hoa bị nứt. Chúng tôi nặn lại từng bông cho đến khi mềm — và nhận ra: giữ khoảnh khắc không cần hoa tươi.
         </h2>
-        <a class="link-underline reveal" href="#about">(Về SÁPA)</a>
+        <a class="link-underline reveal" href="cau-chuyen.html">(Về SÁPA)</a>
       </div>
       <div class="story-media reveal">
         <img src="assets/prod-bouquet.webp" alt="Bó hoa sáp thủ công" width="900" height="900" loading="lazy" />
@@ -446,27 +450,28 @@
         <a href="#workshops">Lớp cơ bản</a>
         <a href="#workshops">Lớp nâng cao</a>
         <a href="#workshops">Workshop gia đình</a>
-        <a href="#contact">Đặt lịch riêng</a>
+        <a href="lien-he.html">Đặt lịch riêng</a>
       </div>
       <div>
         <h4>Hỗ trợ</h4>
-        <a href="#contact">Liên hệ</a>
-        <a href="#about">Bảo quản hoa sáp</a>
-        <a href="#contact">Giao &amp; đổi trả</a>
-        <a href="#contact">Câu hỏi thường gặp</a>
+        <a href="lien-he.html">Liên hệ</a>
+        <a href="cau-chuyen.html">Bảo quản hoa sáp</a>
+        <a href="lien-he.html">Giao &amp; đổi trả</a>
+        <a href="faq.html">Câu hỏi thường gặp</a>
+        <a href="blog.html">Blog &amp; mẹo</a>
       </div>
       <div>
         <h4>Liên hệ</h4>
         <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
         <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
-        <a href="#contact">Zalo OA</a>
-        <a href="#store">Ghé xưởng (HN)</a>
+        <a href="lien-he.html">Zalo OA</a>
+        <a href="ve-xuong.html#store">Ghé xưởng (HCM)</a>
       </div>
     </div>
     <div class="footer-bottom">
       <div class="locale-wrap">
         <button class="locale" type="button" data-locale-open aria-haspopup="listbox">
-          HN <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+          HCM <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
         </button>
       </div>
       <p class="footer-note">© 2026 SÁPA Studio.<br />Hoa sáp thủ công · Workshop tại xưởng.</p>
@@ -526,5 +531,6 @@
   </script>
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
 </body>
 </html>

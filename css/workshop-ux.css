@@ -1,0 +1,208 @@
+/* SÁPA Workshop — UX Behavior Enhancements */
+
+/* ===== Magnetic button wrapper ===== */
+.magnet {
+  display: inline-flex;
+  transition: transform 0.25s var(--ease);
+  will-change: transform;
+}
+
+/* ===== 3D tilt card ===== */
+.ws-class {
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+.ws-class.is-tilting {
+  transition: transform 0.15s ease-out;
+}
+.ws-class__body,
+.ws-class__media {
+  transform: translateZ(20px);
+}
+.ws-class__media img {
+  transform: translateZ(0);
+}
+
+/* ===== Ripple effect ===== */
+.ripple-origin {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(253, 251, 247, 0.35);
+  transform: scale(0);
+  animation: ripple-expand 0.6s ease-out forwards;
+  pointer-events: none;
+}
+html[data-theme="dark"] .ripple-wave {
+  background: rgba(232, 228, 220, 0.18);
+}
+.btn--cream .ripple-wave,
+.btn-mini .ripple-wave {
+  background: rgba(31, 46, 35, 0.12);
+}
+@keyframes ripple-expand {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ===== Animated stat counter ===== */
+.stat strong {
+  font-variant-numeric: tabular-nums;
+}
+.stat strong.is-counting {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s var(--ease);
+}
+.stat.is-revealed strong {
+  opacity: 1;
+  transform: none;
+}
+.stat.is-revealed strong.is-counting {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Inline form validation ===== */
+.ws-form__row {
+  position: relative;
+}
+.ws-form__valid-icon {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 0.85rem;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.25s ease, transform 0.25s var(--ease);
+  pointer-events: none;
+}
+.ws-form__row.has-qty .ws-form__valid-icon {
+  bottom: 0.85rem;
+}
+.ws-form__valid-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.ws-form__valid-icon.is-ok {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--ok);
+}
+.ws-form__valid-icon.is-err {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--danger);
+}
+.ws-form input.is-valid,
+.ws-form select.is-valid {
+  border-color: var(--ok);
+}
+.ws-form input.is-invalid,
+.ws-form select.is-invalid {
+  border-color: var(--danger);
+  box-shadow: inset 0 -2px 0 var(--danger);
+}
+.ws-form__hint {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin: 0.2rem 0 0;
+  min-height: 0;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.25s ease, margin 0.25s ease;
+}
+.ws-form__row.has-error .ws-form__hint {
+  max-height: 1.5rem;
+  margin: 0.2rem 0 0;
+}
+
+/* ===== Section progress dots ===== */
+.section-dots {
+  position: fixed;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.section-dots.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.section-dot {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-soft);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s var(--ease);
+  position: relative;
+}
+.section-dot:hover {
+  transform: scale(1.3);
+  border-color: var(--ink);
+}
+.section-dot.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  transform: scale(1.15);
+}
+.section-dot__label {
+  position: absolute;
+  right: calc(100% + 0.6rem);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--cream);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s var(--ease);
+}
+.section-dot:hover .section-dot__label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* ===== Slot row selection pulse ===== */
+.slot-row.is-selected {
+  animation: slot-pulse 0.5s var(--ease);
+}
+@keyframes slot-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 760px) {
+  .section-dots { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .magnet { transition: none; }
+  .ws-class.is-tilting { transition: none; }
+  .ripple-wave { display: none; }
+  .stat strong.is-counting { transition: none; opacity: 1; transform: none; }
+  .slot-row.is-selected { animation: none; }
+  .section-dots { transition: none; }
+}

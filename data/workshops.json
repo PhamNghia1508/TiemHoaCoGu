@@ -1,0 +1,141 @@
+[
+  {
+    "id": "ws-co-ban",
+    "name": "Hoa Sáp Cơ Bản",
+    "shortName": "WS Hoa Sáp Cơ Bản",
+    "category": "basic",
+    "price": 450000,
+    "priceLabel": "450.000₫ / người",
+    "image": "assets/prod-kit.webp",
+    "description": "2.5 giờ · Tạo 3 bông + 1 lọ mini · Dụng cụ xưởng lo.",
+    "badge": null,
+    "tag": "Cơ bản",
+    "lead": "Làm quen sáp ong & sáp đậu nành, nặn 3 bông hoa đầu tiên và cắm vào lọ mini mang về. Không cần khéo tay — giáo viên nặn mẫu từng bước.",
+    "meta": [
+      { "label": "Thời lượng", "value": "2.5 giờ" },
+      { "label": "Giá", "value": "450.000₫ / người" },
+      { "label": "Sức chứa", "value": "8–10 người" },
+      { "label": "Mang về", "value": "3 bông + lọ mini" }
+    ],
+    "goals": [
+      "Làm phẳng — cắt — nặn cánh cơ bản",
+      "Gắn nhịp và cành kẽm",
+      "Cắm lọ mini hài hoà",
+      "Mẹo bảo quản hoa sáp tại nhà"
+    ],
+    "includes": [
+      "Tất cả sáp, mold, kẽm, kéo, chỉ",
+      "Tạp dề dùng tại xưởng",
+      "Trà & bánh nhẹ",
+      "−10% cửa hàng trong 7 ngày"
+    ],
+    "forWho": "Người mới 100%, cặp đôi, nhóm bạn muốn thử 1 buổi chiều êm.",
+    "capacity": 10,
+    "duration": "2.5 giờ",
+    "featured": true
+  },
+  {
+    "id": "ws-bo-qua",
+    "name": "Bó Quà Tặng",
+    "shortName": "WS Bó Quà Tặng",
+    "category": "advance",
+    "price": 690000,
+    "priceLabel": "690.000₫ / người",
+    "image": "assets/prod-bouquet.webp",
+    "description": "3 giờ · Bó 7–9 bông · Kỹ thuật gói kraft & nơ.",
+    "badge": "Hot",
+    "tag": "Phổ biến",
+    "lead": "Nặn 7–9 bông, học kỹ thuật gói kraft Ý và thắt nơ linen. Bạn rời xưởng với một bó ready-to-gift — có thể tặng ngay.",
+    "meta": [
+      { "label": "Thời lượng", "value": "3 giờ" },
+      { "label": "Giá", "value": "690.000₫ / người" },
+      { "label": "Sức chứa", "value": "8 người" },
+      { "label": "Mang về", "value": "Bó 7–9 bông hoàn chỉnh" }
+    ],
+    "goals": [
+      "Nặn đủ số bông cho 1 bó nhỏ",
+      "Phối màu kem / blush / sage",
+      "Gói kraft + nơ linen",
+      "Chọn giấy & ruy băng theo dịp tặng"
+    ],
+    "includes": [
+      "Sáp & dụng cụ đầy đủ",
+      "Giấy kraft Ý, nơ linen, thiệp viết tay",
+      "Hộp mang về an toàn",
+      "Trà & bánh nhẹ"
+    ],
+    "forWho": "Ai muốn mang về một món quà thật, hoặc học gói bó chuyên nghiệp hơn.",
+    "capacity": 8,
+    "duration": "3 giờ",
+    "featured": true
+  },
+  {
+    "id": "ws-gia-dinh",
+    "name": "Workshop Gia Đình",
+    "shortName": "WS Gia Đình",
+    "category": "kid",
+    "price": 790000,
+    "priceLabel": "790.000₫ / cặp",
+    "image": "assets/prod-jar.webp",
+    "description": "2 giờ · 1 người lớn + 1 bé · An toàn, vui, mang về lọ hoa.",
+    "badge": null,
+    "tag": "Gia đình",
+    "lead": "Một người lớn + một bé cùng làm chung một lọ hoa. Nhịp chậm, dụng cụ an toàn, không áp lực 'phải đẹp'.",
+    "meta": [
+      { "label": "Thời lượng", "value": "2 giờ" },
+      { "label": "Giá", "value": "790.000₫ / cặp" },
+      { "label": "Sức chứa", "value": "4 cặp" },
+      { "label": "Mang về", "value": "1 lọ hoa chung" }
+    ],
+    "goals": [
+      "Bé tập nặn cánh đơn giản (có hỗ trợ)",
+      "Cùng chọn màu và cắm lọ",
+      "Khoảnh khắc làm chung, không màn hình"
+    ],
+    "includes": [
+      "Dụng cụ an toàn cho trẻ (từ 5 tuổi)",
+      "Tạp dề size bé & người lớn",
+      "Trà bánh nhẹ",
+      "Ảnh kỷ niệm tại xưởng"
+    ],
+    "forWho": "Gia đình muốn 1 hoạt động cuối tuần; bé từ 5 tuổi trở lên.",
+    "capacity": 4,
+    "duration": "2 giờ",
+    "featured": true
+  },
+  {
+    "id": "ws-ky-thuat",
+    "name": "Nặn Cánh Nâng Cao",
+    "shortName": "WS Nâng Cao",
+    "category": "advance",
+    "price": 890000,
+    "priceLabel": "890.000₫ / người",
+    "image": "assets/workshop-hands.webp",
+    "description": "4 giờ · Kỹ thuật cánh mỏng, phối màu, composition.",
+    "badge": null,
+    "tag": "Nâng cao",
+    "lead": "Kỹ thuật cánh mỏng, phối màu tinh tế và composition bó hoa. Dành cho người đã qua lớp cơ bản hoặc đã tự nặn ở nhà.",
+    "meta": [
+      { "label": "Thời lượng", "value": "4 giờ" },
+      { "label": "Giá", "value": "890.000₫ / người" },
+      { "label": "Sức chứa", "value": "6 người" },
+      { "label": "Yêu cầu", "value": "Đã qua lớp cơ bản" }
+    ],
+    "goals": [
+      "Cánh mỏng, độ cong tự nhiên",
+      "Blend màu trên cánh",
+      "Composition & nhịp hoa trong bó",
+      "Sửa lỗi thường gặp khi nặn nhanh"
+    ],
+    "includes": [
+      "Sáp cao cấp & dụng cụ chuyên",
+      "Tệp mẫu cánh nâng cao",
+      "Trà & bánh nhẹ",
+      "Ưu tiên lịch lớp tiếp theo"
+    ],
+    "forWho": "Người đã biết nặn cơ bản, muốn nâng tay nghề hoặc mở xưởng nhỏ.",
+    "capacity": 6,
+    "duration": "4 giờ",
+    "featured": false
+  }
+]

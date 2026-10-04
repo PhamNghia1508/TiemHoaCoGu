@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cửa hàng — SÁPA Studio</title>
+  <meta name="description" content="Toàn bộ sản phẩm hoa sáp thủ công SÁPA Studio — bó hoa, lọ hoa, set DIY, nến và thẻ quà. Bấm vào sản phẩm để xem chi tiết." />
+  <meta name="theme-color" content="#f8f6f1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f8f6f1' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%231f2e23'%3ES%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Cửa hàng — SÁPA Studio" />
+  <meta property="og:description" content="Toàn bộ sản phẩm hoa sáp thủ công SÁPA Studio." />
+  <meta property="og:image" content="assets/hero-wax.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/shop.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
+  <link rel="stylesheet" href="css/features.css" />
+</head>
+<body>
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav" id="nav">
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="shop.html" class="is-active"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HCM</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bó hoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
+  </div>
+
+  <main id="top">
+    <!-- Shop hero -->
+    <section class="shop-hero" data-nav="dark">
+      <div class="shop-hero__bg">
+        <img src="assets/collection.webp" alt="" width="1536" height="1024" fetchpriority="high" />
+        <div class="shop-hero__overlay"></div>
+      </div>
+      <div class="shop-hero__content">
+        <p class="shop-hero__kicker">Hoa sáp thủ công · Gói quà sẵn</p>
+        <h1 class="shop-hero__title">Cửa hàng<br />SÁPA Studio</h1>
+        <p class="shop-hero__sub">Toàn bộ bó hoa, lọ hoa, set DIY và phụ kiện — nặn tay từng cánh từ sáp ong. Bấm vào sản phẩm để xem chi tiết và chọn size.</p>
+        <p class="shop-hero__cue">
+          Khám phá bộ sưu tập
+          <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true"><path d="M6 1v11M1 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </p>
+      </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <nav class="page-crumb" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <span class="is-current">Cửa hàng</span>
+    </nav>
+
+    <!-- Trust bar -->
+    <section class="shop-trust" aria-label="Cam kết">
+      <div class="shop-trust__inner">
+        <span class="shop-trust__item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+          Giao nội thành 2–4 giờ
+        </span>
+        <span class="shop-trust__sep" aria-hidden="true"></span>
+        <span class="shop-trust__item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8l8-5 8 5v8l-8 5-8-5z"/><path d="M4 8l8 5 8-5"/></svg>
+          Gói quà sẵn · Thiệp viết tay
+        </span>
+        <span class="shop-trust__sep" aria-hidden="true"></span>
+        <span class="shop-trust__item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 4v5h-5"/></svg>
+          Đổi màu / size trong 3 ngày
+        </span>
+        <span class="shop-trust__sep" aria-hidden="true"></span>
+        <span class="shop-trust__item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C8 7 6 10 6 14a6 6 0 0012 0c0-4-2-7-6-12z"/></svg>
+          Ship toàn quốc
+        </span>
+      </div>
+    </section>
+
+    <!-- Editorial quote -->
+    <section class="shop-quote reveal">
+      <p class="shop-quote__text">Mỗi bông hoa là một <em>khoảnh khắc</em> bạn muốn giữ — không héo, không vội.</p>
+    </section>
+
+    <!-- Products -->
+    <section class="section shop-section" id="shop">
+      <div class="section-head reveal">
+        <h2>Tất cả sản phẩm</h2>
+        <p class="shop-count" id="shop-count" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="shop-layout">
+        <aside class="shop-sidebar">
+          <p class="shop-sidebar__label">Danh mục</p>
+          <div class="shop-filters reveal" role="group" aria-label="Lọc theo loại">
+            <button type="button" class="chip is-on" data-sfilter="all">Tất cả</button>
+            <button type="button" class="chip" data-sfilter="bo">Bó hoa</button>
+            <button type="button" class="chip" data-sfilter="lo">Lọ &amp; nến</button>
+            <button type="button" class="chip" data-sfilter="diy">Set &amp; phụ kiện</button>
+          </div>
+
+          <p class="shop-sidebar__label">Tìm kiếm</p>
+          <div class="shop-search reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" id="shop-search-input" placeholder="Tìm sản phẩm theo tên…" autocomplete="off" />
+          </div>
+
+          <div class="shop-sort reveal">
+            <label for="shop-sort-select">Sắp xếp</label>
+            <select id="shop-sort-select">
+              <option value="default">Mặc định</option>
+              <option value="price-asc">Giá thấp → cao</option>
+              <option value="price-desc">Giá cao → thấp</option>
+              <option value="bestseller">Bán chạy nhất</option>
+              <option value="newest">Mới nhất</option>
+            </select>
+          </div>
+
+          <div class="price-range reveal" id="price-range">
+            <div class="price-range__head">
+              <span>Khoảng giá</span>
+              <span class="price-range__values"><span id="price-min-label">0₫</span> — <span id="price-max-label">1.200.000₫</span></span>
+            </div>
+            <div class="price-range__track">
+              <div class="price-range__fill"></div>
+              <div class="price-range__slider" data-slider="min" aria-label="Giá tối thiểu" role="slider" tabindex="0"></div>
+              <div class="price-range__slider" data-slider="max" aria-label="Giá tối đa" role="slider" tabindex="0"></div>
+            </div>
+            <div class="price-range__inputs">
+              <label>Từ <input type="number" id="price-min" value="0" min="0" max="1200000" step="10000" /></label>
+              <label>Đến <input type="number" id="price-max" value="1200000" min="0" max="1200000" step="10000" /></label>
+            </div>
+          </div>
+        </aside>
+
+        <div class="shop-main">
+          <div class="product-grid" id="shop-grid" aria-busy="true">
+            <!-- cards injected by js/shop.js -->
+          </div>
+
+          <p class="shop-empty" id="shop-empty" hidden>Chưa có sản phẩm trong nhóm này.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Custom / Pre-order — Wizard -->
+    <section class="section custom-order" id="custom-order">
+      <div class="custom-order__panel reveal">
+        <div class="custom-order__intro">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đặt trước · Custom theo ý</p>
+          <h2>Hoa theo ý bạn — SÁPA làm</h2>
+          <p class="custom-order__note">Không tìm thấy bó hoa ưng ý? Bạn muốn màu riêng, size riêng, gói quà cho dịp đặc biệt? Chọn từng bước — xưởng SÁPA sẽ nặn theo ý bạn và báo giá trong 30 phút.</p>
+          <ul class="custom-order__perks">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Chọn màu, loại hoa, size &amp; gói quà</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Báo giá minh bạch trước khi làm</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Giao nội thành 2–4 giờ · Ship toàn quốc</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg> Thiệp viết tay miễn phí</li>
+          </ul>
+        </div>
+
+        <div class="co-wizard" id="co-wizard" data-step="1">
+          <!-- Progress -->
+          <div class="co-progress" aria-hidden="true">
+            <div class="co-progress__bar"><i id="co-progress-fill"></i></div>
+            <div class="co-progress__labels">
+              <span data-plabel="1" class="is-on">Loại hoa</span>
+              <span data-plabel="2">Dịp</span>
+              <span data-plabel="3">Màu &amp; giá</span>
+              <span data-plabel="4">Liên hệ</span>
+            </div>
+          </div>
+
+          <!-- Step 1: Loại hoa -->
+          <div class="co-step is-active" data-co-step="1">
+            <p class="co-step__q">Bạn muốn loại hoa nào?</p>
+            <div class="co-options" role="group" aria-label="Chọn loại hoa">
+              <button type="button" class="co-option" data-co-select="type" data-value="Bó hoa sáp">
+                <span class="co-option__icon" aria-hidden="true">💐</span>
+                <span class="co-option__label">Bó hoa sáp</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Lọ hoa">
+                <span class="co-option__icon" aria-hidden="true">🪴</span>
+                <span class="co-option__label">Lọ hoa</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Set DIY">
+                <span class="co-option__icon" aria-hidden="true">🎁</span>
+                <span class="co-option__label">Set DIY</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Nến thơm">
+                <span class="co-option__icon" aria-hidden="true">🕯️</span>
+                <span class="co-option__label">Nến thơm</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="type" data-value="Khác">
+                <span class="co-option__icon" aria-hidden="true">✨</span>
+                <span class="co-option__label">Khác</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Dịp -->
+          <div class="co-step" data-co-step="2" hidden>
+            <p class="co-step__q">Hoa dành cho dịp nào?</p>
+            <div class="co-options" role="group" aria-label="Chọn dịp">
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Sinh nhật">
+                <span class="co-option__icon" aria-hidden="true">🎂</span>
+                <span class="co-option__label">Sinh nhật</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Tốt nghiệp">
+                <span class="co-option__icon" aria-hidden="true">🎓</span>
+                <span class="co-option__label">Tốt nghiệp</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Kỷ niệm">
+                <span class="co-option__icon" aria-hidden="true">💕</span>
+                <span class="co-option__label">Kỷ niệm</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Cưới hỏi">
+                <span class="co-option__icon" aria-hidden="true">💍</span>
+                <span class="co-option__label">Cưới hỏi</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Khai trương">
+                <span class="co-option__icon" aria-hidden="true">🎊</span>
+                <span class="co-option__label">Khai trương</span>
+              </button>
+              <button type="button" class="co-option" data-co-select="occasion" data-value="Khác">
+                <span class="co-option__icon" aria-hidden="true">✨</span>
+                <span class="co-option__label">Khác</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Màu & ngân sách -->
+          <div class="co-step" data-co-step="3" hidden>
+            <p class="co-step__q">Chọn tone màu &amp; ngân sách</p>
+            <div class="co-colors" role="group" aria-label="Chọn màu">
+              <button type="button" class="co-color" data-co-select="color" data-value="Pastel hồng" style="--sw:#e8b4c4"><span class="co-color__name">Pastel hồng</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Trắng kem" style="--sw:#f5ede0"><span class="co-color__name">Trắng kem</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Vàng ấm" style="--sw:#e8c879"><span class="co-color__name">Vàng ấm</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Xanh lá" style="--sw:#8ca98c"><span class="co-color__name">Xanh lá</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Tím pastel" style="--sw:#b8a4cc"><span class="co-color__name">Tím pastel</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Đỏ rực" style="--sw:#c45a5a"><span class="co-color__name">Đỏ rực</span></button>
+              <button type="button" class="co-color" data-co-select="color" data-value="Mix tự chọn" style="--sw:linear-gradient(135deg,#e8b4c4,#e8c879,#8ca98c)"><span class="co-color__name">Mix tự chọn</span></button>
+            </div>
+            <div class="co-budgets" role="group" aria-label="Chọn ngân sách">
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Dưới 300k">Dưới 300.000₫</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="300k-600k">300–600k</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="600k-1tr">600k–1tr</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Trên 1tr">Trên 1tr</button>
+              <button type="button" class="co-budget" data-co-select="budget" data-value="Tự vấn">Để xưởng tư vấn</button>
+            </div>
+            <div class="co-step__grid">
+              <label for="co-date">Ngày cần nhận</label>
+              <input id="co-date" type="date" />
+              <label for="co-qty">Số lượng</label>
+              <input id="co-qty" type="number" min="1" value="1" inputmode="numeric" />
+            </div>
+          </div>
+
+          <!-- Step 4: Liên hệ & tóm tắt -->
+          <div class="co-step" data-co-step="4" hidden>
+            <p class="co-step__q">Để lại liên hệ — SÁPA báo giá ngay</p>
+            <div class="co-summary" id="co-summary"></div>
+            <div class="co-contact">
+              <div class="co-contact__row">
+                <label for="co-name">Họ tên <span class="req">*</span></label>
+                <input id="co-name" type="text" autocomplete="name" placeholder="Nguyễn An" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-phone">Số điện thoại <span class="req">*</span></label>
+                <input id="co-phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxx" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-email">Email</label>
+                <input id="co-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+              </div>
+              <div class="co-contact__row">
+                <label for="co-detail">Mô tả thêm</label>
+                <textarea id="co-detail" rows="2" placeholder="Ví dụ: bó 9 bông, gói giấy kraft, kèm thiệp…"></textarea>
+              </div>
+              <!-- honeypot -->
+              <div class="hp-field" aria-hidden="true">
+                <label for="co-website">Website</label>
+                <input id="co-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Nav -->
+          <div class="co-nav">
+            <button type="button" class="btn btn--ghost-dark" id="co-back" disabled>← Quay lại</button>
+            <button type="button" class="btn btn--dark" id="co-next">Tiếp theo →</button>
+            <button type="submit" class="btn btn--dark" id="co-submit" hidden>Gửi yêu cầu</button>
+          </div>
+          <p class="co-form__note">SÁPA sẽ liên hệ báo giá &amp; xác nhận trong 30 phút qua Zalo/SMS. Đặt cọc 30% sau khi chốt thiết kế.</p>
+          <p class="form-msg" id="co-msg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="gal-cta reveal">
+      <h2>Thích tự tay làm?</h2>
+      <p>Tham gia workshop làm hoa sáp tại xưởng — tự nặn một bông mang về.</p>
+      <div class="gal-cta__actions">
+        <a class="btn btn--dark" href="workshop.html">Đặt workshop</a>
+        <a class="btn btn--dark" href="gallery.html">Xem trưng bày</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội · Ship toàn quốc.</p>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.5l.5-3H13v-2c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a href="https://zalo.me/" target="_blank" rel="noopener noreferrer" aria-label="Zalo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16v10H8l-4 3V6z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Sản phẩm</h4>
+        <a href="shop.html">Bó hoa sáp</a>
+        <a href="shop.html">Lọ &amp; nến</a>
+        <a href="shop.html">Set DIY</a>
+        <a href="shop.html">Thẻ quà</a>
+      </div>
+      <div>
+        <h4>Workshop</h4>
+        <a href="workshop.html">Lớp cơ bản</a>
+        <a href="workshop.html">Lớp nâng cao</a>
+        <a href="workshop.html">Workshop gia đình</a>
+        <a href="lien-he.html">Đặt lịch riêng</a>
+      </div>
+      <div>
+        <h4>Tham khảo</h4>
+        <a href="gallery.html">Trưng bày</a>
+        <a href="cau-chuyen.html">Bảo quản hoa sáp</a>
+        <a href="lien-he.html">Giao &amp; đổi trả</a>
+        <a href="faq.html">Câu hỏi thường gặp</a>
+        <a href="blog.html">Blog &amp; mẹo</a>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+        <a href="lien-he.html">Zalo OA</a>
+        <a href="ve-xuong.html#store">Ghé xưởng (HCM)</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="locale-wrap">
+        <button class="locale" type="button" data-locale-open aria-haspopup="listbox">
+          HCM <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <p class="footer-note">© 2026 SÁPA Studio.<br />Hoa sáp thủ công · Workshop tại xưởng.</p>
+      <div class="pay-icons" aria-label="Thanh toán">
+        <span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart drawer (shared) -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <header class="drawer__head">
+      <h2 id="cart-title">Giỏ hàng</h2>
+      <button type="button" class="icon-btn" id="cart-close" aria-label="Đóng giỏ">✕</button>
+    </header>
+    <div class="drawer__body" id="cart-lines">
+      <p class="cart-empty" id="cart-empty">Giỏ trống — chọn một bó hoa hoặc slot workshop để bắt đầu.</p>
+    </div>
+    <footer class="drawer__foot">
+      <div class="cart-total"><span>Tạm tính</span><strong id="cart-total">0₫</strong></div>
+      <button type="button" class="btn btn--dark btn--block" id="checkout-btn">Thanh toán</button>
+      <p class="cart-note" id="cart-note" role="status" aria-live="polite"></p>
+    </footer>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
+  <script src="js/shop.js" defer></script>
+  <script src="js/features.js" defer></script>
+  <script src="js/custom-order.js" defer></script>
+  <script src="js/wizard-icons.js" defer></script>
+</body>
+</html>

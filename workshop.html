@@ -18,25 +18,41 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/product.css" />
   <link rel="stylesheet" href="css/workshop.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
+  <link rel="stylesheet" href="css/workshop-ux.css" />
 </head>
 <body data-page="workshop">
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
 
   <header class="nav" id="nav">
-    <a class="logo" href="index.html">SÁPA</a>
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
     <nav class="nav-links nav-links--left" aria-label="Mua sắm">
-      <a href="index.html#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
-      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
-      <a href="#classes"><span>Các lớp</span><i aria-hidden="true"></i></a>
-      <a href="#schedule"><span>Lịch lớp</span><i aria-hidden="true"></i></a>
-      <a href="#book"><span>Đăng ký</span><i aria-hidden="true"></i></a>
-      <a href="tra-cuu.html"><span>Tra cứu</span><i aria-hidden="true"></i></a>
-      <a href="#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+      <a href="workshop.html" class="is-active"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
-      <button class="cart" type="button" id="cart-btn">Giỏ (<span id="cart-count">0</span>)</button>
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HCM</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
     </div>
     <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span>
@@ -44,15 +60,12 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="index.html#shop">Cửa hàng</a>
-    <a href="workshop.html">Workshop</a>
-    <a href="#classes">Các lớp</a>
-    <a href="#schedule">Lịch lớp</a>
-    <a href="#book">Đăng ký</a>
-    <a href="tra-cuu.html">Tra cứu đặt chỗ</a>
-    <a href="index.html#story">Về xưởng</a>
-    <a href="index.html#about">Câu chuyện</a>
-    <a href="#contact">Liên hệ</a>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bóhoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
   </div>
 
   <main id="top">
@@ -71,6 +84,13 @@
         </div>
       </div>
     </section>
+
+    <!-- Breadcrumb -->
+    <nav class="page-crumb" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <span class="is-current">Workshop</span>
+    </nav>
 
     <section class="section ws-intro">
       <p class="eyebrow reveal"><span class="dot"></span> Vì sao nên thử</p>
@@ -95,11 +115,11 @@
           </button>
           <div class="ws-class__body">
             <p class="ws-class__tag">Cơ bản</p>
-            <h3><button type="button" class="ws-class__title" data-open-detail="ws-co-ban">Hoa Sáp Cơ Bản</button></h3>
+            <h3><a class="ws-class__title" href="workshop-detail.html?id=ws-co-ban">Hoa Sáp Cơ Bản</a></h3>
             <p>Nặn 3 bông + cắm lọ mini. Phù hợp người mới.</p>
             <ul><li>2.5 giờ</li><li>450.000₫ / người</li></ul>
             <div class="ws-class__actions">
-              <button type="button" class="btn-mini" data-open-detail="ws-co-ban">Xem chi tiết</button>
+              <a class="btn-mini" href="workshop-detail.html?id=ws-co-ban">Xem chi tiết</a>
               <button type="button" class="btn btn--dark btn--block" data-book="ws-co-ban">Giữ chỗ</button>
             </div>
           </div>
@@ -110,11 +130,11 @@
           </button>
           <div class="ws-class__body">
             <p class="ws-class__tag">Phổ biến</p>
-            <h3><button type="button" class="ws-class__title" data-open-detail="ws-bo-qua">Bó Quà Tặng</button></h3>
+            <h3><a class="ws-class__title" href="workshop-detail.html?id=ws-bo-qua">Bó Quà Tặng</a></h3>
             <p>7–9 bông, gói kraft &amp; nơ linen — mang về ready-to-gift.</p>
             <ul><li>3 giờ</li><li>690.000₫ / người</li></ul>
             <div class="ws-class__actions">
-              <button type="button" class="btn-mini" data-open-detail="ws-bo-qua">Xem chi tiết</button>
+              <a class="btn-mini" href="workshop-detail.html?id=ws-bo-qua">Xem chi tiết</a>
               <button type="button" class="btn btn--dark btn--block" data-book="ws-bo-qua">Giữ chỗ</button>
             </div>
           </div>
@@ -125,11 +145,11 @@
           </button>
           <div class="ws-class__body">
             <p class="ws-class__tag">Gia đình</p>
-            <h3><button type="button" class="ws-class__title" data-open-detail="ws-gia-dinh">Workshop Gia Đình</button></h3>
+            <h3><a class="ws-class__title" href="workshop-detail.html?id=ws-gia-dinh">Workshop Gia Đình</a></h3>
             <p>1 người lớn + 1 bé. Vui, an toàn, mang về lọ hoa chung.</p>
             <ul><li>2 giờ</li><li>790.000₫ / cặp</li></ul>
             <div class="ws-class__actions">
-              <button type="button" class="btn-mini" data-open-detail="ws-gia-dinh">Xem chi tiết</button>
+              <a class="btn-mini" href="workshop-detail.html?id=ws-gia-dinh">Xem chi tiết</a>
               <button type="button" class="btn btn--dark btn--block" data-book="ws-gia-dinh">Giữ chỗ</button>
             </div>
           </div>
@@ -140,11 +160,11 @@
           </button>
           <div class="ws-class__body">
             <p class="ws-class__tag">Nâng cao</p>
-            <h3><button type="button" class="ws-class__title" data-open-detail="ws-ky-thuat">Nặn Cánh Nâng Cao</button></h3>
+            <h3><a class="ws-class__title" href="workshop-detail.html?id=ws-ky-thuat">Nặn Cánh Nâng Cao</a></h3>
             <p>Cánh mỏng, phối màu, composition cho người đã qua cơ bản.</p>
             <ul><li>4 giờ</li><li>890.000₫ / người</li></ul>
             <div class="ws-class__actions">
-              <button type="button" class="btn-mini" data-open-detail="ws-ky-thuat">Xem chi tiết</button>
+              <a class="btn-mini" href="workshop-detail.html?id=ws-ky-thuat">Xem chi tiết</a>
               <button type="button" class="btn btn--dark btn--block" data-book="ws-ky-thuat">Giữ chỗ</button>
             </div>
           </div>
@@ -564,7 +584,9 @@
   <noscript><style>.reveal,.reveal-media{opacity:1!important;transform:none!important;clip-path:none!important}.word>span{transform:none!important}</style></noscript>
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
   <script src="js/booking.js" defer></script>
   <script src="js/workshop.js" defer></script>
+  <script src="js/workshop-ux.js" defer></script>
 </body>
 </html>

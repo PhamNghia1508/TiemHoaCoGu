@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/styles.css?v=4" />
   <link rel="stylesheet" href="css/product.css?v=4" />
   <link rel="stylesheet" href="css/workshop.css?v=4" />
+  <link rel="stylesheet" href="css/enhancements.css" />
   <style>
     /* critical — page-local layout */
     body[data-page="lookup"] {
@@ -122,19 +123,34 @@
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
 
   <header class="nav nav--on-light" id="nav">
-    <a class="logo" href="index.html">SÁPA</a>
-    <nav class="nav-links nav-links--left" aria-label="Chính">
-      <a href="index.html#shop"><span>Cửa hàng</span><i></i></a>
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
       <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#classes"><span>Các lớp</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#schedule"><span>Lịch lớp</span><i aria-hidden="true"></i></a>
-      <a href="tra-cuu.html"><span>Tra cứu</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
-      <button class="cart" type="button" id="cart-btn">Giỏ (<span id="cart-count">0</span>)</button>
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HCM</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
     </div>
     <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span>
@@ -142,10 +158,12 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="index.html">Trang chủ</a>
-    <a href="workshop.html">Workshop</a>
-    <a href="workshop.html#book">Đăng ký</a>
-    <a href="tra-cuu.html">Tra cứu</a>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bóhoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
   </div>
 
   <main id="top" class="ops-main">
@@ -241,6 +259,7 @@
   <script>document.documentElement.classList.add("js-ready");</script>
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
   <script src="js/booking.js" defer></script>
   <script src="js/lookup.js" defer></script>
   <script>

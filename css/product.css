@@ -1,5 +1,32 @@
 /* SÁPA product detail — inspired by Arum PDP structure */
 
+.pdp-crumb {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 1rem) var(--pad) 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.pdp-crumb a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.pdp-crumb a:hover {
+  color: var(--ink);
+}
+
+.pdp-crumb span#crumb-name {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 .pdp {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;

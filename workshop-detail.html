@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chi tiết Workshop — SÁPA Studio</title>
+  <meta name="description" content="Chi tiết workshop làm hoa sáp tại xưởng SÁPA: thời lượng, giá, sức chứa, bạn sẽ làm được gì, trong buổi có gì." />
+  <meta name="theme-color" content="#f8f6f1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f8f6f1' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%231f2e23'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/product.css" />
+  <link rel="stylesheet" href="css/workshop.css" />
+  <link rel="stylesheet" href="css/workshop-detail.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
+</head>
+<body data-page="workshop-detail">
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav nav--on-light" id="nav">
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html" class="is-active"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="ve-xuong.html"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="cau-chuyen.html"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="lien-he.html"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <button class="theme-toggle" type="button" aria-label="Đổi giao diện">
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HCM</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="shop.html"><span class="mobile-menu__icon">🛍</span><div><span>Sản phẩm</span><span class="mobile-menu__desc">Bó hoa, lọ, set DIY</span></div></a>
+    <a href="gallery.html"><span class="mobile-menu__icon">🖼</span><div><span>Trưng bày</span><span class="mobile-menu__desc">Tham khảo phong cách</span></div></a>
+    <a href="workshop.html"><span class="mobile-menu__icon">✂</span><div><span>Workshop</span><span class="mobile-menu__desc">Làm hoa sáp tại xưởng</span></div></a>
+    <a href="ve-xuong.html"><span class="mobile-menu__icon">🏠</span><div><span>Về xưởng</span><span class="mobile-menu__desc">Câu chuyện SÁPA</span></div></a>
+    <a href="cau-chuyen.html"><span class="mobile-menu__icon">📖</span><div><span>Câu chuyện</span><span class="mobile-menu__desc">Chất liệu &amp; triết lý</span></div></a>
+    <a href="lien-he.html"><span class="mobile-menu__icon">✉</span><div><span>Liên hệ</span><span class="mobile-menu__desc">Đặt lịch, hỏi đáp</span></div></a>
+  </div>
+
+  <main id="top">
+    <!-- Breadcrumb -->
+    <nav class="page-crumb wsd-crumb" aria-label="Đường dẫn" id="wsd-crumb">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <a href="workshop.html">Workshop</a>
+      <span aria-hidden="true">/</span>
+      <span class="is-current" id="wsd-crumb-name">Workshop</span>
+    </nav>
+
+    <!-- Loading skeleton -->
+    <div class="wsd-skeleton" id="wsd-skeleton" aria-hidden="true">
+      <div class="wsd-split">
+        <div class="wsd-split__media sk"></div>
+        <div class="wsd-split__body">
+          <div class="sk" style="height:1rem;width:40%"></div>
+          <div class="sk" style="height:2.2rem;width:80%;margin:0.5rem 0"></div>
+          <div class="sk" style="height:1rem;width:100%"></div>
+          <div class="sk" style="height:1rem;width:90%"></div>
+          <div class="sk" style="height:3rem;width:100%;margin-top:1rem"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero split -->
+    <section class="wsd-hero" id="wsd-hero" hidden>
+      <div class="wsd-split">
+        <div class="wsd-split__media">
+          <img id="wsd-img" src="assets/prod-kit.webp" alt="" width="900" height="900" />
+        </div>
+        <div class="wsd-split__body">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> <span id="wsd-tag">Workshop</span></p>
+          <h1 id="wsd-title">Workshop</h1>
+          <p class="wsd-lead" id="wsd-lead"></p>
+          <div class="wsd-meta" id="wsd-meta"></div>
+          <div class="wsd-split__actions">
+            <a class="btn btn--dark" href="#book" id="wsd-book">Giữ chỗ lớp này</a>
+            <a class="btn btn--cream" href="#wsd-schedule-section" id="wsd-sched-link">Xem lịch lớp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error state -->
+    <div class="wsd-loading" id="wsd-error" hidden>
+      <p>Không tìm thấy workshop này.</p>
+      <p><a class="link-underline" href="workshop.html">← Về trang Workshop</a></p>
+    </div>
+
+    <!-- Bạn sẽ làm được gì -->
+    <section class="wsd-block" id="wsd-goals-section" hidden>
+      <p class="wsd-block__head">Bạn sẽ làm được gì</p>
+      <h2>Rời xưởng với kỹ năng thật trong tay</h2>
+      <ul class="wsd-goals" id="wsd-goals"></ul>
+    </section>
+
+    <!-- Trong buổi có -->
+    <section class="section notes-within wsd-includes" id="wsd-includes-section" hidden>
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Trong buổi có</p>
+      <h2 class="notes-title reveal">Xưởng lo toàn bộ — bạn chỉ cần đến</h2>
+      <div class="notes-grid" id="wsd-includes"></div>
+    </section>
+
+    <!-- Phù hợp với -->
+    <section class="wsd-for" id="wsd-for-section" hidden>
+      <div class="wsd-for__panel">
+        <div class="wsd-for__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="wsd-for__content">
+          <h3>Phù hợp với</h3>
+          <p id="wsd-for"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lịch lớp gần đây -->
+    <section class="wsd-schedule" id="wsd-schedule-section" hidden>
+      <div class="wsd-block">
+        <p class="wsd-block__head">Lịch mở chỗ</p>
+        <h2>Các buổi sắp tới của lớp này</h2>
+        <div class="wsd-sched-list" id="wsd-sched-list"></div>
+        <a class="link-underline" href="workshop.html#schedule">Xem toàn bộ lịch tháng →</a>
+      </div>
+    </section>
+
+    <!-- Booking (in-page) -->
+    <section class="section ws-book" id="book">
+      <div class="ws-book__panel reveal">
+        <div>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đăng ký giữ chỗ</p>
+          <h2>Chọn lịch · để lại liên hệ</h2>
+          <p class="ws-book__note">SÁPA xác nhận qua Zalo/SMS trong 30 phút. Cọc 30% giữ slot.</p>
+        </div>
+        <form class="ws-form" id="ws-form" novalidate>
+          <div class="ws-form__row">
+            <label for="ws-class">Lớp</label>
+            <select id="ws-class" required>
+              <option value="ws-co-ban">Hoa Sáp Cơ Bản — 450.000₫</option>
+              <option value="ws-bo-qua">Bó Quà Tặng — 690.000₫</option>
+              <option value="ws-gia-dinh">Workshop Gia Đình — 790.000₫</option>
+              <option value="ws-ky-thuat">Nặn Cánh Nâng Cao — 890.000₫</option>
+            </select>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-slot">Lịch</label>
+            <select id="ws-slot" required>
+              <option value="T7 05/10 · 09:00">T7 · 05/10 · 09:00–11:30</option>
+              <option value="T7 05/10 · 14:00">T7 · 05/10 · 14:00–17:00</option>
+              <option value="CN 06/10 · 09:00">CN · 06/10 · 09:00–11:00</option>
+              <option value="T4 09/10 · 18:30">T4 · 09/10 · 18:30–21:00</option>
+              <option value="T7 12/10 · 13:00">T7 · 12/10 · 13:00–17:00</option>
+            </select>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-name">Họ tên</label>
+              <input id="ws-name" type="text" autocomplete="name" required placeholder="Nguyễn An" />
+            </div>
+            <div class="ws-form__row">
+              <label for="ws-phone">Số điện thoại</label>
+              <input id="ws-phone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxx" />
+            </div>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-email">Email</label>
+              <input id="ws-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+            </div>
+            <div class="ws-form__row">
+              <label id="ws-qty-label" for="ws-qty">Số người (tối đa 4)</label>
+              <input id="ws-qty" type="number" min="1" max="4" value="1" required inputmode="numeric" />
+            </div>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-note">Ghi chú</label>
+            <textarea id="ws-note" rows="2" placeholder="Ví dụ: đi cùng bé 8 tuổi…"></textarea>
+          </div>
+          <!-- honeypot / bot trap -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="ws-website">Website</label>
+            <input id="ws-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" id="ws-opened-at" name="openedAt" value="" />
+          <button type="submit" class="btn btn--dark btn--block">Giữ chỗ 10 phút</button>
+          <p class="policy-note">
+            <strong>Trước khi thanh toán:</strong> huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc. Cọc 30%, còn lại thu trước buổi 24 giờ.
+          </p>
+          <p class="booking-summary" id="booking-summary" hidden></p>
+          <p class="form-msg" id="ws-msg" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Booking flow panels -->
+        <div class="booking-flow" id="booking-flow" hidden>
+          <div class="flow-panel" id="step-hold" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đang giữ chỗ</p>
+            <h3>Mã giữ chỗ <span class="hold-code" id="hold-code">SP-••••••</span></h3>
+            <p class="flow-lead">Giữ mã này khi chuyển cọc — nếu cần hỗ trợ, gọi hotline và đọc mã.</p>
+            <div class="hold-meta" id="hold-meta"></div>
+            <div class="hold-timer">
+              <p>Thời gian giữ chỗ còn <strong id="hold-countdown">10:00</strong></p>
+              <div class="hold-bar"><span id="hold-bar"></span></div>
+              <p class="sr-only" id="hold-live" aria-live="polite"></p>
+            </div>
+            <div class="hold-summary" id="hold-summary"></div>
+            <p class="policy-note" id="pay-deadline-note">Mã giữ chỗ có hiệu lực trong 10 phút. Sau khi cọc, mã này trở thành <strong>mã đặt chỗ</strong>.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="hold-continue">Thanh toán cọc</button>
+            </div>
+            <p class="flow-destructive">
+              <button type="button" class="linkish linkish--danger" id="hold-restart">Huỷ giữ chỗ và nhập lại</button>
+            </p>
+          </div>
+
+          <div class="flow-panel" id="step-pay" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Thanh toán cọc (stub)</p>
+            <h3>Cọc 30% để giữ chỗ</h3>
+            <div class="hold-summary">
+              <div class="pay-title"><span>Chi tiết thanh toán</span></div>
+              <div><span>Tổng</span><strong id="pay-total"></strong></div>
+              <div><span>Cọc trả ngay</span><strong id="pay-deposit"></strong></div>
+              <div class="is-remaining"><span>Còn lại trước 24h</span><strong id="pay-remaining"></strong></div>
+            </div>
+            <p class="policy-note">Bằng việc thanh toán, bạn đồng ý chính sách huỷ/hoàn ở trên. Đây là nút giả lập — không trừ tiền thật.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark btn--block" id="pay-stub">Đã chuyển khoản cọc</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-done" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đã xác nhận</p>
+            <h3>Mã đặt chỗ của bạn</h3>
+            <p class="done-code" id="done-code">SP-XXXXXX</p>
+            <button type="button" class="btn-mini" id="done-copy">Sao chép mã</button>
+            <div class="hold-meta" id="done-info"></div>
+            <div class="hold-summary" id="done-money"></div>
+            <p class="policy-note" id="done-deadline"></p>
+            <p class="policy-note">Dùng mã + SĐT để <a href="tra-cuu.html">tra cứu / đổi lịch / huỷ</a>.</p>
+          </div>
+
+          <div class="flow-panel" id="step-expired" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Hết hạn</p>
+            <h3>Thời gian giữ chỗ đã hết</h3>
+            <p class="flow-lead">Chỗ đã được nhả lại. Form của bạn vẫn còn — bấm để đặt lại (đồng hồ sẽ chạy 10 phút mới).</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="expired-retry">Bắt đầu lại</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-lost" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Suất vừa hết</p>
+            <h3>Chỗ vừa được người khác lấy</h3>
+            <p class="flow-lead">Rất tiếc — suất này đã kín trong lúc bạn điền form. Các buổi còn chỗ gợi ý:</p>
+            <ul class="lost-list" id="lost-list"></ul>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="lost-retry">Chọn buổi khác</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section ws-faq" id="wsd-faq" hidden>
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> FAQ</p>
+      <h2 class="notes-title reveal">Trước khi đến xưởng</h2>
+      <div class="pdp-acc" id="faq-acc">
+        <div class="pdp-acc-item is-open">
+          <button type="button" class="pdp-acc-btn" aria-expanded="true">
+            <span>Tôi không khéo tay thì có làm được không?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Được. 80% học viên lần đầu. Giáo viên nặn mẫu từng bước — bạn chỉ cần ngồi chậm và thử.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Có cần mang gì không?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Chỉ cần đến. Sáp, dụng cụ, tạp dề, trà bánh — xưởng lo.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Hủy / dời lịch thì sao?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Có nhận lớp riêng / team building?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Có. Nhóm từ 8 người — email hello@sapa.studio để xưởng lên format riêng.</p>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other workshops -->
+    <section class="section" id="wsd-related" hidden>
+      <div class="section-head reveal">
+        <h2>Các lớp khác</h2>
+        <a class="link-underline" href="workshop.html#classes">(Xem tất cả)</a>
+      </div>
+      <div class="wsd-related-grid" id="wsd-related-grid"></div>
+    </section>
+
+    <!-- CTA -->
+    <section class="banner reveal" data-nav="dark">
+      <img src="assets/ws-studio.webp" alt="" width="1400" height="933" loading="lazy" />
+      <div class="banner-shade"></div>
+      <div class="banner-copy">
+        <h3>Sẵn sàng ngồi xuống và thử?</h3>
+        <a class="btn btn--glass" href="workshop.html#book">Giữ chỗ ngay</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội · Ship toàn quốc.</p>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.5l.5-3H13v-2c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a href="https://zalo.me/" target="_blank" rel="noopener noreferrer" aria-label="Zalo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 6h16v10H8l-4 3V6z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Workshop</h4>
+        <a href="workshop.html#classes">Các lớp</a>
+        <a href="workshop.html#schedule">Lịch tháng</a>
+        <a href="workshop.html#book">Đăng ký</a>
+        <a href="tra-cuu.html">Tra cứu đặt chỗ</a>
+        <a href="workshop.html#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Cửa hàng</h4>
+        <a href="shop.html">Bó hoa sáp</a>
+        <a href="shop.html">Lọ &amp; nến</a>
+        <a href="shop.html">Set DIY</a>
+        <a href="shop.html">Thẻ quà</a>
+      </div>
+      <div>
+        <h4>Tham khảo</h4>
+        <a href="gallery.html">Trưng bày</a>
+        <a href="cau-chuyen.html">Bảo quản hoa sáp</a>
+        <a href="lien-he.html">Giao &amp; đổi trả</a>
+        <a href="faq.html">Câu hỏi thường gặp</a>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+        <a href="lien-he.html">Zalo OA</a>
+        <a href="ve-xuong.html#store">Ghé xưởng (HCM)</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="locale-wrap">
+        <button class="locale" type="button" data-locale-open aria-haspopup="listbox">
+          HCM <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+      </div>
+      <p class="footer-note">© 2026 SÁPA Studio.<br />Hoa sáp thủ công · Workshop tại xưởng.</p>
+      <div class="pay-icons" aria-label="Thanh toán">
+        <span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile booking CTA -->
+  <div class="wsd-sticky-book" id="wsd-sticky-book" hidden>
+    <div class="wsd-sticky-book__info">
+      <strong id="wsd-sticky-name">Workshop</strong>
+      <span id="wsd-sticky-price"></span>
+    </div>
+    <a class="btn btn--dark" href="#book" id="wsd-sticky-cta">Giữ chỗ</a>
+  </div>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <header class="drawer__head">
+      <h2 id="cart-title">Giỏ hàng</h2>
+      <button type="button" class="icon-btn" id="cart-close" aria-label="Đóng">✕</button>
+    </header>
+    <div class="drawer__body" id="cart-lines"><p class="cart-empty" id="cart-empty">Giỏ trống.</p></div>
+    <footer class="drawer__foot">
+      <div class="cart-total"><span>Tạm tính</span><strong id="cart-total">0₫</strong></div>
+      <button type="button" class="btn btn--dark btn--block" id="checkout-btn">Thanh toán</button>
+      <p class="cart-note" id="cart-note" role="status"></p>
+    </footer>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><style>.reveal,.reveal-media{opacity:1!important;transform:none!important;clip-path:none!important}</style></noscript>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/enhancements.js" defer></script>
+  <script src="js/booking.js" defer></script>
+  <script src="js/workshop.js" defer></script>
+  <script src="js/workshop-detail.js" defer></script>
+</body>
+</html>
