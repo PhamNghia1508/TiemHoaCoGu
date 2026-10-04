@@ -99,8 +99,8 @@
           <p class="wsd-lead" id="wsd-lead"></p>
           <div class="wsd-meta" id="wsd-meta"></div>
           <div class="wsd-split__actions">
-            <a class="btn btn--dark" href="workshop.html#book" id="wsd-book">Giữ chỗ lớp này</a>
-            <a class="btn btn--cream" href="workshop.html#schedule" id="wsd-sched-link">Xem lịch lớp</a>
+            <a class="btn btn--dark" href="#book" id="wsd-book">Giữ chỗ lớp này</a>
+            <a class="btn btn--cream" href="#wsd-schedule-section" id="wsd-sched-link">Xem lịch lớp</a>
           </div>
         </div>
       </div>
@@ -141,6 +141,142 @@
         <h2>Các buổi sắp tới của lớp này</h2>
         <div class="wsd-sched-list" id="wsd-sched-list"></div>
         <a class="link-underline" href="workshop.html#schedule">Xem toàn bộ lịch tháng →</a>
+      </div>
+    </section>
+
+    <!-- Booking (in-page) -->
+    <section class="section ws-book" id="book">
+      <div class="ws-book__panel reveal">
+        <div>
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đăng ký giữ chỗ</p>
+          <h2>Chọn lịch · để lại liên hệ</h2>
+          <p class="ws-book__note">SÁPA xác nhận qua Zalo/SMS trong 30 phút. Cọc 30% giữ slot.</p>
+        </div>
+        <form class="ws-form" id="ws-form" novalidate>
+          <div class="ws-form__row">
+            <label for="ws-class">Lớp</label>
+            <select id="ws-class" required>
+              <option value="ws-co-ban">Hoa Sáp Cơ Bản — 450.000₫</option>
+              <option value="ws-bo-qua">Bó Quà Tặng — 690.000₫</option>
+              <option value="ws-gia-dinh">Workshop Gia Đình — 790.000₫</option>
+              <option value="ws-ky-thuat">Nặn Cánh Nâng Cao — 890.000₫</option>
+            </select>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-slot">Lịch</label>
+            <select id="ws-slot" required>
+              <option value="T7 05/10 · 09:00">T7 · 05/10 · 09:00–11:30</option>
+              <option value="T7 05/10 · 14:00">T7 · 05/10 · 14:00–17:00</option>
+              <option value="CN 06/10 · 09:00">CN · 06/10 · 09:00–11:00</option>
+              <option value="T4 09/10 · 18:30">T4 · 09/10 · 18:30–21:00</option>
+              <option value="T7 12/10 · 13:00">T7 · 12/10 · 13:00–17:00</option>
+            </select>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-name">Họ tên</label>
+              <input id="ws-name" type="text" autocomplete="name" required placeholder="Nguyễn An" />
+            </div>
+            <div class="ws-form__row">
+              <label for="ws-phone">Số điện thoại</label>
+              <input id="ws-phone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxx" />
+            </div>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-email">Email</label>
+              <input id="ws-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+            </div>
+            <div class="ws-form__row">
+              <label id="ws-qty-label" for="ws-qty">Số người (tối đa 4)</label>
+              <input id="ws-qty" type="number" min="1" max="4" value="1" required inputmode="numeric" />
+            </div>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-note">Ghi chú</label>
+            <textarea id="ws-note" rows="2" placeholder="Ví dụ: đi cùng bé 8 tuổi…"></textarea>
+          </div>
+          <!-- honeypot / bot trap -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="ws-website">Website</label>
+            <input id="ws-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" id="ws-opened-at" name="openedAt" value="" />
+          <button type="submit" class="btn btn--dark btn--block">Giữ chỗ 10 phút</button>
+          <p class="policy-note">
+            <strong>Trước khi thanh toán:</strong> huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc. Cọc 30%, còn lại thu trước buổi 24 giờ.
+          </p>
+          <p class="booking-summary" id="booking-summary" hidden></p>
+          <p class="form-msg" id="ws-msg" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Booking flow panels -->
+        <div class="booking-flow" id="booking-flow" hidden>
+          <div class="flow-panel" id="step-hold" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đang giữ chỗ</p>
+            <h3>Mã giữ chỗ <span class="hold-code" id="hold-code">SP-••••••</span></h3>
+            <p class="flow-lead">Giữ mã này khi chuyển cọc — nếu cần hỗ trợ, gọi hotline và đọc mã.</p>
+            <div class="hold-meta" id="hold-meta"></div>
+            <div class="hold-timer">
+              <p>Thời gian giữ chỗ còn <strong id="hold-countdown">10:00</strong></p>
+              <div class="hold-bar"><span id="hold-bar"></span></div>
+              <p class="sr-only" id="hold-live" aria-live="polite"></p>
+            </div>
+            <div class="hold-summary" id="hold-summary"></div>
+            <p class="policy-note" id="pay-deadline-note">Mã giữ chỗ có hiệu lực trong 10 phút. Sau khi cọc, mã này trở thành <strong>mã đặt chỗ</strong>.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="hold-continue">Thanh toán cọc</button>
+            </div>
+            <p class="flow-destructive">
+              <button type="button" class="linkish linkish--danger" id="hold-restart">Huỷ giữ chỗ và nhập lại</button>
+            </p>
+          </div>
+
+          <div class="flow-panel" id="step-pay" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Thanh toán cọc (stub)</p>
+            <h3>Cọc 30% để giữ chỗ</h3>
+            <div class="hold-summary">
+              <div class="pay-title"><span>Chi tiết thanh toán</span></div>
+              <div><span>Tổng</span><strong id="pay-total"></strong></div>
+              <div><span>Cọc trả ngay</span><strong id="pay-deposit"></strong></div>
+              <div class="is-remaining"><span>Còn lại trước 24h</span><strong id="pay-remaining"></strong></div>
+            </div>
+            <p class="policy-note">Bằng việc thanh toán, bạn đồng ý chính sách huỷ/hoàn ở trên. Đây là nút giả lập — không trừ tiền thật.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark btn--block" id="pay-stub">Đã chuyển khoản cọc</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-done" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Đã xác nhận</p>
+            <h3>Mã đặt chỗ của bạn</h3>
+            <p class="done-code" id="done-code">SP-XXXXXX</p>
+            <button type="button" class="btn-mini" id="done-copy">Sao chép mã</button>
+            <div class="hold-meta" id="done-info"></div>
+            <div class="hold-summary" id="done-money"></div>
+            <p class="policy-note" id="done-deadline"></p>
+            <p class="policy-note">Dùng mã + SĐT để <a href="tra-cuu.html">tra cứu / đổi lịch / huỷ</a>.</p>
+          </div>
+
+          <div class="flow-panel" id="step-expired" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Hết hạn</p>
+            <h3>Thời gian giữ chỗ đã hết</h3>
+            <p class="flow-lead">Chỗ đã được nhả lại. Form của bạn vẫn còn — bấm để đặt lại (đồng hồ sẽ chạy 10 phút mới).</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="expired-retry">Bắt đầu lại</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-lost" hidden>
+            <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Suất vừa hết</p>
+            <h3>Chỗ vừa được người khác lấy</h3>
+            <p class="flow-lead">Rất tiếc — suất này đã kín trong lúc bạn điền form. Các buổi còn chỗ gợi ý:</p>
+            <ul class="lost-list" id="lost-list"></ul>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="lost-retry">Chọn buổi khác</button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -268,6 +404,8 @@
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/enhancements.js" defer></script>
+  <script src="js/booking.js" defer></script>
+  <script src="js/workshop.js" defer></script>
   <script src="js/workshop-detail.js" defer></script>
 </body>
 </html>

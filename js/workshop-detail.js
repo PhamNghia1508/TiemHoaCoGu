@@ -5,6 +5,14 @@
   const params = new URLSearchParams(location.search);
   const id = params.get("id") || "ws-co-ban";
 
+  // Pre-select the booking form's class to this workshop and refresh its slots.
+  // workshop.js (loaded before us) owns the form logic + slot filling.
+  const classSelect = document.getElementById("ws-class");
+  if (classSelect && classSelect.value !== id) {
+    classSelect.value = id;
+    classSelect.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
   const fmtVND = (n) =>
     new Intl.NumberFormat("vi-VN").format(n) + "₫";
 
@@ -33,12 +41,11 @@
       .map((m) => `<div class="kv"><span>${m.label}</span><strong>${m.value}</strong></div>`)
       .join("");
 
-    // book link carries the class preselected
-    const bookLink = $("#wsd-book");
-    bookLink.href = `workshop.html#book`;
-    bookLink.addEventListener("click", () => {
-      try { sessionStorage.setItem("sapa_ws_class", ws.id); } catch (e) {}
-    });
+    // ensure the in-page booking form is locked to this class
+    if (classSelect && classSelect.value !== ws.id) {
+      classSelect.value = ws.id;
+      classSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    }
 
     $("#wsd-skeleton").hidden = true;
     $("#wsd-hero").hidden = false;
