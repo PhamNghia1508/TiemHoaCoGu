@@ -1,0 +1,156 @@
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id") || "ws-co-ban";
+
+  const fmtVND = (n) =>
+    new Intl.NumberFormat("vi-VN").format(n) + "₫";
+
+  const INCLUDE_IMG = [
+    "assets/prod-kit.webp",
+    "assets/note-rose.webp",
+    "assets/ws-gallery.webp",
+    "assets/note-kraft.webp",
+    "assets/prod-candle.webp",
+    "assets/note-linen.webp",
+  ];
+
+  function render(ws, all) {
+    document.title = `${ws.name} — Workshop — SÁPA Studio`;
+
+    // breadcrumb + hero
+    $("#wsd-crumb-name").textContent = ws.name;
+    $("#wsd-img").src = ws.image;
+    $("#wsd-img").alt = ws.name;
+    $("#wsd-tag").textContent = ws.tag;
+    $("#wsd-title").textContent = ws.name;
+    $("#wsd-lead").textContent = ws.lead;
+
+    const metaEl = $("#wsd-meta");
+    metaEl.innerHTML = ws.meta
+      .map((m) => `<div class="kv"><span>${m.label}</span><strong>${m.value}</strong></div>`)
+      .join("");
+
+    // book link carries the class preselected
+    const bookLink = $("#wsd-book");
+    bookLink.href = `workshop.html#book`;
+    bookLink.addEventListener("click", () => {
+      try { sessionStorage.setItem("sapa_ws_class", ws.id); } catch (e) {}
+    });
+
+    $("#wsd-skeleton").hidden = true;
+    $("#wsd-hero").hidden = false;
+
+    // goals
+    $("#wsd-goals").innerHTML = ws.goals.map((g) => `<li>${g}</li>`).join("");
+    $("#wsd-goals-section").hidden = false;
+
+    // includes
+    const incEl = $("#wsd-includes");
+    incEl.innerHTML = ws.includes
+      .map((g, i) => {
+        const img = INCLUDE_IMG[i % INCLUDE_IMG.length];
+        return `<figure class="note-card reveal">
+          <div class="note-card__media"><img src="${img}" alt="" width="720" height="720" loading="lazy" /></div>
+          <figcaption><strong>${g}</strong></figcaption>
+        </figure>`;
+      })
+      .join("");
+    $("#wsd-includes-section").hidden = false;
+
+    // for who
+    $("#wsd-for").textContent = ws.forWho;
+    $("#wsd-for-section").hidden = false;
+
+    // schedule preview
+    renderSchedule(ws.id);
+    $("#wsd-schedule-section").hidden = false;
+
+    // FAQ
+    $("#wsd-faq").hidden = false;
+
+    // related
+    const related = all.filter((w) => w.id !== ws.id).slice(0, 3);
+    $("#wsd-related-grid").innerHTML = related
+      .map(
+        (w) => `<a class="wsd-related-card reveal" href="workshop-detail.html?id=${w.id}">
+          <div class="wsd-related-card__media"><img src="${w.image}" alt="${w.name}" width="900" height="900" loading="lazy" /></div>
+          <div class="wsd-related-card__body">
+            <p class="wsd-related-card__tag">${w.tag}</p>
+            <h3>${w.name}</h3>
+            <p>${w.description}</p>
+            <span class="wsd-related-card__price">${w.priceLabel}</span>
+          </div>
+        </a>`
+      )
+      .join("");
+    $("#wsd-related").hidden = false;
+
+    // reveal: main.js owns the IntersectionObserver; force-reveal anything
+    // we injected after it ran so content never sits hidden.
+    requestAnimationFrame(() => {
+      $$("#wsd-related .reveal, #wsd-includes-section .reveal").forEach((el) =>
+        el.classList.add("is-in")
+      );
+    });
+  }
+
+  function renderSchedule(classId) {
+    const listEl = $("#wsd-sched-list");
+    const booking = window.__sapaBooking;
+    if (!booking) {
+      listEl.innerHTML = `<p class="wsd-sched-empty">Xem lịch đầy đủ tại trang Workshop.</p>`;
+      return;
+    }
+    let sessions = booking.getSessions() || [];
+    const left = (s) => Math.max(0, s.cap - s.taken);
+    const isPast = (s) => {
+      const d = new Date(`${s.date}T${s.start}:00`);
+      return d.getTime() < Date.now() - 2 * 3600 * 1000;
+    };
+    const dayLabel = (d) => booking.dayLabel?.(d) || d;
+    const upcoming = sessions
+      .filter((s) => s.classId === classId && !isPast(s) && left(s) > 0)
+      .sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start))
+      .slice(0, 5);
+
+    if (!upcoming.length) {
+      listEl.innerHTML = `<p class="wsd-sched-empty">Hiện chưa có buổi còn chỗ cho lớp này — xem danh sách chờ tại trang Workshop.</p>`;
+      return;
+    }
+    listEl.innerHTML = upcoming
+      .map(
+        (s) => `<div class="wsd-sched-row">
+          <strong>${dayLabel(s.date)} · ${s.start}–${s.end}</strong>
+          <span>còn ${left(s)}/${s.cap} ${s.classId === "ws-gia-dinh" ? "cặp" : "chỗ"}</span>
+        </div>`
+      )
+      .join("");
+  }
+
+  async function init() {
+    try {
+      const res = await fetch("data/workshops.json", { cache: "no-cache" });
+      const all = await res.json();
+      const ws = all.find((w) => w.id === id);
+      if (!ws) {
+        $("#wsd-skeleton").hidden = true;
+        $("#wsd-error").hidden = false;
+        return;
+      }
+      render(ws, all);
+    } catch (e) {
+      $("#wsd-skeleton").hidden = true;
+      $("#wsd-error").hidden = false;
+    }
+  }
+
+  // booking.js may load after this script; wait a tick for the API
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => setTimeout(init, 60));
+  } else {
+    setTimeout(init, 60);
+  }
+})();
