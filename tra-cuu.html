@@ -122,19 +122,32 @@
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
 
   <header class="nav nav--on-light" id="nav">
-    <a class="logo" href="index.html">SÁPA</a>
-    <nav class="nav-links nav-links--left" aria-label="Chính">
-      <a href="index.html#shop"><span>Cửa hàng</span><i></i></a>
+    <a class="logo" href="index.html" aria-label="SÁPA Studio trang chủ">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="shop.html"><span>Sản phẩm</span><i aria-hidden="true"></i></a>
+      <a href="gallery.html"><span>Trưng bày</span><i aria-hidden="true"></i></a>
     </nav>
     <nav class="nav-links nav-links--center" aria-label="Chính">
       <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#classes"><span>Các lớp</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#schedule"><span>Lịch lớp</span><i aria-hidden="true"></i></a>
-      <a href="tra-cuu.html"><span>Tra cứu</span><i aria-hidden="true"></i></a>
-      <a href="workshop.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+      <a href="index.html#story"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="index.html#about"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="index.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
     </nav>
     <div class="nav-meta">
-      <button class="cart" type="button" id="cart-btn">Giỏ (<span id="cart-count">0</span>)</button>
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HN</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HN">Hà Nội</button></li>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+          <li><button type="button" role="option" data-locale="DN">Đà Nẵng</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
     </div>
     <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span>
@@ -142,10 +155,12 @@
   </header>
 
   <div class="mobile-menu" id="mobile-menu" hidden>
-    <a href="index.html">Trang chủ</a>
+    <a href="shop.html">Sản phẩm</a>
+    <a href="gallery.html">Trưng bày</a>
     <a href="workshop.html">Workshop</a>
-    <a href="workshop.html#book">Đăng ký</a>
-    <a href="tra-cuu.html">Tra cứu</a>
+    <a href="index.html#story">Về xưởng</a>
+    <a href="index.html#about">Câu chuyện</a>
+    <a href="index.html#contact">Liên hệ</a>
   </div>
 
   <main id="top" class="ops-main">
