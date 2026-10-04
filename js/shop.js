@@ -80,7 +80,7 @@
             <span>Xem chi tiết</span>
             <svg width="16" height="14" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 7h13M9 2l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
-          <button class="qv-trigger" data-id="${p.id}" aria-label="Xem nhanh ${p.name}">Xem nhanh</button>
+          <span class="qv-trigger" role="button" tabindex="0" data-id="${p.id}" aria-label="Xem nhanh ${p.name}">Xem nhanh</span>
         </a>
         <div class="product-card__foot">
           <h3>${p.name}</h3>
