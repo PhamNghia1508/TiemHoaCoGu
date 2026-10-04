@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tra cứu đặt chỗ — SÁPA Studio</title>
+  <meta name="description" content="Tra cứu, đổi lịch hoặc huỷ đặt chỗ workshop SÁPA bằng mã đặt chỗ + số điện thoại. Không cần tài khoản." />
+  <meta name="theme-color" content="#f4eee6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f4eee6' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%23141414'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css?v=4" />
+  <link rel="stylesheet" href="css/product.css?v=4" />
+  <link rel="stylesheet" href="css/workshop.css?v=4" />
+  <style>
+    /* critical — page-local layout */
+    body[data-page="lookup"] {
+      background: #f4eee6;
+    }
+    body[data-page="lookup"] .cursor { display: none !important; }
+
+    .nav.nav--on-light {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 100 !important;
+      background: #f4eee6 !important;
+      color: #141414 !important;
+      border-bottom: 1px solid rgba(5,5,5,0.12) !important;
+      backdrop-filter: none !important;
+    }
+
+    body[data-page="lookup"] main.ops-main {
+      padding: 110px 1.5rem 3rem !important;
+      max-width: 1120px !important;
+      margin: 0 auto !important;
+    }
+
+    .page-hero {
+      margin: 0 0 1.75rem;
+    }
+    .page-kicker {
+      margin: 0 0 0.45rem;
+      font-family: "Inter", system-ui, sans-serif !important;
+      font-size: 0.875rem !important;
+      font-weight: 500 !important;
+      color: rgba(5,5,5,0.55) !important;
+    }
+    .page-kicker::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #141414;
+      margin-right: 0.45rem;
+      vertical-align: middle;
+    }
+    .page-hero h1 {
+      margin: 0 0 0.55rem !important;
+      font-size: 2.15rem !important;
+      line-height: 1.15 !important;
+      font-weight: 400 !important;
+    }
+    .page-sub {
+      margin: 0 !important;
+      max-width: 52ch;
+      font-family: "Inter", system-ui, sans-serif !important;
+      font-size: 1rem !important;
+      line-height: 1.55 !important;
+      color: rgba(5,5,5,0.65) !important;
+    }
+
+    .lookup-features {
+      margin-top: 1.75rem;
+      padding: 1.5rem 1.35rem;
+      border: 1px solid rgba(5,5,5,0.12);
+      border-radius: 6px;
+    }
+    .lookup-features h2 {
+      margin: 0 0 0.85rem;
+      font-family: "Inter", system-ui, sans-serif !important;
+      font-size: 1.1rem !important;
+      font-weight: 600 !important;
+    }
+
+    .can-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .can-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-top: 1px solid rgba(5,5,5,0.1);
+      font-family: "Inter", system-ui, sans-serif !important;
+      font-size: 1.05rem !important;
+      line-height: 1.45 !important;
+      color: #141414 !important;
+    }
+    .can-list li:last-child {
+      border-bottom: 1px solid rgba(5,5,5,0.1);
+    }
+    .can-num {
+      flex: 0 0 1.75rem;
+      color: rgba(5,5,5,0.45);
+      font-size: 0.9rem !important;
+      font-weight: 600;
+    }
+    .can-text {
+      flex: 1 1 auto;
+      min-width: 0;
+      white-space: normal;
+    }
+  </style>
+</head>
+<body data-page="lookup">
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav nav--on-light" id="nav">
+    <a class="logo" href="index.html">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Chính">
+      <a href="index.html#shop"><span>Cửa hàng</span><i></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="workshop.html#classes"><span>Các lớp</span><i aria-hidden="true"></i></a>
+      <a href="workshop.html#schedule"><span>Lịch lớp</span><i aria-hidden="true"></i></a>
+      <a href="tra-cuu.html"><span>Tra cứu</span><i aria-hidden="true"></i></a>
+      <a href="workshop.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <button class="cart" type="button" id="cart-btn">Giỏ (<span id="cart-count">0</span>)</button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="index.html">Trang chủ</a>
+    <a href="workshop.html">Workshop</a>
+    <a href="workshop.html#book">Đăng ký</a>
+    <a href="tra-cuu.html">Tra cứu</a>
+  </div>
+
+  <main id="top" class="ops-main">
+    <header class="page-hero">
+      <p class="page-kicker">Không cần tài khoản</p>
+      <h1>Tra cứu đặt chỗ</h1>
+      <p class="page-sub">Dùng <b>mã đặt chỗ + số điện thoại</b> đã dùng khi đăng ký. Mã có dạng <code>SP-XXXXXX</code>.</p>
+    </header>
+
+    <section class="ops-block">
+      <div class="ws-book__panel lookup-panel">
+        <div>
+          <h2>Nhập thông tin</h2>
+          <p class="ws-book__note">Nếu chưa có mã, hãy kiểm tra tin nhắn xác nhận — hoặc <a class="link-underline" href="workshop.html#book">đặt chỗ mới</a>.</p>
+        </div>
+        <div>
+          <form class="ws-form" id="manage-form">
+            <div class="ws-form__grid">
+              <div class="ws-form__row">
+                <label for="manage-code">Mã đặt chỗ</label>
+                <input id="manage-code" type="text" placeholder="SP-XXXXXX" required autocomplete="off" />
+              </div>
+              <div class="ws-form__row">
+                <label for="manage-phone">Số điện thoại</label>
+                <input id="manage-phone" type="tel" inputmode="tel" placeholder="09xx xxx xxx" required autocomplete="tel" />
+              </div>
+            </div>
+            <button type="submit" class="btn btn--dark btn--block">Tra cứu</button>
+            <p class="form-msg" id="manage-msg" role="status" aria-live="polite"></p>
+          </form>
+          <div class="manage-card" id="manage-card" hidden></div>
+          <p class="empty-note" id="manage-empty">Kết quả sẽ hiển thị tại đây sau khi tra cứu.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ops-block lookup-features">
+      <h2>Bạn có thể làm gì ở đây?</h2>
+      <ul class="can-list">
+        <li><span class="can-num">1</span><span class="can-text">Xem thông tin buổi đã đặt</span></li>
+        <li><span class="can-num">2</span><span class="can-text">Xem còn phải trả bao nhiêu</span></li>
+        <li><span class="can-num">3</span><span class="can-text">Đổi sang buổi khác (nếu còn chỗ)</span></li>
+        <li><span class="can-num">4</span><span class="can-text">Huỷ theo chính sách hoàn tiền</span></li>
+      </ul>
+      <p class="policy-note">
+        <strong>Chính sách:</strong> huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc.
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội.</p>
+        <a class="btn btn--dark" href="workshop.html#book">Đặt chỗ mới</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" aria-label="Instagram">ig</a>
+        <a href="https://zalo.me/" aria-label="Zalo">zalo</a>
+        <button class="icon-btn" type="button" id="footer-cart" aria-label="Mở giỏ">bag</button>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h3 class="footer-h">Đặt chỗ</h3>
+        <a href="workshop.html#book">Đăng ký workshop</a>
+        <a href="tra-cuu.html">Tra cứu đặt chỗ</a>
+        <a href="workshop.html#faq">Chính sách</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Cửa hàng</h3>
+        <a href="index.html#shop">Bó hoa sáp</a>
+        <a href="product.html">Bó Trăng Non</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Hỗ trợ</h3>
+        <a href="workshop.html#contact">Liên hệ</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Hotline</h3>
+        <a href="tel:0900000000">09xx xxx xxx</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-note">© 2026 SÁPA Studio</p>
+      <div class="pay-icons"><span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span></div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js-ready");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/booking.js" defer></script>
+  <script src="js/lookup.js" defer></script>
+  <script>
+    // no decorative cursor on utility pages
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".cursor").forEach((el) => el.remove());
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workshop Hoa Sáp — SÁPA Studio</title>
+  <meta name="description" content="Workshop làm hoa sáp tại xưởng SÁPA Hà Nội. Lớp cơ bản, bó quà, gia đình, nâng cao. Giữ chỗ online." />
+  <meta name="theme-color" content="#f4eee6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f4eee6' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%23141414'%3ES%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Workshop Hoa Sáp — SÁPA Studio" />
+  <meta property="og:description" content="Lớp làm hoa sáp thủ công tại xưởng Hà Nội. Giữ chỗ online, cọc 30%." />
+  <meta property="og:image" content="assets/ws-hero.webp" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/product.css" />
+  <link rel="stylesheet" href="css/workshop.css" />
+</head>
+<body data-page="workshop">
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav" id="nav">
+    <a class="logo" href="index.html">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="index.html#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="workshop.html"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="#classes"><span>Các lớp</span><i aria-hidden="true"></i></a>
+      <a href="#schedule"><span>Lịch lớp</span><i aria-hidden="true"></i></a>
+      <a href="#book"><span>Đăng ký</span><i aria-hidden="true"></i></a>
+      <a href="tra-cuu.html"><span>Tra cứu</span><i aria-hidden="true"></i></a>
+      <a href="#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <button class="cart" type="button" id="cart-btn">Giỏ (<span id="cart-count">0</span>)</button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="index.html#shop">Cửa hàng</a>
+    <a href="workshop.html">Workshop</a>
+    <a href="#classes">Các lớp</a>
+    <a href="#schedule">Lịch lớp</a>
+    <a href="#book">Đăng ký</a>
+    <a href="tra-cuu.html">Tra cứu đặt chỗ</a>
+    <a href="index.html#story">Về xưởng</a>
+    <a href="index.html#about">Câu chuyện</a>
+    <a href="#contact">Liên hệ</a>
+  </div>
+
+  <main id="top">
+    <section class="ws-hero" data-nav="dark">
+      <div class="ws-hero__bg">
+        <img src="assets/ws-hero.webp" alt="Bàn workshop hoa sáp" width="1536" height="1024" fetchpriority="high" />
+        <div class="ws-hero__shade"></div>
+      </div>
+      <div class="ws-hero__copy">
+        <p class="eyebrow eyebrow--light"><span class="dot dot--light"></span> Workshop tại xưởng · Hà Nội</p>
+        <h1>Thử làm một bông hoa sáp<br />bằng tay của chính bạn</h1>
+        <p class="ws-hero__lead">Lớp 2–4 giờ · dụng cụ xưởng lo · mang về thành phẩm.</p>
+        <div class="ws-hero__actions">
+          <a class="btn btn--cream" href="#book">Giữ chỗ</a>
+          <a class="btn btn--glass" href="#schedule">Xem lịch lớp</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ws-intro">
+      <p class="eyebrow reveal"><span class="dot"></span> Vì sao nên thử</p>
+      <h2 class="ws-lead reveal">Hai giờ ngồi xuống, cắt — nặn — cắm. Không vội, không đúng/sai. Bạn rời xưởng với một bó hoa nhỏ và một buổi chiều êm hơn dự kiến.</h2>
+      <div class="ws-stats reveal">
+        <div class="stat"><strong>12+</strong><span>lớp / tháng</span></div>
+        <div class="stat"><strong>8–10</strong><span>người / lớp</span></div>
+        <div class="stat"><strong>2.5h</strong><span>thời lượng TB</span></div>
+        <div class="stat"><strong>100%</strong><span>dụng cụ bao gồm</span></div>
+      </div>
+    </section>
+
+    <section class="section ws-classes" id="classes">
+      <div class="section-head reveal">
+        <h2>Chọn lớp phù hợp</h2>
+        <a class="link-underline" href="#book">(Đăng ký ngay)</a>
+      </div>
+      <div class="ws-class-grid">
+        <article class="ws-class reveal" data-detail="ws-co-ban">
+          <button type="button" class="ws-class__media" data-open-detail="ws-co-ban" aria-label="Xem chi tiết Hoa Sáp Cơ Bản">
+            <img src="assets/prod-kit.webp" alt="" width="900" height="900" loading="lazy" />
+          </button>
+          <div class="ws-class__body">
+            <p class="ws-class__tag">Cơ bản</p>
+            <h3><button type="button" class="ws-class__title" data-open-detail="ws-co-ban">Hoa Sáp Cơ Bản</button></h3>
+            <p>Nặn 3 bông + cắm lọ mini. Phù hợp người mới.</p>
+            <ul><li>2.5 giờ</li><li>450.000₫ / người</li></ul>
+            <div class="ws-class__actions">
+              <button type="button" class="btn-mini" data-open-detail="ws-co-ban">Xem chi tiết</button>
+              <button type="button" class="btn btn--dark btn--block" data-book="ws-co-ban">Giữ chỗ</button>
+            </div>
+          </div>
+        </article>
+        <article class="ws-class reveal" data-detail="ws-bo-qua">
+          <button type="button" class="ws-class__media" data-open-detail="ws-bo-qua" aria-label="Xem chi tiết Bó Quà Tặng">
+            <img src="assets/prod-bouquet.webp" alt="" width="900" height="900" loading="lazy" />
+          </button>
+          <div class="ws-class__body">
+            <p class="ws-class__tag">Phổ biến</p>
+            <h3><button type="button" class="ws-class__title" data-open-detail="ws-bo-qua">Bó Quà Tặng</button></h3>
+            <p>7–9 bông, gói kraft &amp; nơ linen — mang về ready-to-gift.</p>
+            <ul><li>3 giờ</li><li>690.000₫ / người</li></ul>
+            <div class="ws-class__actions">
+              <button type="button" class="btn-mini" data-open-detail="ws-bo-qua">Xem chi tiết</button>
+              <button type="button" class="btn btn--dark btn--block" data-book="ws-bo-qua">Giữ chỗ</button>
+            </div>
+          </div>
+        </article>
+        <article class="ws-class reveal" data-detail="ws-gia-dinh">
+          <button type="button" class="ws-class__media" data-open-detail="ws-gia-dinh" aria-label="Xem chi tiết Workshop Gia Đình">
+            <img src="assets/prod-jar.webp" alt="" width="900" height="900" loading="lazy" />
+          </button>
+          <div class="ws-class__body">
+            <p class="ws-class__tag">Gia đình</p>
+            <h3><button type="button" class="ws-class__title" data-open-detail="ws-gia-dinh">Workshop Gia Đình</button></h3>
+            <p>1 người lớn + 1 bé. Vui, an toàn, mang về lọ hoa chung.</p>
+            <ul><li>2 giờ</li><li>790.000₫ / cặp</li></ul>
+            <div class="ws-class__actions">
+              <button type="button" class="btn-mini" data-open-detail="ws-gia-dinh">Xem chi tiết</button>
+              <button type="button" class="btn btn--dark btn--block" data-book="ws-gia-dinh">Giữ chỗ</button>
+            </div>
+          </div>
+        </article>
+        <article class="ws-class reveal" data-detail="ws-ky-thuat">
+          <button type="button" class="ws-class__media" data-open-detail="ws-ky-thuat" aria-label="Xem chi tiết Nặn Cánh Nâng Cao">
+            <img src="assets/workshop-hands.webp" alt="" width="1400" height="933" loading="lazy" />
+          </button>
+          <div class="ws-class__body">
+            <p class="ws-class__tag">Nâng cao</p>
+            <h3><button type="button" class="ws-class__title" data-open-detail="ws-ky-thuat">Nặn Cánh Nâng Cao</button></h3>
+            <p>Cánh mỏng, phối màu, composition cho người đã qua cơ bản.</p>
+            <ul><li>4 giờ</li><li>890.000₫ / người</li></ul>
+            <div class="ws-class__actions">
+              <button type="button" class="btn-mini" data-open-detail="ws-ky-thuat">Xem chi tiết</button>
+              <button type="button" class="btn btn--dark btn--block" data-book="ws-ky-thuat">Giữ chỗ</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section ws-schedule" id="schedule">
+      <div class="schedule-head">
+        <div>
+          <p class="eyebrow reveal"><span class="dot"></span> Lịch mở chỗ</p>
+          <h2 class="ws-lead reveal">Lịch còn chỗ</h2>
+          <p class="schedule-count" id="schedule-count"></p>
+          <p class="schedule-updated" id="schedule-updated" role="status">Lịch cập nhật hôm nay</p>
+        </div>
+        <div class="schedule-toolbar">
+          <div class="ops-filters" role="group" aria-label="Lọc theo lớp" id="schedule-filters">
+            <button type="button" class="chip is-on" data-sfilter="all">Tất cả</button>
+            <button type="button" class="chip" data-sfilter="ws-co-ban">Cơ bản</button>
+            <button type="button" class="chip" data-sfilter="ws-bo-qua">Bó quà</button>
+            <button type="button" class="chip" data-sfilter="ws-gia-dinh">Gia đình</button>
+            <button type="button" class="chip" data-sfilter="ws-ky-thuat">Nâng cao</button>
+          </div>
+          <div class="schedule-week">
+            <button type="button" class="btn-mini" id="week-prev" aria-label="Tuần trước">‹</button>
+            <span id="week-label">Tuần này</span>
+            <button type="button" class="btn-mini" id="week-next" aria-label="Tuần sau">›</button>
+          </div>
+        </div>
+      </div>
+      <p class="sr-only" id="schedule-live" role="status" aria-live="polite"></p>
+      <div class="schedule-board" id="schedule-board" aria-live="polite"></div>
+      <section class="waitlist-panel" id="waitlist-panel" aria-labelledby="waitlist-title" hidden>
+        <div class="waitlist-panel__head">
+          <p class="eyebrow"><span class="dot"></span> Danh sách chờ</p>
+          <h3 id="waitlist-title">Đăng ký khi buổi đã kín</h3>
+          <p id="waitlist-slot"></p>
+        </div>
+        <form class="waitlist-form" id="waitlist-form" novalidate>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="waitlist-name">Họ tên</label>
+              <input id="waitlist-name" type="text" autocomplete="name" required />
+            </div>
+            <div class="ws-form__row">
+              <label for="waitlist-phone">Số điện thoại</label>
+              <input id="waitlist-phone" type="tel" inputmode="tel" autocomplete="tel" required />
+            </div>
+          </div>
+          <div class="waitlist-actions">
+            <button type="submit" class="btn btn--dark">Lưu đăng ký chờ</button>
+            <button type="button" class="btn-mini" id="waitlist-close">Đóng</button>
+          </div>
+          <p class="form-msg" id="waitlist-msg" role="status" aria-live="polite"></p>
+          <p class="waitlist-demo-note">Thông tin chỉ được lưu trong prototype này; chưa gửi thông báo thật.</p>
+        </form>
+      </section>
+      <div class="schedule-foot">
+        <button type="button" class="btn-mini" id="schedule-more">Xem thêm</button>
+        <button type="button" class="btn-mini" id="schedule-ics">Tải lịch (.ics)</button>
+      </div>
+    </section>
+
+    <section class="section ws-included" id="included">
+      <p class="eyebrow reveal"><span class="dot"></span> Trong buổi học có gì</p>
+      <h2 class="notes-title reveal">Dụng cụ &amp; mang về</h2>
+      <div class="notes-grid">
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/prod-kit.webp" alt="" width="900" height="900" loading="lazy" /></div>
+          <figcaption><strong>Dụng cụ đầy đủ</strong><span>Sáp, mold, kẽm, kéo</span></figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/note-rose.webp" alt="" width="720" height="720" loading="lazy" /></div>
+          <figcaption><strong>1:1 kèm nặn</strong><span>Giáo viên đi từng bàn</span></figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/ws-gallery.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+          <figcaption><strong>Mang về thành phẩm</strong><span>3–9 bông / bó tuỳ lớp</span></figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/note-kraft.webp" alt="" width="720" height="720" loading="lazy" /></div>
+          <figcaption><strong>Gói quà tại chỗ</strong><span>Kraft + nơ linen</span></figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/prod-candle.webp" alt="" width="900" height="900" loading="lazy" /></div>
+          <figcaption><strong>Trà &amp; bánh nhẹ</strong><span>Trong giờ nghỉ</span></figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media"><img src="assets/note-linen.webp" alt="" width="720" height="720" loading="lazy" /></div>
+          <figcaption><strong>−10% cửa hàng</strong><span>7 ngày sau lớp</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section story ws-about">
+      <div>
+        <p class="eyebrow reveal"><span class="dot"></span> Không gian xưởng</p>
+        <h2 class="story-lead reveal">Xưởng SÁPA là một gác nhỏ nhiều nắng — bàn gỗ, mùi sáp ong, đủ chỗ cho 10 người ngồi quây.</h2>
+        <p class="ws-about__text reveal">Giáo viên là nghệ nhân của xưởng. Không khí nhẹ, không áp lực “phải đẹp”.</p>
+        <a class="link-underline reveal" href="#contact">(Hỏi lớp riêng)</a>
+      </div>
+      <div class="story-media reveal">
+        <img src="assets/ws-studio.webp" alt="Góc xưởng SÁPA với bó hoa sáp hoàn thiện" width="1400" height="933" loading="lazy" />
+      </div>
+    </section>
+
+    <section class="ws-beliefs">
+      <div class="ws-beliefs__inner">
+        <h2 class="reveal">Bốn điều chúng tôi tin trong mỗi buổi học</h2>
+        <ol class="belief-list">
+          <li class="reveal"><span>I.</span><div>Chậm còn hơn hoàn hảo</div></li>
+          <li class="reveal"><span>II.</span><div>Tay làm thì não nghỉ</div></li>
+          <li class="reveal"><span>III.</span><div>Thành phẩm mang về là của bạn</div></li>
+          <li class="reveal"><span>IV.</span><div>Xưởng là nơi để ở, không phải để vội</div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section ws-book" id="book">
+      <div class="ws-book__panel reveal">
+        <div>
+          <p class="eyebrow"><span class="dot"></span> Đăng ký giữ chỗ</p>
+          <h2>Chọn lớp · chọn lịch · để lại liên hệ</h2>
+          <p class="ws-book__note">SÁPA xác nhận qua Zalo/SMS trong 30 phút. Cọc 30% giữ slot.</p>
+        </div>
+        <form class="ws-form" id="ws-form" novalidate>
+          <div class="ws-form__row">
+            <label for="ws-class">Lớp</label>
+            <select id="ws-class" required>
+              <option value="ws-co-ban">Hoa Sáp Cơ Bản — 450.000₫</option>
+              <option value="ws-bo-qua">Bó Quà Tặng — 690.000₫</option>
+              <option value="ws-gia-dinh">Workshop Gia Đình — 790.000₫</option>
+              <option value="ws-ky-thuat">Nặn Cánh Nâng Cao — 890.000₫</option>
+            </select>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-slot">Lịch</label>
+            <select id="ws-slot" required>
+              <option value="T7 05/10 · 09:00">T7 · 05/10 · 09:00–11:30</option>
+              <option value="T7 05/10 · 14:00">T7 · 05/10 · 14:00–17:00</option>
+              <option value="CN 06/10 · 09:00">CN · 06/10 · 09:00–11:00</option>
+              <option value="T4 09/10 · 18:30">T4 · 09/10 · 18:30–21:00</option>
+              <option value="T7 12/10 · 13:00">T7 · 12/10 · 13:00–17:00</option>
+            </select>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-name">Họ tên</label>
+              <input id="ws-name" type="text" autocomplete="name" required placeholder="Nguyễn An" />
+            </div>
+            <div class="ws-form__row">
+              <label for="ws-phone">Số điện thoại</label>
+              <input id="ws-phone" type="tel" autocomplete="tel" required placeholder="09xx xxx xxx" />
+            </div>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="ws-email">Email</label>
+              <input id="ws-email" type="email" autocomplete="email" placeholder="ban@email.com" />
+            </div>
+            <div class="ws-form__row">
+              <label id="ws-qty-label" for="ws-qty">Số người (tối đa 4)</label>
+              <input id="ws-qty" type="number" min="1" max="4" value="1" required inputmode="numeric" />
+            </div>
+          </div>
+          <div class="ws-form__row">
+            <label for="ws-note">Ghi chú</label>
+            <textarea id="ws-note" rows="2" placeholder="Ví dụ: đi cùng bé 8 tuổi…"></textarea>
+          </div>
+          <!-- honeypot / bot trap -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="ws-website">Website</label>
+            <input id="ws-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" id="ws-opened-at" name="openedAt" value="" />
+          <button type="submit" class="btn btn--dark btn--block">Giữ chỗ 10 phút</button>
+          <p class="policy-note">
+            <strong>Trước khi thanh toán:</strong> huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc. Cọc 30%, còn lại thu trước buổi 24 giờ.
+          </p>
+          <p class="booking-summary" id="booking-summary" hidden></p>
+          <p class="form-msg" id="ws-msg" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Booking flow panels -->
+        <div class="booking-flow" id="booking-flow" hidden>
+          <div class="flow-panel" id="step-hold" hidden>
+            <p class="eyebrow"><span class="dot"></span> Đang giữ chỗ</p>
+            <h3>Mã giữ chỗ <span class="hold-code" id="hold-code">SP-••••••</span></h3>
+            <p class="flow-lead">Giữ mã này khi chuyển cọc — nếu cần hỗ trợ, gọi hotline và đọc mã.</p>
+            <div class="hold-meta" id="hold-meta"></div>
+            <div class="hold-timer">
+              <p>Thời gian giữ chỗ còn <strong id="hold-countdown">10:00</strong></p>
+              <div class="hold-bar"><span id="hold-bar"></span></div>
+              <p class="sr-only" id="hold-live" aria-live="polite"></p>
+            </div>
+            <div class="hold-summary" id="hold-summary"></div>
+            <p class="policy-note" id="pay-deadline-note">Mã giữ chỗ có hiệu lực trong 10 phút. Sau khi cọc, mã này trở thành <strong>mã đặt chỗ</strong>.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="hold-continue">Thanh toán cọc</button>
+            </div>
+            <p class="flow-destructive">
+              <button type="button" class="linkish linkish--danger" id="hold-restart">Huỷ giữ chỗ và nhập lại</button>
+            </p>
+          </div>
+
+          <div class="flow-panel" id="step-pay" hidden>
+            <p class="eyebrow"><span class="dot"></span> Thanh toán cọc (stub)</p>
+            <h3>Cọc 30% để giữ chỗ</h3>
+            <div class="hold-summary">
+              <div class="pay-title"><span>Chi tiết thanh toán</span></div>
+              <div><span>Tổng</span><strong id="pay-total"></strong></div>
+              <div><span>Cọc trả ngay</span><strong id="pay-deposit"></strong></div>
+              <div class="is-remaining"><span>Còn lại trước 24h</span><strong id="pay-remaining"></strong></div>
+            </div>
+            <p class="policy-note">Bằng việc thanh toán, bạn đồng ý chính sách huỷ/hoàn ở trên. Đây là nút giả lập — không trừ tiền thật.</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark btn--block" id="pay-stub">Đã chuyển khoản cọc</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-done" hidden>
+            <p class="eyebrow"><span class="dot"></span> Đã xác nhận</p>
+            <h3>Mã đặt chỗ của bạn</h3>
+            <p class="done-code" id="done-code">SP-XXXXXX</p>
+            <button type="button" class="btn-mini" id="done-copy">Sao chép mã</button>
+            <div class="hold-meta" id="done-info"></div>
+            <div class="hold-summary" id="done-money"></div>
+            <p class="policy-note" id="done-deadline"></p>
+            <p class="policy-note">Dùng mã + SĐT để <a href="tra-cuu.html">tra cứu / đổi lịch / huỷ</a>.</p>
+          </div>
+
+          <div class="flow-panel" id="step-expired" hidden>
+            <p class="eyebrow"><span class="dot"></span> Hết hạn</p>
+            <h3>Thời gian giữ chỗ đã hết</h3>
+            <p class="flow-lead">Chỗ đã được nhả lại. Form của bạn vẫn còn — bấm để đặt lại (đồng hồ sẽ chạy 10 phút mới).</p>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="expired-retry">Bắt đầu lại</button>
+            </div>
+          </div>
+
+          <div class="flow-panel" id="step-lost" hidden>
+            <p class="eyebrow"><span class="dot"></span> Suất vừa hết</p>
+            <h3>Chỗ vừa được người khác lấy</h3>
+            <p class="flow-lead">Rất tiếc — suất này đã kín trong lúc bạn điền form. Các buổi còn chỗ gợi ý:</p>
+            <ul class="lost-list" id="lost-list"></ul>
+            <div class="flow-actions">
+              <button type="button" class="btn btn--dark" id="lost-retry">Chọn buổi khác</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ws-faq" id="faq">
+      <p class="eyebrow reveal"><span class="dot"></span> FAQ</p>
+      <h2 class="notes-title reveal">Trước khi đến xưởng</h2>
+      <div class="pdp-acc" id="faq-acc">
+        <div class="pdp-acc-item is-open">
+          <button type="button" class="pdp-acc-btn" aria-expanded="true">
+            <span>Tôi không khéo tay thì có làm được không?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Được. 80% học viên lần đầu. Giáo viên nặn mẫu từng bước — bạn chỉ cần ngồi chậm và thử.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Có cần mang gì không?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Chỉ cần đến. Sáp, dụng cụ, tạp dề, trà bánh — xưởng lo.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Hủy / dời lịch thì sao?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Huỷ trước 48h hoàn 100% cọc · dời miễn phí trước 48h · trước 24h giữ cọc cho lần sau · không đến mất cọc.</p>
+          </div></div>
+        </div>
+        <div class="pdp-acc-item">
+          <button type="button" class="pdp-acc-btn" aria-expanded="false">
+            <span>Có nhận lớp riêng / team building?</span><span aria-hidden="true">+</span>
+          </button>
+          <div class="pdp-acc-panel"><div class="pdp-acc-inner">
+            <p>Có. Nhóm từ 8 người — email hello@sapa.studio để xưởng lên format riêng.</p>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section instagram">
+      <h2 class="ig-title reveal">Khoảnh khắc tại xưởng</h2>
+      <div class="ig-track" style="--ticker-duration: 40s">
+        <div class="ig-tile"><img src="assets/ws-gallery.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+        <div class="ig-tile"><img src="assets/workshop-hands.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+        <div class="ig-tile"><img src="assets/prod-bouquet.webp" alt="" width="900" height="900" loading="lazy" /></div>
+        <div class="ig-tile"><img src="assets/ws-studio.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+        <div class="ig-tile"><img src="assets/note-rose.webp" alt="" width="720" height="720" loading="lazy" /></div>
+        <div class="ig-tile" aria-hidden="true"><img src="assets/ws-gallery.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+        <div class="ig-tile" aria-hidden="true"><img src="assets/workshop-hands.webp" alt="" width="1400" height="933" loading="lazy" /></div>
+        <div class="ig-tile" aria-hidden="true"><img src="assets/prod-bouquet.webp" alt="" width="900" height="900" loading="lazy" /></div>
+        <div class="ig-tile" aria-hidden="true"><img src="assets/ws-hero.webp" alt="" width="1536" height="1024" loading="lazy" /></div>
+        <div class="ig-tile" aria-hidden="true"><img src="assets/note-rose.webp" alt="" width="720" height="720" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <section class="club" id="contact" data-nav="dark">
+      <img class="club-bg" src="assets/ws-club.webp" alt="" width="1536" height="1024" loading="lazy" />
+      <div class="club-shade"></div>
+      <p class="club-label reveal"><span class="dot dot--light"></span> Lớp riêng &amp; team building</p>
+      <div class="club-copy reveal">
+        <h2>Book riêng cho nhóm / gia đình / công ty — xưởng gửi format &amp; báo giá.</h2>
+        <form class="club-form" id="club-form" novalidate>
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Email của bạn" required aria-describedby="email-msg" />
+          <button type="submit">Gửi</button>
+        </form>
+        <p class="form-msg" id="email-msg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội.</p>
+        <a class="btn btn--dark" href="#book">Giữ chỗ workshop</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" aria-label="Instagram">ig</a>
+        <a href="https://zalo.me/" aria-label="Zalo">zalo</a>
+        <button class="icon-btn" type="button" id="footer-cart" aria-label="Mở giỏ">bag</button>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h3 class="footer-h">Workshop</h3>
+        <a href="#classes">Các lớp</a>
+        <a href="#schedule">Lịch tháng</a>
+        <a href="#book">Đăng ký</a>
+        <a href="tra-cuu.html">Tra cứu đặt chỗ</a>
+        <a href="#faq">FAQ</a>
+        <a href="studio.html">Studio Ops</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Cửa hàng</h3>
+        <a href="index.html#shop">Bó hoa sáp</a>
+        <a href="product.html">Bó Trăng Non</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Hỗ trợ</h3>
+        <a href="#contact">Liên hệ</a>
+        <a href="#faq">Hủy / dời lịch</a>
+      </div>
+      <div>
+        <h3 class="footer-h">Liên hệ</h3>
+        <a href="tel:0900000000">09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-note">© 2026 SÁPA Studio</p>
+      <div class="pay-icons"><span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span></div>
+    </div>
+  </footer>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <header class="drawer__head">
+      <h2 id="cart-title">Giỏ hàng</h2>
+      <button type="button" class="icon-btn" id="cart-close" aria-label="Đóng">✕</button>
+    </header>
+    <div class="drawer__body" id="cart-lines"><p class="cart-empty" id="cart-empty">Giỏ trống.</p></div>
+    <footer class="drawer__foot">
+      <div class="cart-total"><span>Tạm tính</span><strong id="cart-total">0₫</strong></div>
+      <button type="button" class="btn btn--dark btn--block" id="checkout-btn">Thanh toán</button>
+      <p class="cart-note" id="cart-note" role="status"></p>
+    </footer>
+  </aside>
+  <!-- Workshop detail modal -->
+  <div class="modal" id="ws-modal" role="dialog" aria-modal="true" aria-labelledby="ws-modal-title" hidden>
+    <div class="modal__panel ws-detail">
+      <button type="button" class="icon-btn modal__close" id="ws-modal-close" aria-label="Đóng">✕</button>
+      <div class="modal__media ws-detail__media">
+        <img id="ws-detail-img" src="assets/prod-kit.webp" alt="" width="900" height="900" />
+      </div>
+      <div class="modal__body ws-detail__body">
+        <p class="eyebrow"><span class="dot"></span> <span id="ws-detail-tag">Workshop</span></p>
+        <h2 id="ws-modal-title">Workshop</h2>
+        <p class="quick-desc" id="ws-detail-lead"></p>
+        <div class="hold-meta" id="ws-detail-meta"></div>
+        <div class="ws-detail__block">
+          <h3>Bạn sẽ làm được gì</h3>
+          <ul class="ws-detail__list" id="ws-detail-goals"></ul>
+        </div>
+        <div class="ws-detail__block">
+          <h3>Trong buổi có</h3>
+          <ul class="ws-detail__list" id="ws-detail-includes"></ul>
+        </div>
+        <div class="ws-detail__block">
+          <h3>Phù hợp với</h3>
+          <p id="ws-detail-for" class="quick-desc"></p>
+        </div>
+        <div class="ws-detail__actions">
+          <button type="button" class="btn btn--dark" id="ws-detail-book">Giữ chỗ lớp này</button>
+          <button type="button" class="btn-mini" id="ws-detail-close2">Xem thêm sau</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><style>.reveal,.reveal-media{opacity:1!important;transform:none!important;clip-path:none!important}.word>span{transform:none!important}</style></noscript>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/booking.js" defer></script>
+  <script src="js/workshop.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+/* SÁPA Studio Ops */
+
+.ops-main {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 2.25rem) var(--pad) 4rem;
+}
+
+.ops-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ops-hero h1 {
+  font-size: clamp(1.85rem, 3.2vw, 2.65rem);
+  margin: 0.35rem 0 0.75rem;
+  max-width: 16ch;
+}
+
+.ops-sub {
+  color: var(--ink-soft);
+  max-width: 42ch;
+  line-height: 1.65;
+}
+
+.ops-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* KPI */
+.ops-kpi {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 2.5rem;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border-radius: 4px;
+  padding: 1.25rem 1.15rem;
+}
+
+.kpi-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+}
+
+.kpi-card span {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.ops-block {
+  margin-bottom: 3rem;
+}
+
+.ops-block .section-head {
+  margin-bottom: 1.25rem;
+}
+
+.ops-block .section-head h2 {
+  font-size: 1.65rem;
+}
+
+.ops-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+/* Session cards */
+.session-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.session-card {
+  display: grid;
+  grid-template-columns: 110px 1.4fr 1fr 0.9fr 1.1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--cream);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.3s var(--ease);
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+}
+
+.session-card:hover {
+  border-color: var(--ink);
+  transform: translate3d(0, -2px, 0);
+}
+
+.session-card.is-hidden {
+  display: none;
+}
+
+.session-date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.session-date strong {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.session-date span {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.session-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.session-meta {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+}
+
+.pill--ok {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+  background: color-mix(in srgb, var(--ok) 8%, transparent);
+}
+
+.pill--warn {
+  color: var(--sale);
+  border-color: color-mix(in srgb, var(--sale) 35%, transparent);
+  background: color-mix(in srgb, var(--sale) 8%, transparent);
+}
+
+.pill--muted {
+  color: var(--ink-soft);
+}
+
+.session-funnel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+/* Teachers */
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.teacher-card {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1.15rem;
+  background: var(--cream);
+}
+
+.teacher-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.teacher-card p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.teacher-card__top {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Roster in drawer */
+.roster {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.roster-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+}
+
+.roster-item h3 {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+}
+
+.roster-item p {
+  margin: 0;
+  font-size: 0.825rem;
+  color: var(--ink-soft);
+}
+
+.roster-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
+.online-booking-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.online-booking-status {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.online-booking-note {
+  color: var(--ink-soft);
+  font-size: 0.825rem;
+  margin-top: 0.65rem !important;
+}
+
+.roster-item.is-in {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--line));
+  background: color-mix(in srgb, var(--ok) 6%, var(--bg));
+}
+
+.roster-item.is-done {
+  opacity: 0.72;
+}
+
+.drawer--wide {
+  width: min(520px, 100%);
+}
+
+.modal__panel--sm {
+  grid-template-columns: 1fr;
+  width: min(420px, 100%);
+}
+
+.empty-note {
+  color: var(--ink-soft);
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+/* Ops how */
+.ops-how {
+  background: var(--surface);
+  padding: 2.5rem 1.75rem;
+  border-radius: 6px;
+}
+
+.ops-how h2 {
+  font-size: 1.65rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 960px) {
+  .ops-kpi {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .session-card {
+    grid-template-columns: 90px 1fr;
+    gap: 0.65rem 1rem;
+  }
+
+  .session-card > :nth-child(n + 3) {
+    grid-column: 2;
+  }
+
+  .teacher-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .teacher-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ops-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .online-booking-list .roster-item { grid-template-columns: 1fr; }
+  .online-booking-list .roster-actions { justify-content: flex-start; }
+}

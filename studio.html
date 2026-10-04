@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio Ops — SÁPA</title>
+  <meta name="description" content="Quản lý ca workshop: tạo lớp, giảng viên, cọc, check-in / check-out." />
+  <meta name="theme-color" content="#f4eee6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f4eee6' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%23141414'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/product.css" />
+  <link rel="stylesheet" href="css/studio.css" />
+</head>
+<body data-page="studio">
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav nav--on-light" id="nav">
+    <a class="logo" href="index.html">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Chính">
+      <a href="workshop.html"><span>Public site</span><i></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Ops">
+      <a href="#today"><span>Hôm nay</span><i></i></a>
+      <a href="#sessions"><span>Ca học</span><i></i></a>
+      <a href="#prototype-bookings"><span>Đặt chỗ</span><i></i></a>
+      <a href="#teachers"><span>Giảng viên</span><i></i></a>
+      <a href="#create"><span>+ Tạo ca</span><i></i></a>
+    </nav>
+    <div class="nav-meta">
+      <span class="ops-badge">Studio Ops</span>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="#today">Hôm nay</a>
+    <a href="#sessions">Ca học</a>
+    <a href="#prototype-bookings">Đặt chỗ</a>
+    <a href="#teachers">Giảng viên</a>
+    <a href="#create">Tạo ca</a>
+    <a href="workshop.html">Trang khách</a>
+  </div>
+
+  <main id="top" class="ops-main">
+    <section class="ops-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span> Vận hành xưởng</p>
+        <h1>Lớp học · Giảng viên · Cọc · Điểm danh</h1>
+        <p class="ops-sub">Tạo ca trước, nhận cọc, ngày học check-in / check-out ngay trên một màn hình.</p>
+      </div>
+      <button type="button" class="btn btn--dark" id="open-create">+ Tạo ca mới</button>
+    </section>
+
+    <!-- KPI -->
+    <section class="ops-kpi" id="today" aria-label="Chỉ số hôm nay">
+      <div class="kpi-card">
+        <strong id="kpi-today">0</strong>
+        <span>Ca hôm nay</span>
+      </div>
+      <div class="kpi-card">
+        <strong id="kpi-students">0</strong>
+        <span>Học viên đã book</span>
+      </div>
+      <div class="kpi-card">
+        <strong id="kpi-deposit">0</strong>
+        <span>Chờ cọc</span>
+      </div>
+      <div class="kpi-card">
+        <strong id="kpi-checkin">0</strong>
+        <span>Đã check-in</span>
+      </div>
+    </section>
+
+    <!-- Today board -->
+    <section class="ops-block">
+      <div class="section-head">
+        <h2>Ca sắp tới</h2>
+        <div class="ops-filters" role="group" aria-label="Lọc ca">
+          <button type="button" class="chip is-on" data-filter="all">Tất cả</button>
+          <button type="button" class="chip" data-filter="today">Hôm nay</button>
+          <button type="button" class="chip" data-filter="open">Còn slot</button>
+          <button type="button" class="chip" data-filter="full">Kín</button>
+        </div>
+      </div>
+      <div class="session-list" id="session-list"></div>
+    </section>
+
+    <section class="ops-block" id="prototype-bookings">
+      <div class="section-head">
+        <div>
+          <h2>Đặt chỗ từ trang khách</h2>
+          <p class="ops-sub">Mô phỏng trạng thái sau buổi học cho các đặt chỗ đã xác nhận.</p>
+        </div>
+      </div>
+      <div class="online-booking-list" id="online-booking-list"></div>
+    </section>
+
+    <!-- Teachers -->
+    <section class="ops-block" id="teachers">
+      <div class="section-head">
+        <h2>Giảng viên</h2>
+        <button type="button" class="btn-mini" id="add-teacher">+ Thêm GV</button>
+      </div>
+      <div class="teacher-grid" id="teacher-grid"></div>
+    </section>
+
+    <!-- Create session -->
+    <section class="ops-block" id="create">
+      <div class="ops-book__panel">
+        <div>
+          <p class="eyebrow"><span class="dot"></span> Lên lịch</p>
+          <h2>Tạo ca học mới</h2>
+          <p class="ops-sub">Chọn lớp mẫu, ngày giờ, giảng viên và sức chứa. Học viên sẽ thấy trên trang Workshop.</p>
+        </div>
+        <form class="ws-form" id="create-form" novalidate>
+          <div class="ws-form__row">
+            <label for="c-class">Lớp</label>
+            <select id="c-class" required>
+              <option value="ws-co-ban">Hoa Sáp Cơ Bản — 450.000₫</option>
+              <option value="ws-bo-qua">Bó Quà Tặng — 690.000₫</option>
+              <option value="ws-gia-dinh">Workshop Gia Đình — 790.000₫</option>
+              <option value="ws-ky-thuat">Nặn Cánh Nâng Cao — 890.000₫</option>
+            </select>
+          </div>
+          <div class="ws-form__grid">
+            <div class="ws-form__row">
+              <label for="c-date">Ngày</label>
+              <input id="c-date" type="date" required />
+            </div>
+            <div class="ws-form__row">
+              <label for="c-start">Giờ bắt đầu</label>
+              <input id="c-start" type="time" value="09:00" required />
+            </div>
+            <div class="ws-form__row">
+              <label for="c-end">Giờ kết thúc</label>
+              <input id="c-end" type="time" value="11:30" required />
+            </div>
+            <div class="ws-form__row">
+              <label for="c-cap">Sức chứa</label>
+              <input id="c-cap" type="number" min="1" max="20" value="10" required />
+            </div>
+          </div>
+          <div class="ws-form__row">
+            <label for="c-teacher">Giảng viên</label>
+            <select id="c-teacher" required></select>
+          </div>
+          <button type="submit" class="btn btn--dark btn--block">Tạo ca học</button>
+          <p class="form-msg" id="create-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="ops-block ops-how">
+      <h2>Quy trình một buổi học</h2>
+      <ol class="belief-list">
+        <li class="reveal"><span>1</span> Tạo ca · gán giảng viên · mở nhận đăng ký</li>
+        <li class="reveal"><span>2</span> Học viên giữ chỗ → <strong>cọc 30%</strong></li>
+        <li class="reveal"><span>3</span> Trước giờ: đối chiếu danh sách + cọc còn thiếu</li>
+        <li class="reveal"><span>4</span> Học viên đến → <strong>Check-in</strong></li>
+        <li class="reveal"><span>5</span> Kết thúc → <strong>Check-out</strong> · chốt buổi</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Session detail drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer drawer--wide" id="session-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <header class="drawer__head">
+      <div>
+        <p class="eyebrow" style="margin:0 0 0.25rem"><span class="dot"></span> Chi tiết ca</p>
+        <h2 id="drawer-title">Ca học</h2>
+      </div>
+      <button type="button" class="icon-btn" id="drawer-close" aria-label="Đóng">✕</button>
+    </header>
+    <div class="drawer__body" id="drawer-body"></div>
+    <footer class="drawer__foot">
+      <div class="cart-total"><span>Đã cọc / Tổng</span><strong id="drawer-money">0₫</strong></div>
+      <button type="button" class="btn btn--dark btn--block" id="add-booking">+ Thêm học viên tại quầy</button>
+    </footer>
+  </aside>
+
+  <!-- Create teacher modal -->
+  <div class="modal" id="teacher-modal" hidden>
+    <div class="modal__panel modal__panel--sm">
+      <button type="button" class="icon-btn modal__close" id="teacher-close" aria-label="Đóng">✕</button>
+      <div class="modal__body" style="padding:1.75rem">
+        <p class="eyebrow"><span class="dot"></span> Giảng viên</p>
+        <h2 id="teacher-modal-title">Thêm giảng viên</h2>
+        <form class="ws-form" id="teacher-form" novalidate>
+          <div class="ws-form__row">
+            <label for="t-name">Họ tên</label>
+            <input id="t-name" type="text" required placeholder="Ngọc Mai" />
+          </div>
+          <div class="ws-form__row">
+            <label for="t-phone">SĐT</label>
+            <input id="t-phone" type="tel" required placeholder="09xx xxx xxx" />
+          </div>
+          <div class="ws-form__row">
+            <label for="t-skill">Chuyên môn</label>
+            <input id="t-skill" type="text" placeholder="Nặn cánh · bó quà" />
+          </div>
+          <button type="submit" class="btn btn--dark btn--block">Lưu</button>
+          <p class="form-msg" id="teacher-msg" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/booking.js" defer></script>
+  <script src="js/studio.js" defer></script>
+</body>
+</html>

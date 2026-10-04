@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bó Trăng Non — SÁPA Studio</title>
+  <meta name="description" content="Bó Trăng Non — hoa sáp thủ công size M, gói kraft & nơ linen. Tặng tốt nghiệp, 8/3, sinh nhật." />
+  <meta name="theme-color" content="#f4eee6" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23f4eee6' width='32' height='32'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Georgia' font-size='14' fill='%23141414'%3ES%3C/text%3E%3C/svg%3E" />
+  <meta property="og:type" content="product" />
+  <meta property="og:title" content="Bó Trăng Non — SÁPA Studio" />
+  <meta property="og:image" content="assets/prod-bouquet.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/product.css" />
+</head>
+<body data-page="product">
+  <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
+
+  <header class="nav nav--on-light" id="nav">
+    <a class="logo" href="index.html" aria-label="SÁPA Studio">SÁPA</a>
+    <nav class="nav-links nav-links--left" aria-label="Mua sắm">
+      <a href="index.html#shop"><span>Cửa hàng</span><i aria-hidden="true"></i></a>
+    </nav>
+    <nav class="nav-links nav-links--center" aria-label="Chính">
+      <a href="index.html#workshops"><span>Workshop</span><i aria-hidden="true"></i></a>
+      <a href="index.html#story"><span>Về xưởng</span><i aria-hidden="true"></i></a>
+      <a href="index.html#about"><span>Câu chuyện</span><i aria-hidden="true"></i></a>
+      <a href="index.html#contact"><span>Liên hệ</span><i aria-hidden="true"></i></a>
+    </nav>
+    <div class="nav-meta">
+      <div class="locale-wrap">
+        <button class="locale" type="button" id="locale-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="locale-label">HN</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button>
+        <ul class="locale-menu" id="locale-menu" role="listbox" hidden>
+          <li><button type="button" role="option" data-locale="HN">Hà Nội</button></li>
+          <li><button type="button" role="option" data-locale="HCM">TP. Hồ Chí Minh</button></li>
+          <li><button type="button" role="option" data-locale="DN">Đà Nẵng</button></li>
+        </ul>
+      </div>
+      <button class="cart" type="button" id="cart-btn" aria-haspopup="dialog" aria-controls="cart-drawer">
+        Giỏ (<span id="cart-count">0</span>)
+      </button>
+    </div>
+    <button class="burger" type="button" id="burger" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <a href="index.html#shop">Cửa hàng</a>
+    <a href="index.html#workshops">Workshop</a>
+    <a href="index.html#story">Về xưởng</a>
+    <a href="index.html#contact">Liên hệ</a>
+  </div>
+
+  <main id="top">
+    <!-- PDP hero: gallery + buy panel -->
+    <section class="pdp">
+      <div class="pdp-gallery">
+        <div class="pdp-main">
+          <img id="pdp-image" src="assets/prod-bouquet.webp" alt="Bó Trăng Non — hoa sáp kem và blush" width="900" height="900" />
+        </div>
+        <div class="pdp-thumbs" role="tablist" aria-label="Ảnh sản phẩm">
+          <button type="button" class="pdp-thumb is-active" data-img="assets/prod-bouquet.webp" aria-label="Ảnh 1">
+            <img src="assets/prod-bouquet.webp" alt="" width="96" height="96" />
+          </button>
+          <button type="button" class="pdp-thumb" data-img="assets/prod-jar.webp" aria-label="Ảnh 2">
+            <img src="assets/prod-jar.webp" alt="" width="96" height="96" />
+          </button>
+          <button type="button" class="pdp-thumb" data-img="assets/workshop-hands.webp" aria-label="Ảnh 3">
+            <img src="assets/workshop-hands.webp" alt="" width="96" height="96" />
+          </button>
+          <button type="button" class="pdp-thumb" data-img="assets/prod-candle.webp" aria-label="Ảnh 4">
+            <img src="assets/prod-candle.webp" alt="" width="96" height="96" />
+          </button>
+        </div>
+      </div>
+
+      <div class="pdp-buy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Hoa sáp thủ công</p>
+        <h1 class="pdp-title">Bó Trăng Non</h1>
+        <div class="pdp-rating" aria-label="Đánh giá 4.9 trên 5">
+          <span class="stars" aria-hidden="true">★★★★★</span>
+          <span class="score">4.9</span>
+          <span class="count">· 128 đánh giá</span>
+        </div>
+
+        <div class="pdp-price">
+          <strong id="pdp-price">420.000₫</strong>
+          <s>520.000₫</s>
+          <span class="badge-inline">-19%</span>
+        </div>
+
+        <p class="pdp-desc">
+          Bó hoa sáp kem – blush, nặn tay từng cánh từ sáp ong &amp; sáp đậu nành.
+          Gói giấy kraft, nơ linen, thiệp viết tay — sẵn sàng mang đi tặng.
+          Hoa không héo, để được nhiều năm nếu tránh nắng gắt.
+        </p>
+
+        <div class="pdp-field">
+          <p class="pdp-label">Chọn size</p>
+          <div class="pdp-variants" role="group" aria-label="Size">
+            <button type="button" class="variant" data-size="S" data-price="320000">S · 5 bông</button>
+            <button type="button" class="variant is-active" data-size="M" data-price="420000">M · 9 bông</button>
+            <button type="button" class="variant" data-size="L" data-price="560000">L · 15 bông</button>
+          </div>
+        </div>
+
+        <div class="pdp-field">
+          <p class="pdp-label">Màu chủ đạo</p>
+          <div class="pdp-variants" role="group" aria-label="Màu">
+            <button type="button" class="variant is-active" data-color="Kem">Kem</button>
+            <button type="button" class="variant" data-color="Blush">Blush</button>
+            <button type="button" class="variant" data-color="Sage">Sage</button>
+            <button type="button" class="variant" data-color="Trắng">Trắng</button>
+          </div>
+        </div>
+
+        <div class="pdp-actions">
+          <button type="button" class="btn btn--dark btn--block" id="pdp-add">Thêm vào giỏ</button>
+          <button type="button" class="btn btn--ghost-dark btn--block" id="pdp-buy-now">Mua ngay</button>
+        </div>
+
+        <ul class="pdp-trust">
+          <li>Giao nội thành 2–4 giờ</li>
+          <li>Đóng gói quà sẵn · thiệp viết tay</li>
+          <li>Đổi màu / size trong 3 ngày</li>
+        </ul>
+
+        <!-- Accordions like Arum -->
+        <div class="pdp-acc" id="pdp-acc">
+          <div class="pdp-acc-item is-open">
+            <button type="button" class="pdp-acc-btn" aria-expanded="true">
+              <span>Thành phần &amp; mùi</span>
+              <span aria-hidden="true">+</span>
+            </button>
+            <div class="pdp-acc-panel">
+              <div class="pdp-acc-inner">
+                <p><strong>Lớp hương gợi mở:</strong> sáp ong dịu, vani nhạt, gỗ tuyết tùng.</p>
+                <p><strong>Chất liệu:</strong> sáp ong, sáp đậu nành, màu khoáng, kẽm bọc giấy.</p>
+                <p><strong>Mùi:</strong> thơm nhẹ tự nhiên — không nồng, an toàn khi chạm tay.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pdp-acc-item">
+            <button type="button" class="pdp-acc-btn" aria-expanded="false">
+              <span>Kích thước &amp; bảo quản</span>
+              <span aria-hidden="true">+</span>
+            </button>
+            <div class="pdp-acc-panel">
+              <div class="pdp-acc-inner">
+                <p>Cao ~28–35cm (tuỳ size). Tránh nắng trực tiếp &amp; nhiệt &gt;40°C. Lau bụi bằng cọ mềm.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pdp-acc-item">
+            <button type="button" class="pdp-acc-btn" aria-expanded="false">
+              <span>Giao hàng &amp; đổi trả</span>
+              <span aria-hidden="true">+</span>
+            </button>
+            <div class="pdp-acc-panel">
+              <div class="pdp-acc-inner">
+                <p>Hà Nội: 2–4 giờ. Tỉnh: 2–4 ngày. Hư hỏng do vận chuyển: hoàn 100% / làm lại bó.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notes within — visual materials (Arum-style) -->
+    <section class="section notes-within">
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Trong bó có gì</p>
+      <h2 class="notes-title reveal">Những lớp hoa &amp; chất liệu</h2>
+      <div class="notes-grid">
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-rose.webp" alt="Hoa hồng sáp" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Hoa hồng sáp</strong>
+            <span>Cánh nặn tay · kem / blush</span>
+          </figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-carnation.webp" alt="Cẩm chướng mini" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Cẩm chướng mini</strong>
+            <span>Nhụy xốp · độ phồng nhẹ</span>
+          </figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-sage.webp" alt="Lá sage" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Lá sage</strong>
+            <span>Xanh dịu · cân bằng bó</span>
+          </figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-breath.webp" alt="Bông tuyết" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Bông tuyết</strong>
+            <span>Điểm xuyến mềm mại</span>
+          </figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-kraft.webp" alt="Kraft Ý" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Kraft Ý</strong>
+            <span>Gói ngoài · vân giấy tự nhiên</span>
+          </figcaption>
+        </figure>
+        <figure class="note-card reveal">
+          <div class="note-card__media">
+            <img src="assets/note-linen.webp" alt="Nơ linen" width="720" height="720" loading="lazy" />
+          </div>
+          <figcaption>
+            <strong>Nơ linen</strong>
+            <span>Vải lanh · thắt tay</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="section reviews" aria-label="Đánh giá">
+      <h2 class="section-head-solo reveal">Khách nói gì</h2>
+      <div class="review-track" style="--ticker-duration: 48s">
+        <article class="review-card">
+          <p class="review-stars">5.0</p>
+          <p>“Bó đẹp hơn ảnh. Tặng chị đồng nghiệp, ai cũng hỏi mua ở đâu. Gói quà chắc tay lắm.”</p>
+          <footer>— Minh Anh · Bó Trăng Non</footer>
+        </article>
+        <article class="review-card">
+          <p class="review-stars">5.0</p>
+          <p>“Đặt workshop gia đình, bé nặn hoa thích mê. Thầy cô kiên nhẫn, xưởng thơm mùi sáp.”</p>
+          <footer>— Hà &amp; Bắp · WS Gia Đình</footer>
+        </article>
+        <article class="review-card">
+          <p class="review-stars">4.9</p>
+          <p>“Hoa sáp để bàn 4 tháng vẫn như mới. Màu sage nhẹ nhàng, hợp decor phòng ngủ.”</p>
+          <footer>— Thuỳ Linh · Lọ Sương Sớm</footer>
+        </article>
+        <article class="review-card" aria-hidden="true">
+          <p class="review-stars">5.0</p>
+          <p>“Bó đẹp hơn ảnh. Tặng chị đồng nghiệp, ai cũng hỏi mua ở đâu. Gói quà chắc tay lắm.”</p>
+          <footer>— Minh Anh · Bó Trăng Non</footer>
+        </article>
+        <article class="review-card" aria-hidden="true">
+          <p class="review-stars">5.0</p>
+          <p>“Đặt workshop gia đình, bé nặn hoa thích mê. Thầy cô kiên nhẫn, xưởng thơm mùi sáp.”</p>
+          <footer>— Hà &amp; Bắp · WS Gia Đình</footer>
+        </article>
+        <article class="review-card" aria-hidden="true">
+          <p class="review-stars">4.9</p>
+          <p>“Hoa sáp để bàn 4 tháng vẫn như mới. Màu sage nhẹ nhàng, hợp decor phòng ngủ.”</p>
+          <footer>— Thuỳ Linh · Lọ Sương Sớm</footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- Craft formula -->
+    <section class="section formula" id="craft">
+      <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Chất liệu SÁPA</p>
+      <h2 class="formula-lead reveal">
+        Mỗi bông được nặn tay từ sáp ong và sáp đậu nành — mềm, thơm dịu, bền màu nhiều năm nếu tránh nắng gắt.
+      </h2>
+      <div class="formula-grid">
+        <div class="formula-media reveal">
+          <img src="assets/workshop-hands.webp" alt="Đôi tay nặn cánh hoa sáp" width="1400" height="933" loading="lazy" />
+        </div>
+        <ul class="motto" id="motto">
+          <li class="motto-item is-open">
+            <button type="button" class="motto-trigger" aria-expanded="true">
+              <span class="motto-num">I.</span>
+              <span class="motto-title">Sáp tự nhiên</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Sáp ong + sáp đậu nành, không nhựa PVC.</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">II.</span>
+              <span class="motto-title">Nặn tay từng cánh</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Độ lệch nhẹ trên mỗi bông — dấu thủ công.</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">III.</span>
+              <span class="motto-title">Màu bền, thơm dịu</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Màu khoáng nhẹ, hương sáp tự nhiên.</p>
+            </div>
+          </li>
+          <li class="motto-item">
+            <button type="button" class="motto-trigger" aria-expanded="false">
+              <span class="motto-num">IV.</span>
+              <span class="motto-title">Gói quà sẵn</span>
+              <span class="motto-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="motto-panel">
+              <p>Hộp cứng, nơ linen, thiệp viết tay.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Related -->
+    <section class="section products" id="related">
+      <div class="section-head reveal">
+        <h2>Sản phẩm khác</h2>
+        <a class="link-underline" href="index.html#shop">(Xem tất cả)</a>
+      </div>
+      <div class="product-grid">
+        <article class="product-card reveal">
+          <a class="product-card__media" href="product.html">
+            <img src="assets/prod-jar.webp" alt="Lọ Sương Sớm" width="900" height="900" loading="lazy" />
+          </a>
+          <div class="product-card__foot">
+            <h3>Lọ Sương Sớm</h3>
+            <p class="price">289.000₫</p>
+          </div>
+        </article>
+        <article class="product-card reveal">
+          <a class="product-card__media" href="index.html#shop">
+            <span class="badge">-12%</span>
+            <img src="assets/prod-kit.webp" alt="Set DIY Cơ Bản" width="900" height="900" loading="lazy" />
+          </a>
+          <div class="product-card__foot">
+            <h3>Set DIY Cơ Bản</h3>
+            <p class="price">350.000₫ <s>399.000₫</s></p>
+          </div>
+        </article>
+        <article class="product-card reveal">
+          <a class="product-card__media" href="index.html#shop">
+            <img src="assets/prod-gift.webp" alt="Thẻ Quà SÁPA" width="900" height="900" loading="lazy" />
+          </a>
+          <div class="product-card__foot">
+            <h3>Thẻ Quà SÁPA</h3>
+            <p class="price">500.000₫</p>
+          </div>
+        </article>
+        <article class="product-card reveal">
+          <a class="product-card__media" href="index.html#shop">
+            <img src="assets/studio-lineup.webp" alt="Combo Workshop + Bó" width="1536" height="1024" loading="lazy" />
+          </a>
+          <div class="product-card__foot">
+            <h3>Combo WS + Bó</h3>
+            <p class="price">990.000₫</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CTA workshop -->
+    <section class="banner reveal" data-nav="dark">
+      <img src="assets/workshop-hands.webp" alt="" width="1400" height="933" loading="lazy" />
+      <div class="banner-shade"></div>
+      <div class="banner-copy">
+        <h3>Thích tự tay làm? Tham gia workshop</h3>
+        <a class="btn btn--glass" href="index.html#workshops">Xem lịch lớp</a>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="club" id="contact" data-nav="dark">
+      <img class="club-bg" src="assets/hero-wax.webp" alt="" width="1536" height="1024" loading="lazy" />
+      <div class="club-shade"></div>
+      <p class="club-label reveal"><span class="dot dot--light" aria-hidden="true"></span> Cần tư vấn bó quà?</p>
+      <div class="club-copy reveal">
+        <h2>Để lại email — SÁPA gợi ý size, màu và lịch workshop phù hợp trong 30 phút.</h2>
+        <form class="club-form" id="club-form" novalidate>
+          <label class="sr-only" for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="Email của bạn" autocomplete="email" required aria-describedby="email-msg" />
+          <button type="submit">Gửi</button>
+        </form>
+        <p class="form-msg" id="email-msg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html">SÁPA</a>
+        <p>Studio hoa sáp thủ công &amp; workshop. Hà Nội · Ship toàn quốc.</p>
+        <a class="btn btn--dark" href="index.html#shop">Cửa hàng</a>
+      </div>
+      <div class="footer-social">
+        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
+        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">fb</a>
+        <a href="https://zalo.me/" target="_blank" rel="noopener noreferrer" aria-label="Zalo">zalo</a>
+        <button class="icon-btn" type="button" id="footer-cart" aria-label="Mở giỏ">bag</button>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4>Sản phẩm</h4>
+        <a href="index.html#shop">Bó hoa sáp</a>
+        <a href="index.html#shop">Lọ &amp; nến</a>
+        <a href="index.html#shop">Set DIY</a>
+      </div>
+      <div>
+        <h4>Workshop</h4>
+        <a href="index.html#workshops">Lớp cơ bản</a>
+        <a href="index.html#workshops">Nâng cao</a>
+        <a href="index.html#contact">Đặt lịch riêng</a>
+      </div>
+      <div>
+        <h4>Hỗ trợ</h4>
+        <a href="index.html#contact">Liên hệ</a>
+        <a href="index.html#about">Bảo quản</a>
+        <a href="index.html#contact">Giao &amp; đổi trả</a>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <a href="tel:0900000000">Hotline: 09xx xxx xxx</a>
+        <a href="mailto:hello@sapa.studio">hello@sapa.studio</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-note">© 2026 SÁPA Studio · Hoa sáp thủ công &amp; workshop.</p>
+      <div class="pay-icons" aria-label="Thanh toán">
+        <span>COD</span><span>Bank</span><span>MoMo</span><span>VNPay</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart drawer (shared) -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>
+    <header class="drawer__head">
+      <h2 id="cart-title">Giỏ hàng</h2>
+      <button type="button" class="icon-btn" id="cart-close" aria-label="Đóng giỏ">✕</button>
+    </header>
+    <div class="drawer__body" id="cart-lines">
+      <p class="cart-empty" id="cart-empty">Giỏ trống — chọn một bó hoa hoặc slot workshop.</p>
+    </div>
+    <footer class="drawer__foot">
+      <div class="cart-total"><span>Tạm tính</span><strong id="cart-total">0₫</strong></div>
+      <button type="button" class="btn btn--dark btn--block" id="checkout-btn">Thanh toán</button>
+      <p class="cart-note" id="cart-note" role="status" aria-live="polite"></p>
+    </footer>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="js/lenis.min.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/product.js" defer></script>
+</body>
+</html>

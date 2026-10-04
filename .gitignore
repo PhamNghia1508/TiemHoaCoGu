@@ -1,0 +1,18 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI Assistant & Tool Local Data
+.workbuddy-ai/
+.gemini/
+
+# Dependency & Log Files
+node_modules/
+*.log
