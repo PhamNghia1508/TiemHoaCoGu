@@ -7,6 +7,10 @@
   const emptyEl = $("#shop-empty");
   if (!grid) return;
 
+  /* —— Hero entrance —— */
+  const hero = $(".shop-hero");
+  requestAnimationFrame(() => hero?.classList.add("is-ready"));
+
   const formatVND = (n) =>
     Number(n)
       .toString()
@@ -31,6 +35,10 @@
         <a class="product-card__media product-card__link" href="product.html?id=${p.id}" aria-label="${p.name}">
           ${badge}
           <img src="${p.image}" alt="${p.name}" width="900" height="900" loading="lazy" />
+          <span class="shop-card__overlay">
+            <span>Xem chi tiết</span>
+            <svg width="16" height="14" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 7h13M9 2l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </a>
         <div class="product-card__foot">
           <h3>${p.name}</h3>
