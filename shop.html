@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/shop.css" />
   <link rel="stylesheet" href="css/enhancements.css" />
+  <link rel="stylesheet" href="css/features.css" />
 </head>
 <body>
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
@@ -83,6 +84,13 @@
       </div>
     </section>
 
+    <!-- Breadcrumb -->
+    <nav class="page-crumb" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <span class="is-current">Cửa hàng</span>
+    </nav>
+
     <!-- Trust bar -->
     <section class="shop-trust" aria-label="Cam kết">
       <div class="shop-trust__inner">
@@ -141,6 +149,22 @@
           <option value="bestseller">Bán chạy nhất</option>
           <option value="newest">Mới nhất</option>
         </select>
+      </div>
+
+      <div class="price-range reveal" id="price-range">
+        <div class="price-range__head">
+          <span>Khoảng giá</span>
+          <span class="price-range__values"><span id="price-min-label">0₫</span> — <span id="price-max-label">1.200.000₫</span></span>
+        </div>
+        <div class="price-range__track">
+          <div class="price-range__fill"></div>
+          <div class="price-range__slider" data-slider="min" aria-label="Giá tối thiểu" role="slider" tabindex="0"></div>
+          <div class="price-range__slider" data-slider="max" aria-label="Giá tối đa" role="slider" tabindex="0"></div>
+        </div>
+        <div class="price-range__inputs">
+          <label>Từ <input type="number" id="price-min" value="0" min="0" max="1200000" step="10000" /></label>
+          <label>Đến <input type="number" id="price-max" value="1200000" min="0" max="1200000" step="10000" /></label>
+        </div>
       </div>
 
       <div class="product-grid" id="shop-grid" aria-busy="true">
@@ -249,5 +273,6 @@
   <script src="js/main.js" defer></script>
   <script src="js/enhancements.js" defer></script>
   <script src="js/shop.js" defer></script>
+  <script src="js/features.js" defer></script>
 </body>
 </html>

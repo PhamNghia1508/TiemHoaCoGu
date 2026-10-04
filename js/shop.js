@@ -22,6 +22,8 @@
   let activeFilter = "all";
   let activeSort = "default";
   let searchTerm = "";
+  let priceMin = 0;
+  let priceMax = 1200000;
 
   /* —— Skeleton loading —— */
   function showSkeletons() {
@@ -78,6 +80,7 @@
             <span>Xem chi tiết</span>
             <svg width="16" height="14" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 7h13M9 2l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
+          <button class="qv-trigger" data-id="${p.id}" aria-label="Xem nhanh ${p.name}">Xem nhanh</button>
         </a>
         <div class="product-card__foot">
           <h3>${p.name}</h3>
@@ -92,6 +95,7 @@
   function getFilteredSorted() {
     let list = products.slice();
     if (activeFilter !== "all") list = list.filter((p) => p.category === activeFilter);
+    list = list.filter((p) => p.price >= priceMin && p.price <= priceMax);
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.description || "").toLowerCase().includes(q));
@@ -168,6 +172,13 @@
   const sortSelect = $("#shop-sort-select");
   sortSelect?.addEventListener("change", () => {
     activeSort = sortSelect.value;
+    render();
+  });
+
+  /* —— Price range filter (from features.js) —— */
+  document.addEventListener("sapa:price-filter", (e) => {
+    priceMin = e.detail.min;
+    priceMax = e.detail.max;
     render();
   });
 

@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/page.css" />
   <link rel="stylesheet" href="css/enhancements.css" />
+  <link rel="stylesheet" href="css/features.css" />
 </head>
 <body>
   <a class="skip-link" href="#top">Bỏ qua đến nội dung</a>
@@ -79,6 +80,13 @@
       </div>
     </section>
 
+    <!-- Breadcrumb -->
+    <nav class="page-crumb" aria-label="Đường dẫn">
+      <a href="index.html">Trang chủ</a>
+      <span aria-hidden="true">/</span>
+      <span class="is-current">Liên hệ</span>
+    </nav>
+
     <!-- Contact info -->
     <section class="section">
       <p class="eyebrow reveal"><span class="dot" aria-hidden="true"></span> Thông tin liên hệ</p>
@@ -110,6 +118,19 @@
           <span class="contact-item__label">Instagram</span>
           <span class="contact-item__value"><a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">@sapa.studio</a></span>
         </div>
+      </div>
+
+      <div class="contact-map reveal">
+        <div class="contact-map__label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Vị trí xưởng — TP. Hồ Chí Minh
+        </div>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.424!2d106.699!3d10.776!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzM2LjAiTiAxMDbCsDQxJzU2LjQiRg!5e0!3m2!1svi!2s!4v1700000000000"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Bản đồ vị trí SÁPA Studio">
+        </iframe>
       </div>
     </section>
 
@@ -214,5 +235,6 @@
   <script src="js/lenis.min.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/enhancements.js" defer></script>
+  <script src="js/features.js" defer></script>
 </body>
 </html>
