@@ -217,6 +217,7 @@
   top: calc(var(--nav-h) + 1.5rem);
   display: flex;
   flex-direction: column;
+  gap: 1.75rem;
   padding-right: 1.25rem;
   border-right: 1px solid var(--line);
 }
@@ -227,9 +228,7 @@
 .shop-filters {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line);
+  margin-bottom: 0;
 }
 
 .shop-filters .chip {
@@ -272,27 +271,37 @@
   border-radius: 2px;
 }
 
-/* —— Sidebar section separators —— */
-.shop-sidebar .shop-search {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line);
+/* —— Sidebar section labels & spacing —— */
+.shop-sidebar__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 0.65rem;
 }
+
+.shop-sidebar .shop-search { margin-bottom: 0; }
 
 .shop-sidebar .shop-sort {
   flex-direction: column;
   align-items: stretch;
-  gap: 0.4rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line);
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.shop-sidebar .shop-sort label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  white-space: normal;
 }
 
 .shop-sidebar .shop-sort select { width: 100%; }
 
-.shop-sidebar .price-range {
-  margin-bottom: 0;
-}
+.shop-sidebar .price-range { margin-bottom: 0; }
 
 /* —— Product grid: 3 columns in sidebar layout —— */
 #shop-grid {
