@@ -1,0 +1,15 @@
+services:
+  web:
+    image: nginx:alpine
+    restart: on-failure
+    working_dir: /usr/share/nginx/html
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
