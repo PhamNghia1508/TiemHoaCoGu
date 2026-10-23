@@ -2,7 +2,7 @@
 
 Frontend Next.js cho tiệm hoa sáp thủ công & workshop SÁPA Studio. Giao diện tiếng Việt theo hướng Botanical Play: cobalt–citrus, typography sans đậm, poster hero và luồng chọn quà ưu tiên thao tác thật. Không dùng UI kit hay sao chép template.
 
-**Trạng thái:** frontend trải nghiệm có tương tác; chưa mở bán, chưa nối dữ liệu trực tiếp với backend và chưa nhận đơn, giữ chỗ hoặc thanh toán thật. Backend ở repository riêng `ZidenVN/TiemHoaCoGu_BE`, không bị sửa trong PR này.
+**Trạng thái:** frontend đã nối API backend `ZidenVN/TiemHoaCoGu_BE` qua BFF Next.js, có preview an toàn khi chưa cấu hình. Chưa triển khai backend production, chưa nối provider thanh toán/giao vận/email/SMS và chưa sẵn sàng mở bán. Thay đổi nằm trên PR frontend, không merge PR và không sửa backend main.
 
 ## Chạy
 
@@ -29,20 +29,22 @@ Font được đóng gói trong ứng dụng, không phụ thuộc Google Fonts 
 - Quick-add có feedback, zoom ảnh và CTA cố định trên mobile. Ảnh bối cảnh được ghi rõ, không giả thành góc chụp sản phẩm.
 - Sản phẩm yêu thích và giỏ hàng lưu trên trình duyệt; tăng, giảm, xóa, tính tổng và giữ sau reload. Giới hạn 20 đơn vị mỗi sản phẩm trong bản trải nghiệm; đây không phải số tồn kho.
 - Drawer giỏ hàng & dialog tìm kiếm dùng native `<dialog>` với focus trap và Escape.
-- Form hoa đặt riêng & workshop: kiểm tra đầu vào, xem lại **bản nháp**, không gửi dữ liệu hoặc tạo mã đơn/vé giả.
-- Bước xem lại đơn và tra cứu có thông báo rõ phần chưa kết nối; không giả kết quả hoặc thu tiền.
+- Form hoa đặt riêng & workshop: preview chỉ xem nháp; chế độ API dùng request/booking backend thật, không tạo mã giả.
+- Checkout lấy phí từ backend; tra cứu dùng tài khoản và dữ liệu thật khi API đã cấu hình. Không có thu tiền giả.
 - Responsive, hỗ trợ reduced motion, skip link, trạng thái screen reader, 404 và error boundary.
 - Metadata tiếng Việt, Open Graph, favicon, sitemap và redirects URL HTML cũ. `robots.txt` chặn index bản trải nghiệm.
 
 Danh mục/giá/ảnh kế thừa từ repository cũ để phát triển giao diện, không phải dữ liệu kinh doanh đã xác nhận. Không dùng review, số khách, địa chỉ hay lịch còn chỗ hư cấu.
 
-## Kết nối backend sau này
+## Kết nối backend
 
 `src/lib/api/` chứa typed client đọc từ hợp đồng API .NET hiện tại: catalog, orders, custom orders, workshops, bookings và CMS catalog. Có timeout, chuẩn hóa lỗi và tùy chọn JWT phía server. Xem [API integration](docs/API-INTEGRATION.md).
 
-**Chỉ điền `API_BASE_URL` chưa khiến giao diện chuyển sang live.** UI hiện dùng `src/lib/catalog.ts`; phải bổ sung adapter DTO → UI, dữ liệu sản phẩm thực/ID thực, server-side session/auth, checkout/shipping quote, ca workshop, kiểm tra tồn kho, chính sách và thanh toán trước khi nhận giao dịch. Không được gửi ID mẫu như `trang-non` vào API dùng GUID.
+Có `API_BASE_URL`: catalog/workshop đọc dữ liệu thật và GUID thật; backend lỗi báo không khả dụng, không fallback dữ liệu mẫu. `/tai-khoan` có phiên HttpOnly, địa chỉ và giỏ máy chủ; `/tra-cuu` đọc lịch sử theo tài khoản; `/quan-tri` dành cho Admin. Ghi nghiệp vụ mặc định tắt, chỉ bật bằng `STOREFRONT_WRITES_ENABLED=true` sau khi đã kiểm tra môi trường.
 
-Không lưu access token trong localStorage, không thêm token hay API key vào biến `NEXT_PUBLIC_*`. Form preview hiện không lưu tên, điện thoại, địa chỉ hoặc nội dung lời nhắn; chỉ giỏ/favorites được lưu localStorage.
+Checkout cần shipping quote hợp lệ trước khi xác nhận; provider chưa sẵn sàng thì chặn, không giả phí hoặc thành công. Custom request đi qua báo giá/duyệt/checkout; workshop dùng hold thật và không coi hold là đã trả tiền. Chi tiết triển khai, route, bảo mật, giới hạn và cách chạy test ở [API integration](docs/API-INTEGRATION.md); kết quả xác minh ở [Integration verification](docs/INTEGRATION-VERIFICATION.md).
+
+Không lưu token/PII trong localStorage hay `NEXT_PUBLIC_*`. Form preview không gửi thông tin cá nhân; chế độ kết nối có thể lưu dữ liệu vào backend khi người dùng gửi.
 
 ## Kiểm thử
 
@@ -64,8 +66,11 @@ src/app/          Next.js App Router, trang và metadata
 src/components/  UI có tương tác và cấu phần chung
 src/lib/catalog.ts  Dữ liệu trải nghiệm + bài viết
 src/lib/api/     Typed API client phía server
+src/lib/server/  BFF allowlist, cookie và proxy
+src/lib/storefront.ts  Adapter DTO backend → UI
 public/images/   Ảnh WebP kế thừa
- tests/e2e/      Playwright tests
+tests/e2e/       Preview regression desktop/mobile
+tests/integration/ BFF + backend + browser tests
  docs/           Tích hợp, thiết kế & tài liệu prototype lịch sử
 ```
 

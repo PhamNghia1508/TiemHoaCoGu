@@ -11,7 +11,11 @@ export default function CustomPage() {
       <PageIntro
         eyebrow="HOA THEO Ý BẠN / CUSTOM ORDER"
         title={<>Bạn chọn gu. Tiệm làm phần còn lại.</>}
-        description="Kể tiệm nghe về người nhận, màu sắc và cảm giác bạn muốn gửi. Đây là bản trải nghiệm để phác ý tưởng — chưa nhận yêu cầu thật, chưa báo giá hay thanh toán."
+        description={
+          process.env.API_BASE_URL
+            ? 'Chọn sản phẩm có thể tùy biến và gửi yêu cầu sau khi đăng nhập. Chỉ báo giá do tiệm phát hành mới có giá trị; gửi yêu cầu không phải thanh toán hay cam kết hoàn thiện.'
+            : 'Kể tiệm nghe về người nhận, màu sắc và cảm giác bạn muốn gửi. Đây là bản trải nghiệm để phác ý tưởng — chưa nhận yêu cầu thật, chưa báo giá hay thanh toán.'
+        }
       />
       <section className="studio-grid-2 studio-block" aria-labelledby="custom-intro">
         <div className="studio-media">
@@ -66,11 +70,14 @@ export default function CustomPage() {
             width={700}
             height={520}
           />
-          <span className="eyebrow">ĐÂY LÀ BẢN XEM TRƯỚC</span>
+          <span className="eyebrow">
+            {process.env.API_BASE_URL ? 'YÊU CẦU & BÁO GIÁ' : 'ĐÂY LÀ BẢN XEM TRƯỚC'}
+          </span>
           <h2>Không có giao dịch ở đây.</h2>
           <p>
-            Thông tin chỉ được dùng để tạo bản nháp ngay trong trình duyệt. Chưa lưu máy chủ, chưa
-            có báo giá, cam kết hoàn thiện hay thanh toán.
+            {process.env.API_BASE_URL
+              ? 'Khi bấm gửi ở chế độ API, yêu cầu được lưu vào tài khoản. Giá và hạn hoàn thiện cần được tiệm báo riêng; chưa có thanh toán qua nhà cung cấp thật.'
+              : 'Thông tin chỉ được dùng để tạo bản nháp ngay trong trình duyệt. Chưa lưu máy chủ, chưa có báo giá, cam kết hoàn thiện hay thanh toán.'}
           </p>
         </aside>
       </section>

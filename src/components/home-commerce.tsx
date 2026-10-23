@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowUpRight, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
-import { products } from '@/lib/catalog';
+import { useStore } from './store-provider';
 import ProductCard from './product-card';
 export function GiftFinder() {
   const router = useRouter();
@@ -53,9 +53,18 @@ export function GiftFinder() {
 }
 export function HomeCollection() {
   const [tab, setTab] = useState('all');
+  const { products, categories } = useStore();
   const filtered = products.filter(
-    (p) => tab === 'all' || (tab === 'under300' ? p.price < 300000 : p.category === 'bo'),
+    (p) => tab === 'all' || (tab === 'under300' ? p.price < 300000 : p.category === tab),
   );
+  const tabs = [
+    ['all', 'Tiệm gợi ý'],
+    ...categories
+      .filter((c) => c.id !== 'all')
+      .slice(0, 2)
+      .map((c) => [c.id, c.label]),
+    ['under300', 'Quà dưới 300k'],
+  ];
   return (
     <section className="section home-collection" id="bo-suu-tap">
       <div className="collection-top">
@@ -72,11 +81,7 @@ export function HomeCollection() {
         </Link>
       </div>
       <div className="home-collection-tabs" role="group" aria-label="Chọn bộ sưu tập">
-        {[
-          ['all', 'Tiệm gợi ý'],
-          ['bo', 'Bó hoa sáp'],
-          ['under300', 'Quà dưới 300k'],
-        ].map(([id, label]) => (
+        {tabs.map(([id, label]) => (
           <button key={id} aria-pressed={id === tab} onClick={() => setTab(id)}>
             {label}
           </button>

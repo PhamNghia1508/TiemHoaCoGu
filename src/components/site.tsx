@@ -63,6 +63,7 @@ export function Footer() {
           <div>
             <span>CẦN MỘT CHÚT GIÚP ĐỠ?</span>
             <Link href="/tra-cuu">Tra cứu đơn & đặt chỗ</Link>
+            <Link href="/tai-khoan">Tài khoản của bạn</Link>
             <Link href="/hoi-dap">Hỏi đáp & chăm hoa</Link>
             <Link href="/chuyen-cua-hoa">Chuyện của hoa</Link>
             <Link href="/chinh-sach">Chính sách & riêng tư</Link>
@@ -77,7 +78,11 @@ export function Footer() {
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} TIỆM HOA CÓ GU / SÁPA STUDIO</span>
-        <span className="preview-label">BẢN TRẢI NGHIỆM · CHƯA NHẬN ĐƠN THẬT</span>
+        <span className="preview-label">
+          {process.env.API_BASE_URL
+            ? 'TÍCH HỢP API · CHƯA MỞ BÁN PRODUCTION'
+            : 'BẢN TRẢI NGHIỆM · CHƯA NHẬN ĐƠN THẬT'}
+        </span>
         <a href="#noi-dung">Về đầu trang ↑</a>
       </div>
     </footer>

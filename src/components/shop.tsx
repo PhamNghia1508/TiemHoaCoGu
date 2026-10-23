@@ -1,7 +1,6 @@
 'use client';
 import { useMemo, useRef, useState } from 'react';
 import { Search, Heart, SlidersHorizontal, X } from 'lucide-react';
-import { products, categories } from '@/lib/catalog';
 import { ProductCard } from './site';
 import { useStore } from './store-provider';
 import { useSearchParams } from 'next/navigation';
@@ -22,6 +21,7 @@ const budgets = [
 type Budget = (typeof budgets)[number]['id'];
 export default function Shop() {
   const params = useSearchParams();
+  const { favorites, products, categories } = useStore();
   const [category, setCategory] = useState(() => {
     const value = params.get('category');
     return categories.some((c) => c.id === value) ? value! : 'all';
@@ -34,7 +34,6 @@ export default function Shop() {
   const [query, setQuery] = useState('');
   const [saved, setSaved] = useState(false);
   const filterDialog = useRef<HTMLDialogElement>(null);
-  const { favorites } = useStore();
 
   const filtered = useMemo(() => {
     const items = products.filter((p) => {
@@ -55,7 +54,7 @@ export default function Shop() {
     return [...items].sort((a, b) =>
       sort === 'price-up' ? a.price - b.price : sort === 'price-down' ? b.price - a.price : 0,
     );
-  }, [category, budget, query, sort, saved, favorites]);
+  }, [category, budget, query, sort, saved, favorites, products]);
   const activeCount = (category !== 'all' ? 1 : 0) + (budget !== 'all' ? 1 : 0) + (saved ? 1 : 0);
   const reset = () => {
     setQuery('');
@@ -174,8 +173,8 @@ export default function Shop() {
           </div>
         )}
         <p className="shop-note">
-          Giá minh họa từ catalog trải nghiệm. Tình trạng hàng, phí giao và thời gian nhận sẽ được
-          tiệm xác nhận; chưa có đơn hàng thật.
+          Giá từ catalog của tiệm. Tình trạng hàng, phí giao và thời gian nhận sẽ được tiệm xác
+          nhận; chưa có đơn hàng thật.
         </p>
       </section>
       <dialog ref={filterDialog} className="commerce-filter-dialog" aria-labelledby="filter-title">

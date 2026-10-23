@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { products, articles } from '@/lib/catalog';
-export default function sitemap(): MetadataRoute.Sitemap {
+import { articles } from '@/lib/catalog';
+import { getStorefront } from '@/lib/storefront';
+export const dynamic = 'force-dynamic';
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { products } = await getStorefront();
   const base = process.env.SITE_URL || 'http://localhost:3000';
   const routes = [
     '',

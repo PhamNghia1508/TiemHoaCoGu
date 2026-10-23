@@ -18,6 +18,7 @@ import './commerce.css';
 import './studio.css';
 import { StoreProvider } from '@/components/store-provider';
 import { Header, Footer } from '@/components/site';
+import { getStorefront } from '@/lib/storefront';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || 'http://localhost:3000'),
   title: {
@@ -43,11 +44,18 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 export const viewport: Viewport = { themeColor: '#243db5', width: 'device-width', initialScale: 1 };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export const dynamic = 'force-dynamic';
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const storefront = await getStorefront();
   return (
     <html lang="vi" data-scroll-behavior="smooth">
       <body>
-        <StoreProvider>
+        <StoreProvider
+          initialProducts={storefront.products}
+          initialCategories={storefront.categories}
+          mode={storefront.mode}
+          error={storefront.error}
+        >
           <Header />
           <main id="noi-dung">{children}</main>
           <Footer />

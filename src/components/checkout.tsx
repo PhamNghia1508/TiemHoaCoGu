@@ -1,17 +1,106 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { ArrowUpRight, ShoppingBag, PencilLine } from 'lucide-react';
 import { useStore } from './store-provider';
-import { money, products } from '@/lib/catalog';
+import { money } from '@/lib/catalog';
+import { storeRequest } from '@/lib/browser-api';
+import { payloadFingerprint, type CheckoutPayload, type ShippingQuote } from '@/lib/transaction';
+
+type OrderResult = {
+  id?: string;
+  orderCode?: string;
+  totalAmount?: number;
+  paymentStatus?: string;
+  orderStatus?: string;
+};
+
 export default function Checkout() {
-  const { cart, total, openCart } = useStore();
+  const { cart, total, openCart, products, mode } = useStore();
   const [reviewed, setReviewed] = useState(false);
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState('');
+  const [quote, setQuote] = useState<ShippingQuote | null>(null);
+  const [result, setResult] = useState<OrderResult | null>(null);
+  const attempt = useRef<{ fingerprint: string; payload: CheckoutPayload } | null>(null);
+  const lines = cart
+    .map((line) => ({ line, product: products.find((p) => p.id === line.id) }))
+    .filter((x): x is { line: (typeof cart)[number]; product: NonNullable<typeof x.product> } =>
+      Boolean(x.product),
+    );
+
+  function buildPayload(form: FormData, shippingQuoteId?: string): CheckoutPayload {
+    const items = lines.map(({ line, product }) => ({
+      productId: product.id,
+      quantity: line.quantity,
+    }));
+    return {
+      shippingAddress: String(form.get('address') || ''),
+      receiverName: String(form.get('name') || ''),
+      receiverPhone: String(form.get('phone') || ''),
+      receiverEmail: String(form.get('email') || '') || undefined,
+      note: String(form.get('note') || '') || undefined,
+      items,
+      shippingQuoteId,
+      idempotencyKey: '',
+    };
+  }
+
+  async function requestQuote(form: FormData) {
+    const draft = buildPayload(form);
+    const response = await storeRequest<ShippingQuote>(
+      'shipping/quote',
+      { destination: draft.shippingAddress, items: draft.items },
+      'POST',
+    );
+    if (!response.id) throw new Error('Báo giá giao hàng không hợp lệ.');
+    setQuote(response);
+    setError('');
+  }
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setReviewed(true);
-  };
+    setError('');
+    if (mode !== 'connected') {
+      setReviewed(true);
+      return;
+    }
+    if (result) return;
+    const form = new FormData(e.currentTarget);
+    setPending(true);
+    try {
+      if (!quote) {
+        await requestQuote(form);
+        return;
+      }
+      if (!attempt.current && quote.expiresAt && new Date(quote.expiresAt).getTime() <= Date.now())
+        throw new Error(
+          'Báo phí đã hết hạn. Hãy kiểm tra lịch sử nếu đã gửi đơn, rồi bắt đầu báo phí mới.',
+        );
+      const draft = buildPayload(form, quote.id);
+      const fingerprint = payloadFingerprint(draft);
+      if (!attempt.current || attempt.current.fingerprint !== fingerprint) {
+        attempt.current = {
+          fingerprint,
+          payload: { ...draft, idempotencyKey: crypto.randomUUID() },
+        };
+      }
+      const order = await storeRequest<OrderResult>(
+        'orders/checkout',
+        attempt.current.payload,
+        'POST',
+      );
+      setResult(order);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Không thể tạo đơn. Bạn có thể thử lại cùng báo giá.',
+      );
+    } finally {
+      setPending(false);
+    }
+  }
+
   if (!cart.length)
     return (
       <div className="empty-state" style={{ paddingTop: 0 }}>
@@ -23,9 +112,20 @@ export default function Checkout() {
         </Link>
       </div>
     );
+  const shippingAmount = quote?.amount ?? quote?.shippingFee;
   return (
     <div className="form-layout">
-      <form onSubmit={submit} onChange={() => setReviewed(false)}>
+      <form
+        onSubmit={submit}
+        onChange={() => {
+          setReviewed(false);
+          if (!result) {
+            setError('');
+            setQuote(null);
+            attempt.current = null;
+          }
+        }}
+      >
         <h2 className="form-section-title">Món quà này sẽ đến với ai?</h2>
         <div className="form-grid">
           <label className="field">
@@ -57,7 +157,7 @@ export default function Checkout() {
               name="email"
               autoComplete="email"
               maxLength={150}
-              placeholder="Để nhận thông tin đơn khi mở bán"
+              placeholder="Để nhận thông tin đơn"
             />
           </label>
           <label className="field full">
@@ -80,24 +180,92 @@ export default function Checkout() {
             />
           </label>
         </div>
-        <div className="form-notice">
-          Bản trải nghiệm chưa kết nối backend, chưa xác minh tồn kho, phí giao hoặc thời gian nhận.
-          Thông tin trong form chỉ ở trang này; không được gửi, lưu máy chủ hay dùng để thu tiền.
-        </div>
-        <label className="check-field">
-          <input type="checkbox" required />
-          Tôi hiểu đây là bước kiểm tra giao diện, chưa đặt đơn và chưa thanh toán.
-        </label>
-        <button type="submit" className="button">
-          Kiểm tra thông tin <ArrowUpRight size={18} />
+        {mode === 'preview' ? (
+          <div className="form-notice">
+            Bản trải nghiệm chưa kết nối backend, chưa xác minh tồn kho, phí giao hoặc thời gian
+            nhận. Thông tin trong form chỉ ở trang này; chưa được gửi hay dùng để thu tiền.
+          </div>
+        ) : mode === 'unavailable' ? (
+          <div className="form-notice">Catalog chưa sẵn sàng. Chưa thể đặt đơn lúc này.</div>
+        ) : (
+          <div className="form-notice">
+            {quote
+              ? `Phí giao được báo từ hệ thống: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.expiresAt ? ` · hết hạn ${quote.expiresAt}` : ''}. Nhấn đặt đơn để xác nhận.`
+              : 'Trước hết hãy lấy báo giá giao hàng thật; chưa tạo đơn.'}
+          </div>
+        )}
+        {mode === 'preview' && (
+          <label className="check-field">
+            <input type="checkbox" required /> Tôi hiểu đây là bước kiểm tra giao diện, chưa đặt đơn
+            và chưa thanh toán.
+          </label>
+        )}
+        <button
+          type="submit"
+          className="button"
+          disabled={pending || mode === 'unavailable' || Boolean(result)}
+        >
+          {pending
+            ? 'Đang xử lý…'
+            : mode === 'connected'
+              ? quote
+                ? 'Xác nhận đặt đơn'
+                : 'Báo phí giao hàng'
+              : 'Kiểm tra thông tin'}{' '}
+          <ArrowUpRight size={18} />
         </button>
+        {mode === 'connected' && quote && !result && (
+          <button
+            type="button"
+            className="text-link"
+            disabled={pending}
+            onClick={() => {
+              setQuote(null);
+              attempt.current = null;
+              setError(
+                'Nếu lần gửi trước bị gián đoạn, hãy xem lịch sử trước khi tạo lần đặt mới để tránh trùng đơn.',
+              );
+            }}
+          >
+            Bắt đầu báo phí mới
+          </button>
+        )}
+        {mode === 'connected' && (
+          <p className="fine-print">
+            Chưa đăng nhập? <Link href="/tai-khoan">Đăng nhập để tiếp tục</Link>
+          </p>
+        )}
+        {error && (
+          <div className="form-status" role="alert">
+            {error}
+          </div>
+        )}
+        {result && (
+          <div className="form-status" role="status">
+            <span className="eyebrow">ĐƠN ĐÃ TẠO</span>
+            <p>
+              Mã đơn: <strong>{result.orderCode || result.id}</strong>. Đơn đã được ghi nhận trên
+              backend, chưa xác nhận thu tiền.
+            </p>
+            <p>
+              Trạng thái: {result.orderStatus || 'Đang cập nhật'} · Thanh toán:{' '}
+              {result.paymentStatus || 'Chưa xác nhận'}.
+            </p>
+            {result.totalAmount !== undefined && (
+              <p>
+                Tổng do backend xác nhận: <strong>{money(result.totalAmount)}</strong>.
+              </p>
+            )}
+            <Link href="/tra-cuu" className="text-link">
+              Xem đơn trong lịch sử tài khoản
+            </Link>
+          </div>
+        )}
         {reviewed && (
           <div className="form-status" role="status">
             <span className="eyebrow">THÔNG TIN ĐÃ ĐỦ CHO BẢN XEM TRƯỚC</span>
             <p style={{ marginTop: 10 }}>
-              Chưa có đơn hàng nào được tạo. Túi hoa vẫn được giữ trên trình duyệt để bạn tiếp tục
-              chỉnh sửa. Đặt hàng & thanh toán thật chỉ mở sau khi backend và quy trình xác nhận
-              được kết nối.
+              Chưa có đơn hàng nào được tạo. Túi hoa vẫn được giữ trên trình duyệt.
             </p>
           </div>
         )}
@@ -105,23 +273,26 @@ export default function Checkout() {
       <aside className="form-aside">
         <div className="dialog-heading">
           <h2 style={{ fontSize: 34, margin: 0 }}>Túi hoa của bạn</h2>
-          <button className="icon-button" aria-label="Sửa túi hoa" onClick={openCart}>
+          <button type="button" className="icon-button" aria-label="Sửa túi hoa" onClick={openCart}>
             <PencilLine size={18} />
           </button>
         </div>
-        {cart.map((line) => {
-          const p = products.find((p) => p.id === line.id)!;
-          return (
-            <div key={p.id} className="checkout-summary">
-              <Image src={p.image} alt={p.name} width={56} height={68} />
-              <div>
-                <h3>{p.name}</h3>
-                <p>Số lượng: {line.quantity}</p>
-              </div>
-              <span>{money(line.quantity * p.price)}</span>
+        {lines.map(({ line, product }) => (
+          <div key={product.id} className="checkout-summary">
+            <Image
+              src={product.image}
+              alt={product.name}
+              width={56}
+              height={68}
+              unoptimized={/^https?:/.test(product.image)}
+            />
+            <div>
+              <h3>{product.name}</h3>
+              <p>Số lượng: {line.quantity}</p>
             </div>
-          );
-        })}
+            <span>{money(line.quantity * product.price)}</span>
+          </div>
+        ))}
         <div className="checkout-totals">
           <div>
             <span>Tạm tính</span>
@@ -129,16 +300,17 @@ export default function Checkout() {
           </div>
           <div>
             <span>Phí giao hoa</span>
-            <span>Chưa xác định</span>
+            <span>{shippingAmount === undefined ? 'Chưa xác định' : money(shippingAmount)}</span>
           </div>
           <div className="grand-total">
             <span>Tổng tạm tính</span>
-            <strong>{money(total)}</strong>
+            <strong>
+              {shippingAmount === undefined ? 'Chưa xác định' : money(total + shippingAmount)}
+            </strong>
           </div>
         </div>
         <p className="fine-print">
-          Giá tham khảo từ dữ liệu trải nghiệm, không phải báo giá thanh toán. Chưa áp dụng khuyến
-          mãi hay phí giao hàng.
+          Giá và tổng cuối được backend kiểm tra lại khi tạo đơn. Báo phí giao hàng không giữ hàng.
         </p>
         <Link href="/cua-tiem" className="text-link">
           Chọn thêm một chút <ArrowUpRight size={16} />

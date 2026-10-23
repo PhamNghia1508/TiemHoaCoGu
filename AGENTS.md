@@ -10,13 +10,13 @@ Next.js App Router + TypeScript + React. Frontend repository tách biệt backen
 
 ## Boundaries
 
-- UI hiện là bản trải nghiệm, không nhận đơn/đặt chỗ/thanh toán thật.
-- Dữ liệu trong `src/lib/catalog.ts`; đây không phải backend GUID hoặc tồn kho.
+- Không cấu hình API: UI chỉ là preview. Có API: dữ liệu đọc từ backend; lỗi API không được fallback demo. Chỉ mở ghi khi `STOREFRONT_WRITES_ENABLED=true` trong môi trường đã kiểm tra. Chưa mở bán production hoặc tích hợp provider thật.
+- Dữ liệu mẫu trong `src/lib/catalog.ts` chỉ cho preview; adapter server `src/lib/storefront.ts` dùng GUID, giá và danh mục backend thật.
 - API layer ở `src/lib/api/` chỉ dùng server, với `API_BASE_URL` và JWT từ server session. Không import vào Client Components.
 - Không fake thông báo giao dịch thành công, lịch còn chỗ, review hoặc số khách.
 - Không lưu PII, token hoặc địa chỉ trong localStorage. Giỏ/favorites là dữ liệu cục bộ không nhạy cảm.
-- Giữ thông báo rõ cho các form preview. Chỉ bật write flow sau khi hoàn thiện auth, adapter và kiểm tra tích hợp.
-- Không sửa hoặc merge backend từ frontend task. Không merge PR khi chưa được yêu cầu.
+- Giữ thông báo rõ cho preview/API. Ghi qua BFF `/api/store` same-origin, HttpOnly cookies, exact allowlist và write gate; không gọi trực tiếp backend từ client. Không thêm thanh toán/hoàn tiền provider khi chưa có contract/provider thực.
+- Không sửa hoặc merge backend từ frontend task. Backend test phải chạy DB tạm và chỉ tài khoản tổng hợp; không dùng tài khoản/DB production. Không merge PR khi chưa được yêu cầu.
 
 ## Design
 

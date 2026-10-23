@@ -20,6 +20,7 @@ export default function MobileNavigation() {
         <Link href="/workshop">Workshop</Link>
         <Link href="/cau-chuyen">Chuyện của tiệm</Link>
         <Link href="/tra-cuu">Tra cứu đơn</Link>
+        <Link href="/tai-khoan">Tài khoản</Link>
       </nav>
     </details>
   );

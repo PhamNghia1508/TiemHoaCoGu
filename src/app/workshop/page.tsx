@@ -3,35 +3,38 @@ import Image from 'next/image';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { PageIntro } from '@/components/site';
 import WorkshopForm from '@/components/workshop-form';
+import { getStorefront } from '@/lib/storefront';
 
 export const metadata: Metadata = { title: 'Workshop — Làm hoa bằng tay' };
-const courses = [
-  {
-    name: 'Hoa Sáp Cơ Bản',
-    tag: '01 / LẦN ĐẦU CHẠM SÁP',
-    duration: '2,5 giờ',
-    price: '450.000 ₫ / người',
-    img: '/images/prod-kit.webp',
-    description: 'Làm quen chất liệu, nắn những cánh hoa đầu tiên và cắm vào lọ nhỏ mang về.',
-    takeaway: '3 bông hoa & lọ mini',
-  },
-  {
-    name: 'Bó Quà Tặng',
-    tag: '02 / TỰ TAY GÓI MỘT MÓN QUÀ',
-    duration: '3 giờ',
-    price: '690.000 ₫ / người',
-    img: '/images/prod-bouquet.webp',
-    description: 'Phối bảng màu, làm 7–9 bông hoa, học cách gói kraft và thắt nơ.',
-    takeaway: 'Một bó hoa gói hoàn chỉnh',
-  },
-];
-export default function WorkshopPage() {
+
+export default async function WorkshopPage() {
+  const storefront = await getStorefront();
+  const connected = storefront.mode === 'connected' && storefront.workshops !== undefined;
+  const workshopUnavailable =
+    storefront.mode === 'unavailable' || (storefront.mode === 'connected' && !storefront.workshops);
+  const courses =
+    storefront.workshops?.map((w, index) => ({
+      name: w.name,
+      tag: `${String(index + 1).padStart(2, '0')} / WORKSHOP`,
+      duration: `${w.duration} phút`,
+      price: `${new Intl.NumberFormat('vi-VN').format(w.basePrice)} ₫ / người`,
+      img: '/images/prod-kit.webp',
+      description: w.description || 'Thông tin workshop đang được tiệm cập nhật.',
+      takeaway: 'Thành phẩm của riêng bạn',
+      sessions: w.sessions,
+    })) || [];
   return (
     <div className="studio-shell">
       <PageIntro
         eyebrow="WORKSHOP / SÁPA STUDIO"
         title={<>Một buổi chiều để đôi tay làm việc.</>}
-        description="Hai trải nghiệm tham khảo, cho người mới bắt đầu hoặc người muốn tự làm một món quà. Lịch chính thức chưa mở — không có ngày hay số chỗ được dựng sẵn."
+        description={
+          workshopUnavailable
+            ? 'Chưa thể tải workshop hoặc phiên học từ API. Không có lịch mẫu thay thế.'
+            : connected
+              ? 'Workshop và phiên học được lấy từ hệ thống. Chọn một ca mở để yêu cầu giữ chỗ; giữ chỗ chưa có nghĩa đã mua vé hoặc đã thanh toán.'
+              : 'Bản xem trước chưa có lịch, số chỗ hoặc vé thật. Form chỉ giúp bạn xem lại mong muốn trên trình duyệt.'
+        }
       />
       <section className="studio-grid-2 studio-block" aria-labelledby="workshop-intro">
         <div className="studio-media">
@@ -64,8 +67,9 @@ export default function WorkshopPage() {
           <p className="studio-kicker">CÁC TRẢI NGHIỆM</p>
           <h2 id="course-heading">Chọn một nhịp làm phù hợp.</h2>
           <p>
-            Thời lượng và giá dưới đây là thông tin tham khảo kế thừa từ bản trải nghiệm, chưa phải
-            báo giá hoặc vé.
+            {connected
+              ? 'Thời lượng và giá từ API. Số chỗ chỉ được kiểm tra lại khi backend nhận yêu cầu giữ chỗ.'
+              : 'Chưa có dữ liệu workshop đã kết nối; không hiển thị giá hoặc số chỗ mẫu như thông tin thật.'}
           </p>
         </div>
         <div className="studio-grid-2">
@@ -87,10 +91,12 @@ export default function WorkshopPage() {
                   <span>{course.duration}</span>
                   <span>{course.price}</span>
                 </div>
-                <p>
-                  <strong>Mang về:</strong> {course.takeaway}
-                </p>
-                <span className="studio-status">Lịch chưa mở</span>
+                <p className="fine-print">Ảnh minh họa trải nghiệm, không phải ảnh từng lớp học.</p>
+                <span className="studio-status">
+                  {course.sessions?.length
+                    ? `${course.sessions.length} phiên từ API`
+                    : 'Chưa có phiên mở'}
+                </span>
                 <p>
                   <a className="button outline" href="#hen-o-xuong">
                     Để lại mong muốn <ArrowUpRight size={17} />
@@ -114,13 +120,21 @@ export default function WorkshopPage() {
           </li>
           <li>
             <strong>02</strong>
-            <h3>Gửi ngày mong muốn</h3>
-            <p>Form chỉ tạo bản xem trước ngay trên trình duyệt.</p>
+            <h3>{connected ? 'Chọn ca đang mở' : 'Gửi ngày mong muốn'}</h3>
+            <p>
+              {connected
+                ? 'Đăng nhập, kiểm tra thông tin và chủ động gửi yêu cầu giữ chỗ.'
+                : 'Form chỉ tạo bản xem trước ngay trên trình duyệt.'}
+            </p>
           </li>
           <li>
             <strong>03</strong>
-            <h3>Chờ lịch thật mở</h3>
-            <p>Ngày, chỗ và điều kiện sẽ chỉ được xác nhận khi có dữ liệu thực tế.</p>
+            <h3>{connected ? 'Đọc thời hạn giữ chỗ' : 'Chờ lịch thật mở'}</h3>
+            <p>
+              {connected
+                ? 'Backend trả trạng thái và hạn giữ chỗ. Provider thanh toán chưa được kết nối; không coi hold là vé đã thanh toán.'
+                : 'Ngày, chỗ và điều kiện chỉ được xác nhận khi có dữ liệu thực tế.'}
+            </p>
           </li>
         </ol>
       </section>
@@ -128,10 +142,17 @@ export default function WorkshopPage() {
         <WorkshopForm />
         <aside className="studio-form-aside">
           <span className="eyebrow">MINH BẠCH TỪ ĐẦU</span>
-          <h2>Lịch chưa mở.</h2>
+          <h2>
+            {connected
+              ? 'Giữ chỗ không phải mua vé.'
+              : workshopUnavailable
+                ? 'Lịch chưa tải được.'
+                : 'Lịch chưa mở.'}
+          </h2>
           <p>
-            Ngày bạn chọn là mong muốn, không phải ca còn chỗ. Form không gửi đăng ký, không giữ chỗ
-            và không thu cọc.
+            {connected
+              ? 'Yêu cầu được gửi tới backend sau khi bạn xác nhận. Kiểm tra trạng thái và hạn giữ chỗ trả về; website chưa tích hợp thu tiền hoặc phát hành vé từ provider thật.'
+              : 'Ngày bạn chọn là mong muốn, không phải ca còn chỗ. Preview không gửi đăng ký, không giữ chỗ và không thu cọc.'}
           </p>
         </aside>
       </section>

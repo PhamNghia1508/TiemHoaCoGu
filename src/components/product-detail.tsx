@@ -10,13 +10,18 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState('');
   const zoomDialog = useRef<HTMLDialogElement>(null);
-  const { add, openCart, toast } = useStore();
+  const { add, openCart, toast, mode, ready } = useStore();
+  const connected = mode === 'connected';
+  const soldOut =
+    connected && !p.isPreOrder && p.quantityAvailable !== undefined && p.quantityAvailable <= 0;
+  const photos = connected ? p.images || [p.image] : [p.image, p.alternate];
   const addToCart = () => {
+    if (!ready) return;
     add(p.id, quantity);
     toast(`Đã thêm ${quantity} ${p.name} vào túi hoa.`);
     openCart();
   };
-  const imageIsContext = image === p.alternate;
+  const imageIsContext = !connected && image === p.alternate;
   return (
     <div className="detail-grid commerce-detail">
       <div className="commerce-gallery">
@@ -42,16 +47,24 @@ export function ProductDetail({ product: p }: { product: Product }) {
         <p className="commerce-image-caption">
           {imageIsContext
             ? 'Ảnh bối cảnh tham khảo — không phải góc chụp sản phẩm.'
-            : 'Ảnh sản phẩm từ catalog trải nghiệm.'}
+            : connected
+              ? p.imageIsFallback
+                ? 'Ảnh minh họa — backend chưa có ảnh sản phẩm.'
+                : 'Ảnh sản phẩm từ hệ thống của tiệm.'
+              : 'Ảnh sản phẩm từ catalog trải nghiệm.'}
         </p>
         <div className="detail-thumbnails">
-          {[p.image, p.alternate].map((src, i) => (
+          {photos.map((src, i) => (
             <button
               type="button"
               key={src}
               className={image === src ? 'active' : ''}
               aria-label={
-                i === 0 ? `Ảnh sản phẩm ${p.name}` : `Ảnh bối cảnh tham khảo cho ${p.name}`
+                connected
+                  ? `Ảnh sản phẩm ${p.name}, ảnh ${i + 1}`
+                  : i === 0
+                    ? `Ảnh sản phẩm ${p.name}`
+                    : `Ảnh bối cảnh tham khảo cho ${p.name}`
               }
               aria-pressed={image === src}
               onClick={() => setImage(src)}
@@ -62,15 +75,26 @@ export function ProductDetail({ product: p }: { product: Product }) {
         </div>
       </div>
       <div className="detail-copy">
-        <span className="eyebrow">MÓN QUÀ CÓ GU / BẢN TRẢI NGHIỆM</span>
+        <span className="eyebrow">
+          {connected ? 'MÓN QUÀ CÓ GU / DỮ LIỆU API' : 'MÓN QUÀ CÓ GU / BẢN TRẢI NGHIỆM'}
+        </span>
         <h1>{p.name}</h1>
         <p className="commerce-subtitle">{p.subtitle}</p>
         <div className="detail-price">
-          {money(p.price)} <span>giá minh họa</span>
+          {money(p.price)} <span>{connected ? 'giá từ hệ thống' : 'giá minh họa'}</span>
         </div>
         <p className="commerce-shipping">
           Phí giao & thời gian nhận: tiệm sẽ xác nhận trước khi nhận đơn.
         </p>
+        {connected && (
+          <p className="fine-print">
+            {p.isPreOrder
+              ? 'Sản phẩm đặt trước — cần tiệm xác nhận thời hạn.'
+              : p.quantityAvailable === undefined
+                ? 'Tồn kho sẽ được kiểm tra khi tạo đơn.'
+                : `Tồn kho API tại thời điểm tải: ${p.quantityAvailable}. Chưa giữ hàng khi thêm vào túi.`}
+          </p>
+        )}
         <p className="detail-description">{p.description}</p>
         <div className="detail-options">
           <div>
@@ -115,7 +139,12 @@ export function ProductDetail({ product: p }: { product: Product }) {
               <Plus size={15} />
             </button>
           </div>
-          <button type="button" className="button commerce-primary" onClick={addToCart}>
+          <button
+            type="button"
+            className="button commerce-primary"
+            disabled={!ready || soldOut || mode === 'unavailable'}
+            onClick={addToCart}
+          >
             Thêm vào túi hoa <ArrowUpRight size={18} />
           </button>
         </div>
@@ -131,9 +160,11 @@ export function ProductDetail({ product: p }: { product: Product }) {
           <details open>
             <summary>Về món quà này</summary>
             <p>
-              Sản phẩm và ảnh trong bản trải nghiệm được kế thừa từ repository. Hoa thủ công có thể
-              khác nhẹ về dáng, sắc độ và cách gói. Tiệm sẽ xác nhận quy cách, thời gian hoàn thiện
-              và giá thực tế trước khi nhận đơn.
+              {connected
+                ? 'Thông tin sản phẩm được lấy từ hệ thống; ảnh thiếu sẽ được ghi rõ là minh họa.'
+                : 'Sản phẩm và ảnh trong bản trải nghiệm được kế thừa từ repository.'}{' '}
+              Hoa thủ công có thể khác nhẹ về dáng, sắc độ và cách gói. Tiệm sẽ xác nhận quy cách,
+              thời gian hoàn thiện và giá thực tế trước khi nhận đơn.
             </p>
           </details>
           <details>
@@ -157,7 +188,12 @@ export function ProductDetail({ product: p }: { product: Product }) {
         <span>
           <b>{quantity}</b> × {money(p.price)}
         </span>
-        <button type="button" className="button" onClick={addToCart}>
+        <button
+          type="button"
+          className="button"
+          disabled={!ready || soldOut || mode === 'unavailable'}
+          onClick={addToCart}
+        >
           Thêm vào túi hoa <ArrowUpRight size={17} />
         </button>
       </div>

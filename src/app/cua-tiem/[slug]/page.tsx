@@ -1,26 +1,26 @@
-export const dynamicParams = false;
+export const dynamic = 'force-dynamic';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { products } from '@/lib/catalog';
+import { getStorefront, getStorefrontProduct } from '@/lib/storefront';
 import { ProductDetail } from '@/components/product-detail';
 import { ProductCard, SectionHeading } from '@/components/site';
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.id }));
-}
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const p = products.find((x) => x.id === slug);
+  const p = await getStorefrontProduct(slug);
+  if (!p) notFound();
   return { title: p?.name || 'Không tìm thấy sản phẩm', description: p?.description };
 }
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = products.find((x) => x.id === slug);
+  const p = await getStorefrontProduct(slug);
   if (!p) notFound();
+  const storefront = await getStorefront();
+  const products = storefront.products;
   return (
     <>
       <nav className="breadcrumb commerce-breadcrumb" aria-label="Đường dẫn">

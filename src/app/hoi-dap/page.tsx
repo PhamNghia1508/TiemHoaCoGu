@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Hỏi đáp',
   description: 'Giải đáp rõ ràng về hoa sáp, workshop và bản trải nghiệm của Tiệm Hoa Có Gu.',
 };
-const groups = [
+const previewGroups = [
   {
     label: 'HOA SÁP / CHĂM HOA',
     items: [
@@ -54,7 +54,49 @@ const groups = [
     ],
   },
 ];
+const connectedGroups = [
+  previewGroups[0],
+  {
+    label: 'TÀI KHOẢN / API',
+    items: [
+      [
+        'Dữ liệu nào được lấy từ hệ thống?',
+        'Danh mục, sản phẩm, workshop và các ca học lấy từ backend. Nếu mất kết nối, trang báo lỗi thay vì hiển thị mẫu như dữ liệu thật.',
+      ],
+      [
+        'Thông tin nhập vào form đi đâu?',
+        'Đăng ký, đăng nhập và gửi yêu cầu ở chế độ API sẽ gửi dữ liệu cần thiết đến máy chủ. Giỏ và yêu thích lưu mã sản phẩm trên trình duyệt; mật khẩu, token và địa chỉ không lưu vào localStorage.',
+      ],
+      [
+        'Làm sao xem lại yêu cầu?',
+        'Đăng nhập rồi mở Tra cứu để xem các đơn, yêu cầu đặt riêng và giữ chỗ thuộc tài khoản của bạn. Không tra cứu công khai bằng mã và số điện thoại.',
+      ],
+    ],
+  },
+  {
+    label: 'TRẠNG THÁI / CHƯA MỞ BÁN',
+    items: [
+      [
+        'Website đã nhận thanh toán thật chưa?',
+        'Chưa. Provider thanh toán, giao vận và email/SMS thật chưa được nối. Đây là môi trường tích hợp; chưa mở bán production.',
+      ],
+      [
+        'Giữ chỗ workshop có phải đã mua vé?',
+        'Không. API trả thời hạn giữ chỗ và trạng thái; giữ chỗ chưa phải xác nhận thanh toán. Chỉ chọn ca từ lịch backend, không phải ngày tự nhập.',
+      ],
+      [
+        'Gửi yêu cầu đặt riêng có phải đã đặt hoa?',
+        'Không. Tiệm cần phát hành báo giá có phiên bản và hạn duyệt. Chỉ duyệt báo giá hiện hành của chính bạn; tạo đơn chờ xử lý không có nghĩa là đã trả tiền hay bắt đầu làm.',
+      ],
+      [
+        'Vì sao chưa thể tạo đơn?',
+        'Thao tác ghi có thể đang bị tắt bởi cấu hình máy chủ; checkout cần báo phí giao hàng hợp lệ từ backend. Nếu provider chưa sẵn sàng, hệ thống sẽ báo lỗi, không tự đặt phí giao bằng 0.',
+      ],
+    ],
+  },
+];
 export default function FAQPage() {
+  const groups = process.env.API_BASE_URL ? connectedGroups : previewGroups;
   return (
     <div className="studio-shell">
       <PageIntro

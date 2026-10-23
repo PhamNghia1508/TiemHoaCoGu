@@ -2,7 +2,13 @@ export type Product = {
   id: string;
   name: string;
   subtitle: string;
-  category: 'bo' | 'lo' | 'diy';
+  category: string;
+  backendId?: string;
+  isCustomizable?: boolean;
+  isPreOrder?: boolean;
+  quantityAvailable?: number;
+  images?: string[];
+  imageIsFallback?: boolean;
   price: number;
   image: string;
   alternate: string;

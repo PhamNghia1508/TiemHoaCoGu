@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { FavoriteButton, useStore } from './store-provider';
 import { money, type Product } from '@/lib/catalog';
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
-  const { add } = useStore();
+  const { add, ready, mode } = useStore();
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -65,6 +65,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
         <button
           className={`quick-add ${added ? 'is-added' : ''}`}
           aria-label={`Thêm ${product.name} vào túi`}
+          disabled={
+            !ready ||
+            (mode === 'connected' &&
+              !product.isPreOrder &&
+              product.quantityAvailable !== undefined &&
+              product.quantityAvailable <= 0)
+          }
           onClick={() => {
             add(product.id);
             setAdded(true);

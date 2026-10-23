@@ -19,6 +19,7 @@ node_modules/
 
 # Next.js / private environment
 .next/
+.next-*/
 out/
 coverage/
 .env*

@@ -12,10 +12,12 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, X, Minus, Plus, ShoppingBag, Search, Heart, Trash2 } from 'lucide-react';
-import { products, money } from '@/lib/catalog';
+import { money, type Product } from '@/lib/catalog';
+import type { StorefrontMode } from '@/lib/storefront';
 
 type Line = { id: string; quantity: number };
 type Store = {
+  ready: boolean;
   cart: Line[];
   favorites: string[];
   add: (id: string, quantity?: number) => void;
@@ -28,6 +30,9 @@ type Store = {
   count: number;
   clear: () => void;
   toast: (text: string) => void;
+  products: Product[];
+  categories: { id: string; label: string }[];
+  mode: StorefrontMode;
 };
 const Context = createContext<Store | null>(null);
 export function useStore() {
@@ -35,7 +40,21 @@ export function useStore() {
   if (!value) throw new Error('StoreProvider is required');
   return value;
 }
-export function StoreProvider({ children }: { children: ReactNode }) {
+export function StoreProvider({
+  children,
+  initialProducts = [],
+  initialCategories = [{ id: 'all', label: 'Tất cả' }],
+  mode = 'preview',
+  error,
+}: {
+  children: ReactNode;
+  initialProducts?: Product[];
+  initialCategories?: { id: string; label: string }[];
+  mode?: StorefrontMode;
+  error?: string;
+}) {
+  const products = initialProducts;
+  const categories = initialCategories;
   const [cart, setCart] = useState<Line[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
@@ -71,7 +90,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       /* Dữ liệu cục bộ hỏng: bắt đầu giỏ mới, không chặn giao diện. */
     }
     setReady(true);
-  }, []);
+  }, [products]);
   useEffect(() => {
     if (ready)
       try {
@@ -80,7 +99,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       } catch {
         /* Trình duyệt có thể chặn lưu trữ. */
       }
-  }, [cart, favorites, ready]);
+  }, [cart, favorites, ready, products]);
   useEffect(() => {
     if (!notice) return;
     const timer = setTimeout(() => setNotice(''), 3000);
@@ -96,6 +115,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         .filter((l) => l.quantity > 0),
     );
   const add = (id: string, quantity = 1) => {
+    if (!ready) {
+      setNotice('Túi hoa đang khởi tạo, vui lòng thử lại sau một chút.');
+      return;
+    }
     if (!products.some((p) => p.id === id) || !Number.isInteger(quantity) || quantity < 1) return;
     setCart((lines) =>
       lines.some((l) => l.id === id)
@@ -133,6 +156,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   return (
     <Context.Provider
       value={{
+        ready,
         cart,
         favorites,
         add,
@@ -143,6 +167,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         count,
         clear: () => setCart([]),
         toast,
+        products,
+        categories,
+        mode,
         openCart: () => cartDialog.current?.showModal(),
         openSearch: () => {
           setQuery('');
@@ -150,6 +177,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
+      {mode === 'unavailable' && (
+        <div role="alert" className="catalog-error">
+          Không thể tải catalog từ API. {error || 'Vui lòng thử lại sau.'}
+        </div>
+      )}
       {children}
       <div role="status" aria-live="polite" className={`toast ${notice ? 'visible' : ''}`}>
         {notice}
@@ -313,13 +345,14 @@ export function HeaderActions() {
   );
 }
 export function FavoriteButton({ id }: { id: string }) {
-  const { favorites, toggleFavorite } = useStore();
+  const { favorites, toggleFavorite, ready } = useStore();
   const liked = favorites.includes(id);
   return (
     <button
       className={`favorite-button ${liked ? 'liked' : ''}`}
       aria-label={liked ? 'Bỏ lưu sản phẩm' : 'Lưu sản phẩm'}
       aria-pressed={liked}
+      disabled={!ready}
       onClick={() => toggleFavorite(id)}
     >
       <Heart size={19} strokeWidth={1.4} fill={liked ? 'currentColor' : 'none'} />
