@@ -2969,3 +2969,9 @@ dialog.drawer {
 body:has(dialog[open]) {
   overflow: hidden;
 }
+
+.workshop-image,
+.workshop-copy {
+  width: 100%;
+  max-width: 100%;
+}

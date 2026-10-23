@@ -9,9 +9,11 @@ test('trang chủ không tràn ngang và không lỗi accessibility nghiêm tr�
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Có những điều');
   await page.evaluate(() => document.fonts.ready);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
-    true,
-  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
   const audit = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
     .analyze();
@@ -46,7 +48,9 @@ test('mọi route chính và 404 đều hoạt động', async ({ page }) => {
     expect(response?.status(), route).toBe(200);
     await expect(page.locator('main h1')).toBeVisible();
     expect(
-      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
       route,
     ).toBe(true);
   }
@@ -147,7 +151,9 @@ test('không tràn ngang ở các breakpoint trung gian', async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
     expect(
-      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
       `width=${width}`,
     ).toBe(true);
   }
