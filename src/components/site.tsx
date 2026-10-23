@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowRight, ArrowUpRight, Flower2 } from 'lucide-react';
-import { HeaderActions, FavoriteButton } from './store-provider';
-import { money, type Product } from '@/lib/catalog';
+import { HeaderActions } from './store-provider';
 import MobileNavigation from './mobile-navigation';
+import SiteNavigation from './site-navigation';
+export { default as ProductCard } from './product-card';
+
 export function FlowerMark({ className = '' }: { className?: string }) {
-  return <Flower2 className={className} strokeWidth={1} aria-hidden="true" />;
+  return <Flower2 className={className} strokeWidth={1.7} aria-hidden="true" />;
 }
 export function Header() {
   return (
@@ -14,9 +15,9 @@ export function Header() {
         Đến nội dung chính
       </a>
       <div className="announcement">
-        <span>Hoa không vội. Lời thương cũng thế.</span>
+        <span>HOA SÁP. QUÀ XINH. MỘT CHÚT KHÁC BIỆT.</span>
         <Link href="/workshop">
-          Hẹn bạn một buổi ở xưởng <ArrowUpRight size={12} />
+          Hẹn nhau ở xưởng <ArrowUpRight size={14} />
         </Link>
       </div>
       <header className="site-header">
@@ -24,17 +25,12 @@ export function Header() {
           <FlowerMark />
           <span>
             <small>TIỆM HOA</small>
-            <strong>có gu.</strong>
+            <strong>
+              có gu<span className="brand-period">.</span>
+            </strong>
           </span>
         </Link>
-        <nav className="desktop-nav" aria-label="Điều hướng chính">
-          <Link href="/cua-tiem">Cửa tiệm</Link>
-          <Link href="/dat-rieng">Hoa theo ý bạn</Link>
-          <Link href="/workshop">
-            Workshop <span className="nav-dot" />
-          </Link>
-          <Link href="/cau-chuyen">Chuyện của tiệm</Link>
-        </nav>
+        <SiteNavigation />
         <HeaderActions />
         <MobileNavigation />
       </header>
@@ -45,27 +41,27 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-top">
-        <div>
-          <span className="eyebrow">MỘT TIỆM HOA. NHIỀU ĐIỀU MUỐN NÓI.</span>
+        <div className="footer-invite">
+          <span className="eyebrow">MỘT CHÚT HOA. NHIỀU CHÚT VUI.</span>
           <h2>
-            Gửi hoa.
+            Chọn một món quà.
             <br />
-            <em>Gửi cả tấm lòng.</em>
+            Làm ai đó <em>vui cả ngày.</em>
           </h2>
-          <Link href="/cua-tiem" className="text-link light">
-            Chọn một món quà <ArrowUpRight size={20} />
+          <Link className="button button-citrus" href="/cua-tiem">
+            Tìm món quà của bạn <ArrowUpRight size={20} />
           </Link>
         </div>
         <div className="footer-links">
           <div>
-            <span className="eyebrow">GHÉ TIỆM</span>
-            <Link href="/cua-tiem">Cửa tiệm</Link>
+            <span>GHÉ TIỆM</span>
+            <Link href="/cua-tiem">Tất cả sản phẩm</Link>
             <Link href="/dat-rieng">Hoa theo ý bạn</Link>
             <Link href="/workshop">Workshop tại xưởng</Link>
             <Link href="/cau-chuyen">Câu chuyện của tiệm</Link>
           </div>
           <div>
-            <span className="eyebrow">CẦN MỘT CHÚT GIÚP ĐỠ?</span>
+            <span>CẦN MỘT CHÚT GIÚP ĐỠ?</span>
             <Link href="/tra-cuu">Tra cứu đơn & đặt chỗ</Link>
             <Link href="/hoi-dap">Hỏi đáp & chăm hoa</Link>
             <Link href="/chuyen-cua-hoa">Chuyện của hoa</Link>
@@ -74,51 +70,17 @@ export function Footer() {
         </div>
       </div>
       <div className="footer-wordmark" aria-hidden="true">
-        có gu<span>✳</span>
+        có gu
+        <span>
+          <Flower2 strokeWidth={1.2} />
+        </span>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Tiệm Hoa Có Gu · SÁPA Studio</span>
-        <span>Được làm chậm, bằng cả sự để tâm.</span>
+        <span>© {new Date().getFullYear()} TIỆM HOA CÓ GU / SÁPA STUDIO</span>
         <span className="preview-label">BẢN TRẢI NGHIỆM · CHƯA NHẬN ĐƠN THẬT</span>
+        <a href="#noi-dung">Về đầu trang ↑</a>
       </div>
     </footer>
-  );
-}
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
-  return (
-    <article className="product-card">
-      <div className="product-image">
-        <Link href={`/cua-tiem/${product.id}`} aria-label={`Xem ${product.name}`}>
-          <Image
-            src={product.image}
-            alt={product.subtitle}
-            fill
-            sizes="(max-width: 600px) 47vw, (max-width: 1000px) 45vw, 25vw"
-            style={{ objectFit: 'cover' }}
-          />
-          <span className="product-hover">
-            Một chút về {product.name} <ArrowUpRight size={18} />
-          </span>
-        </Link>
-        {product.tag && <span className="product-tag">{product.tag}</span>}
-        <FavoriteButton id={product.id} />
-        <span className="product-index">0{index + 1}</span>
-      </div>
-      <div className="product-info">
-        <div>
-          <Link href={`/cua-tiem/${product.id}`}>
-            <h3>{product.name}</h3>
-          </Link>
-          <p>{product.subtitle}</p>
-        </div>
-        <span className="product-price">{money(product.price)}</span>
-      </div>
-      <div className="swatches" role="img" aria-label="Bảng màu tham khảo">
-        {product.palette.map((color) => (
-          <i key={color} style={{ backgroundColor: color }} />
-        ))}
-      </div>
-    </article>
   );
 }
 export function SectionHeading({
@@ -157,7 +119,7 @@ export function ArrowLink({
   return (
     <Link href={href} className={`text-link ${className}`}>
       {children}
-      <ArrowRight size={19} strokeWidth={1.4} />
+      <ArrowRight size={19} strokeWidth={1.8} />
     </Link>
   );
 }

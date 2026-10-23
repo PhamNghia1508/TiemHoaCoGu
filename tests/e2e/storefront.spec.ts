@@ -7,7 +7,7 @@ test('trang chủ không tràn ngang và không lỗi accessibility nghiêm tr�
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Có những điều');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('TẶNG HOA.');
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(
@@ -122,7 +122,10 @@ test('form đặt riêng chỉ tạo bản nháp, không gửi API', async ({ pa
   await page.goto('/dat-rieng');
   await page.locator('main').getByLabel('Bạn muốn tặng ai?').selectOption('Sinh nhật');
   await page.locator('main').getByLabel('Khoảng ngân sách').selectOption('400.000 – 700.000 ₫');
-  await page.locator('main').getByLabel('Điều bạn muốn gửi gắm').fill('Một bó hoa màu kem nhẹ nhàng.');
+  await page
+    .locator('main')
+    .getByLabel('Điều bạn muốn gửi gắm')
+    .fill('Một bó hoa màu kem nhẹ nhàng.');
   await page.locator('main').getByLabel('Tên của bạn').fill('Khách kiểm thử');
   await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
   await page.getByRole('button', { name: 'Xem bản nháp yêu cầu' }).click();

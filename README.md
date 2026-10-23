@@ -1,6 +1,6 @@
 # Tiệm Hoa Có Gu
 
-Frontend Next.js cho tiệm hoa sáp thủ công & workshop SÁPA Studio. Giao diện tiếng Việt, tự thiết kế theo hướng editorial: nền giấy ấm, đỏ mận, serif Cormorant Garamond, sans Be Vietnam Pro và bố cục bất đối xứng. Không dùng UI kit hay sao chép template.
+Frontend Next.js cho tiệm hoa sáp thủ công & workshop SÁPA Studio. Giao diện tiếng Việt theo hướng Botanical Play: cobalt–citrus, typography sans đậm, poster hero và luồng chọn quà ưu tiên thao tác thật. Không dùng UI kit hay sao chép template.
 
 **Trạng thái:** frontend trải nghiệm có tương tác; chưa mở bán, chưa nối dữ liệu trực tiếp với backend và chưa nhận đơn, giữ chỗ hoặc thanh toán thật. Backend ở repository riêng `ZidenVN/TiemHoaCoGu_BE`, không bị sửa trong PR này.
 
@@ -25,7 +25,8 @@ Font được đóng gói trong ứng dụng, không phụ thuộc Google Fonts 
 ## Có gì hoạt động?
 
 - Trang chủ, cửa tiệm, 6 chi tiết sản phẩm, câu chuyện tiệm, 3 bài đọc, FAQ và chính sách.
-- Lọc loại sản phẩm, tìm tiếng Việt không dấu, sắp xếp giá, tìm toàn trang.
+- Tìm quà theo loại/ngân sách từ trang chủ; bộ lọc giá desktop/mobile, active chips/reset, tìm tiếng Việt không dấu, sắp xếp giá, tìm toàn trang.
+- Quick-add có feedback, zoom ảnh và CTA cố định trên mobile. Ảnh bối cảnh được ghi rõ, không giả thành góc chụp sản phẩm.
 - Sản phẩm yêu thích và giỏ hàng lưu trên trình duyệt; tăng, giảm, xóa, tính tổng và giữ sau reload. Giới hạn 20 đơn vị mỗi sản phẩm trong bản trải nghiệm; đây không phải số tồn kho.
 - Drawer giỏ hàng & dialog tìm kiếm dùng native `<dialog>` với focus trap và Escape.
 - Form hoa đặt riêng & workshop: kiểm tra đầu vào, xem lại **bản nháp**, không gửi dữ liệu hoặc tạo mã đơn/vé giả.
@@ -78,4 +79,4 @@ Trước public launch: hoàn thiện các mục backend nêu trên, xác nhận
 
 ## Tinh thần thiết kế
 
-Tham khảo nguyên tắc bố cục editorial, nhịp typography và chuyển động tiết chế từ [Dribbble](https://dribbble.com/tags/flower-shop-website), [Framer Urban Flora](https://www.framer.com/marketplace/templates/urban-flora/) và [Awwwards Orchid](https://www.awwwards.com/sites/orchid). Không sao chép mã, layout nguyên bản hoặc tài sản hình ảnh của các website tham khảo. Nguồn ảnh chi tiết: [Design notes](docs/DESIGN.md).
+Nghiên cứu Awwwards Flower Dose, Framer Sweetpea, Baymard, NNGroup và các case branding florist để thay đổi cả art direction lẫn UX thương mại. Không dùng template có sẵn. Xem [Design rethink](docs/DESIGN-RETHINK.md) cho nguồn và cách áp dụng, [Design notes](docs/DESIGN.md) cho palette, typography, tài nguyên và giới hạn.

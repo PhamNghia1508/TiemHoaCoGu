@@ -1,261 +1,247 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Asterisk,
-  Flower2,
-  HandHeart,
-  PenLine,
-  PackageCheck,
-} from 'lucide-react';
-import { products, articles } from '@/lib/catalog';
-import { ProductCard, SectionHeading, ArrowLink } from '@/components/site';
+import { ArrowUpRight, ArrowDownRight, Flower2, HandHeart, Gift, MoveUpRight } from 'lucide-react';
+import { GiftFinder, HomeCollection } from '@/components/home-commerce';
+import { articles, money } from '@/lib/catalog';
 export default function Home() {
   return (
     <>
-      <section className="hero">
-        <div className="hero-copy">
+      <section className="campaign-hero">
+        <div className="campaign-copy">
           <p className="eyebrow">
-            <span className="tiny-line" /> HOA SÁP THỦ CÔNG & NHỮNG ĐIỀU DỊU DÀNG
+            <span className="live-dot" /> HOA SÁP & QUÀ TẶNG, LÀM BẰNG TAY.
           </p>
           <h1>
-            Có những điều,
+            TẶNG HOA.
             <br />
-            <em>để hoa nói.</em>
-            <span className="hero-asterisk">
-              <Asterisk strokeWidth={1} />
+            TẶNG{' '}
+            <span>
+              GU
+              <Flower2 aria-hidden="true" />
             </span>
           </h1>
-          <p className="hero-description">
-            Không chỉ là một bó hoa.
-            <br />
-            Là lời thương, là một cái ôm, là chút bình yên
-            <br className="desktop-only" /> bạn muốn gửi đến một người.
-          </p>
-          <div className="hero-cta">
-            <Link href="/cua-tiem" className="button">
-              Tìm một bó hoa có gu <ArrowUpRight size={19} strokeWidth={1.5} />
-            </Link>
-            <Link href="/dat-rieng" className="underlined">
-              Hay để tiệm làm riêng?
-            </Link>
-          </div>
-          <div className="hero-bottom">
-            <span>
-              GÓI GHÉM BẰNG TAY.
+          <div className="campaign-copy-bottom">
+            <p>
+              Không phải món quà nào cũng nói thay bạn.
               <br />
-              GỬI ĐI BẰNG CẢ TẤM LÒNG.
-            </span>
-            <a href="#bo-suu-tap" aria-label="Khám phá bộ sưu tập" className="scroll-cue">
-              <ArrowDown size={20} strokeWidth={1} />
-            </a>
+              Nhưng món quà <strong>đúng gu</strong> thì có.
+            </p>
+            <Link href="/cua-tiem" className="button">
+              Chọn một món quà <ArrowUpRight size={21} />
+            </Link>
+            <Link href="/dat-rieng" className="campaign-secondary">
+              Hay làm một bó của riêng bạn? <ArrowUpRight size={16} />
+            </Link>
           </div>
         </div>
-        <div className="hero-visual">
-          <div className="hero-photo">
+        <div className="campaign-stage">
+          <div className="campaign-sticker">
+            <span>một chút hoa,</span>
+            <strong>VUI CẢ NGÀY.</strong>
+            <ArrowDownRight size={30} />
+          </div>
+          <Link
+            className="campaign-product"
+            href="/cua-tiem/trang-non"
+            aria-label="Khám phá bó hoa Trăng Non"
+          >
             <Image
-              src="/images/hero-wax.webp"
-              alt="Bó hoa sáp kem hồng gói kraft, nằm trên bàn vải linen trong ánh nắng dịu"
+              src="/images/prod-bouquet.webp"
+              alt="Bó hoa sáp Trăng Non màu hồng phấn và kem, gói giấy kraft và buộc nơ vải"
               fill
               priority
-              sizes="(max-width: 800px) 100vw, 54vw"
-              style={{ objectFit: 'cover', objectPosition: '63% center' }}
+              sizes="(max-width: 700px) 85vw, 43vw"
             />
-            <div className="photo-note">
-              a little flower,
-              <br />
-              <em>a lot of feeling.</em>
-            </div>
-            <div className="hero-stamp">
-              <Flower2 size={30} strokeWidth={1} />
+            <span className="campaign-product-label">
               <span>
-                HOA SÁP
-                <br />
-                THỦ CÔNG
+                <small>BÓ HOA SÁP / TRĂNG NON</small>
+                <strong>{money(420000)}</strong>
               </span>
-              <small>made with care</small>
-            </div>
-          </div>
-          <div className="hero-caption">
-            <span>01 / MỘT CHÚT DỊU DÀNG</span>
-            <span>
-              Bộ sưu tập Trăng Non <ArrowUpRight size={14} />
+              <MoveUpRight size={25} />
             </span>
-          </div>
+          </Link>
+          <span className="campaign-side-note">ĐẸP THEO CÁCH CỦA BẠN — CÓ GU.</span>
         </div>
       </section>
       <div className="brand-ribbon" aria-hidden="true">
-        <span>Mỗi bông hoa, một lời chưa nói</span>
-        <Asterisk />
-        <span>Không vội nở. Không vội phai.</span>
-        <Asterisk />
-        <span>Một món quà, nhiều thương mến</span>
-        <Asterisk />
+        <span>KHÔNG ĐỢI MỘT DỊP ĐẶC BIỆT</span>
+        <Flower2 />
+        <span>CHỈ CẦN MỘT NGƯỜI ĐẶC BIỆT</span>
+        <Flower2 />
+        <span>KỂ CẢ KHI NGƯỜI ĐÓ LÀ BẠN</span>
+        <Flower2 />
       </div>
-      <section className="section collection-section" id="bo-suu-tap">
-        <SectionHeading
-          number="01"
-          eyebrow="TỪ TIỆM, GỬI BẠN"
-          title={
-            <>
-              Một chút hoa.
-              <br />
-              <em>Nhiều chút thương.</em>
-            </>
-          }
-        >
-          <div className="heading-aside">
-            <p>
-              Chọn theo cảm xúc, không theo khuôn mẫu.
-              <br />
-              Mỗi món quà đều có một người đang chờ.
-            </p>
-            <ArrowLink href="/cua-tiem">Dạo một vòng cửa tiệm</ArrowLink>
-          </div>
-        </SectionHeading>
-        <div className="product-grid home-products">
-          {products.slice(0, 3).map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
-          ))}
-        </div>
-        <div className="collection-footnote">
-          <span>Đẹp theo cách của bạn. Được làm theo cách của tiệm.</span>
-          <span>HOA SÁP · QUÀ TẶNG · DIY</span>
-        </div>
+      <section className="shop-shortcuts section" aria-label="Chọn theo kiểu món quà">
+        {[
+          {
+            name: 'Một bó hoa',
+            note: 'Thay lời muốn nói',
+            image: '/images/prod-bouquet.webp',
+            id: 'bo',
+            n: '01',
+          },
+          {
+            name: 'Một góc xinh',
+            note: 'Cho ngày thường khác đi',
+            image: '/images/prod-jar.webp',
+            id: 'lo',
+            n: '02',
+          },
+          {
+            name: 'Một chút tự tay',
+            note: 'Quà tặng & những bộ DIY',
+            image: '/images/prod-kit.webp',
+            id: 'diy',
+            n: '03',
+          },
+        ].map((c) => (
+          <Link
+            href={`/cua-tiem?category=${c.id}`}
+            className={`shop-shortcut shortcut-${c.id}`}
+            key={c.id}
+          >
+            <span className="shortcut-count">{c.n}</span>
+            <div>
+              <h2>{c.name}</h2>
+              <p>{c.note}</p>
+              <span className="shortcut-arrow">
+                <ArrowUpRight size={21} />
+              </span>
+            </div>
+            <div className="shortcut-image">
+              <Image src={c.image} alt="" fill sizes="(max-width:700px) 30vw, 12vw" />
+            </div>
+          </Link>
+        ))}
       </section>
-      <section className="custom-strip">
-        <Flower2 strokeWidth={1} size={51} />
-        <div>
-          <span className="eyebrow">KHÔNG THẤY BÓ HOA “ĐÚNG NGƯỜI”?</span>
-          <h2>
-            Gu của bạn, <em>đôi tay của tiệm.</em>
-          </h2>
-        </div>
-        <ArrowLink href="/dat-rieng">Cùng tạo một bó hoa riêng</ArrowLink>
-      </section>
-      <section className="workshop-feature">
-        <div className="workshop-image">
+      <div className="finder-wrap">
+        <GiftFinder />
+      </div>
+      <HomeCollection />
+      <section className="custom-campaign">
+        <div className="custom-campaign-image">
           <Image
-            src="/images/workshop-hands.webp"
-            alt="Đôi tay người thợ đang tỉ mỉ nắn từng cánh hoa sáp tại bàn xưởng"
+            src="/images/ws-gallery.webp"
+            alt="Bảng cảm hứng hoa sáp và chất liệu tại xưởng"
             fill
-            sizes="(max-width: 800px) 100vw, 55vw"
-            style={{ objectFit: 'cover' }}
+            sizes="(max-width:700px) 100vw, 42vw"
           />
-          <span className="image-label">MỘT KHOẢNG NGHỈ CHO BẠN</span>
-        </div>
-        <div className="workshop-copy">
-          <p className="eyebrow">
-            <span className="section-number">02</span> HẸN NHAU Ở XƯỞNG
-          </p>
-          <h2>
-            Bỏ điện thoại xuống.
+          <span className="paper-tag">
+            GU CỦA BẠN.
             <br />
-            <em>
-              Chạm vào
-              <br />
-              một chút bình yên.
-            </em>
+            <strong>ĐÔI TAY CỦA TIỆM.</strong>
+            <Flower2 />
+          </span>
+        </div>
+        <div className="custom-campaign-copy">
+          <p className="eyebrow">02 / KHÔNG CẦN GIỐNG AI</p>
+          <h2>
+            Bạn có một gu.
+            <br />
+            Tiệm có
+            <br />
+            <em>đôi tay khéo.</em>
           </h2>
           <p>
-            Một buổi làm hoa, một tách trà, vài câu chuyện nhỏ. Không cần khéo tay — chỉ cần bạn
-            dành cho mình một khoảng thời gian.
+            Một bảng màu bạn mê. Một câu chuyện chỉ hai người biết. Kể cho tiệm nghe, mình cùng phác
+            một bó hoa không lẫn vào đâu.
           </p>
-          <div className="workshop-meta">
-            <span>2,5 giờ thong thả</span>
-            <i />
-            <span>Cho cả người mới bắt đầu</span>
-          </div>
-          <Link href="/workshop" className="button light-button">
-            Khám phá workshop <ArrowUpRight size={19} />
+          <Link className="button button-citrus" href="/dat-rieng">
+            Cùng tiệm làm riêng <ArrowUpRight size={20} />
           </Link>
-          <span className="handwritten">hẹn bạn, một ngày thật chậm.</span>
+          <span className="custom-small">Xem trước ý tưởng · Chưa gửi yêu cầu đặt hoa</span>
         </div>
       </section>
-      <section className="section story-section">
-        <div className="story-number">
-          <span className="eyebrow">03 / CHUYỆN CỦA TIỆM</span>
-          <Flower2 size={80} strokeWidth={0.6} />
-        </div>
-        <div className="story-text">
+      <section className="home-workshop section">
+        <div className="home-workshop-copy">
+          <p className="eyebrow">03 / HẸN NHAU Ở XƯỞNG</p>
           <h2>
-            Giữa những điều chóng qua,
+            Đổi màn hình.
             <br />
-            tiệm chọn làm ra
+            Lấy một
             <br />
-            <em>một điều ở lại.</em>
+            <span>buổi thật vui.</span>
           </h2>
-          <div className="story-detail">
-            <p>
-              Một cánh hoa được nắn lại nhiều lần. Một sợi nơ được buộc cho ngay ngắn. Tiệm tin
-              rằng, sự để tâm luôn có hình dáng — và đôi khi, hình dáng ấy là một bông hoa.
-            </p>
-            <ArrowLink href="/cau-chuyen">Đọc câu chuyện của tiệm</ArrowLink>
+          <p>
+            Chạm vào chất liệu. Nắn một cánh hoa. Tự tay làm một món quà. Không cần khéo sẵn — cứ
+            đến với một chút tò mò.
+          </p>
+          <div className="workshop-facts-inline">
+            <span>
+              <HandHeart size={19} /> Dành cho người mới
+            </span>
+            <span>
+              <Gift size={19} /> Mang thành phẩm về
+            </span>
+          </div>
+          <Link className="button" href="/workshop">
+            Khám phá buổi làm hoa <ArrowUpRight size={19} />
+          </Link>
+          <small>Lịch lớp chưa mở · Giá và nội dung hiện là tham khảo</small>
+        </div>
+        <div className="home-workshop-image">
+          <Image
+            src="/images/workshop-hands.webp"
+            alt="Đôi tay đang làm một bông hoa sáp tại bàn xưởng"
+            fill
+            sizes="(max-width:700px) 100vw, 48vw"
+          />
+          <div className="workshop-flower">
+            <Flower2 aria-hidden="true" strokeWidth={1} />
+            <span>
+              OFFLINE
+              <br />
+              IS A GOOD IDEA.
+            </span>
           </div>
         </div>
       </section>
-      <section className="care-values">
+      <section className="brand-values">
         <div>
-          <HandHeart />
-          <h3>Làm bằng tay, có tâm</h3>
-          <p>Từng cánh hoa đều được chăm chút.</p>
+          <span>01</span>
+          <h3>Đẹp không chỉ để ngắm.</h3>
+          <p>Là món quà được nghĩ đến kỹ, từ chất liệu đến cách trao.</p>
         </div>
         <div>
-          <PenLine />
-          <h3>Một lời nhắn của riêng bạn</h3>
-          <p>Dành chỗ cho những điều muốn nói.</p>
+          <span>02</span>
+          <h3>Giữ lại lâu hơn.</h3>
+          <p>Hoa sáp không cần tưới nước. Giữ khô, thoáng và tránh nguồn nhiệt.</p>
         </div>
         <div>
-          <PackageCheck />
-          <h3>Gói ghém thật cẩn thận</h3>
-          <p>Để món quà đến nơi vẫn vẹn nguyên.</p>
+          <span>03</span>
+          <h3>Thêm một chút bạn.</h3>
+          <p>Chọn bảng màu, gói ghém ý tưởng, viết một lời nhắn riêng.</p>
         </div>
       </section>
-      <section className="section journal-section">
-        <SectionHeading
-          number="04"
-          eyebrow="CHUYỆN NHỎ ĐỌC CHẬM"
-          title={
-            <>
-              Một góc <em>của hoa.</em>
-            </>
-          }
-        >
-          <ArrowLink href="/chuyen-cua-hoa">Ghé góc đọc của tiệm</ArrowLink>
-        </SectionHeading>
-        <div className="journal-grid">
+      <section className="section home-journal">
+        <div className="collection-top">
+          <div>
+            <p className="eyebrow">04 / CHUYỆN Ở TIỆM</p>
+            <h2>
+              Mấy chuyện nhỏ.
+              <br />
+              <span>Đọc lúc rảnh nha.</span>
+            </h2>
+          </div>
+          <Link href="/chuyen-cua-hoa" className="text-link">
+            Ghé góc đọc <ArrowUpRight size={20} />
+          </Link>
+        </div>
+        <div className="home-journal-grid">
           {articles.map((a, i) => (
-            <Link href={`/chuyen-cua-hoa/${a.slug}`} className="journal-card" key={a.slug}>
-              <div className="journal-image">
-                <Image
-                  src={a.image}
-                  alt={a.title}
-                  fill
-                  sizes="(max-width: 650px) 90vw, 30vw"
-                  style={{ objectFit: 'cover' }}
-                />
+            <Link href={`/chuyen-cua-hoa/${a.slug}`} className="home-journal-card" key={a.slug}>
+              <div className="home-journal-image">
+                <Image src={a.image} alt="" fill sizes="(max-width:700px) 90vw, 30vw" />
                 <span>0{i + 1}</span>
               </div>
-              <span className="eyebrow">
-                {a.category} <span>· 3 PHÚT ĐỌC</span>
-              </span>
+              <p className="eyebrow">{a.category} / 3 PHÚT ĐỌC</p>
               <h3>
                 {a.title}
-                <ArrowUpRight size={20} />
+                <ArrowUpRight size={22} />
               </h3>
             </Link>
           ))}
         </div>
-      </section>
-      <section className="closing-note">
-        <Asterisk size={38} strokeWidth={1} />
-        <p>
-          Không cần một dịp đặc biệt
-          <br />
-          để dành cho ai đó <em>một điều dịu dàng.</em>
-        </p>
-        <ArrowLink href="/cua-tiem">Kể cả khi người đó là bạn</ArrowLink>
       </section>
     </>
   );

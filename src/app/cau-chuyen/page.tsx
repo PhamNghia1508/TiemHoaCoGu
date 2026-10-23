@@ -1,107 +1,100 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
-import { ArrowLink, FlowerMark, PageIntro, SectionHeading } from '@/components/site';
+import { ArrowUpRight } from 'lucide-react';
+import { ArrowLink, PageIntro, SectionHeading } from '@/components/site';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Câu chuyện của tiệm',
-  description:
-    'Câu chuyện về Tiệm Hoa Có Gu và SÁPA Studio — nơi những bông hoa sáp được làm chậm bằng đôi tay.',
+  description: 'Một góc nhìn thật hơn về cách Tiệm Hoa Có Gu làm hoa sáp và những món quà có gu.',
 };
 
 export default function StoryPage() {
   return (
-    <>
+    <div className="studio-shell">
       <PageIntro
-        eyebrow="CÂU CHUYỆN CỦA TIỆM"
-        title={
-          <>
-            Một tiệm hoa chọn
-            <br />
-            <em>làm mọi thứ thật chậm.</em>
-          </>
-        }
-        description="Tiệm Hoa Có Gu / SÁPA Studio bắt đầu từ tình yêu với những điều được làm bằng tay — một cánh hoa, một chiếc nơ, một món quà có người nhận cụ thể."
+        eyebrow="CÂU CHUYỆN / SÁPA STUDIO"
+        title={<>Làm hoa bằng tay. Giữ lại điều bạn muốn nói.</>}
+        description="Tiệm Hoa Có Gu là một tiệm hoa sáp và góc làm đồ thủ công. Không thêm thắt tiểu sử — chỉ bắt đầu từ chất liệu, bảng màu và từng món quà cụ thể."
       />
-      <section className="editorial-split section">
-        <div className="editorial-photo">
+      <section className="studio-grid-2 studio-block" aria-labelledby="story-process">
+        <div className="studio-media">
           <Image
             src="/images/workshop-hands.webp"
-            alt="Đôi tay đang làm hoa sáp tại xưởng"
+            alt="Đôi tay đang làm hoa sáp tại bàn làm việc"
             fill
-            sizes="(max-width: 800px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
+            sizes="(max-width: 760px) 100vw, 50vw"
           />
         </div>
-        <div className="editorial-copy">
-          <span className="eyebrow">01 / BẮT ĐẦU TỪ ĐÔI TAY</span>
-          <h2>
-            Giữa những điều chóng qua, tiệm chọn làm ra <em>một điều ở lại.</em>
-          </h2>
+        <div className="studio-copy">
+          <p className="studio-kicker">01 / BÀN LÀM VIỆC</p>
+          <h2 id="story-process">Mỗi món bắt đầu từ một câu hỏi nhỏ.</h2>
           <p>
-            Mỗi bông hoa sáp là một khoảng thời gian được giữ lại: lúc chọn màu, nắn cánh, sắp từng
-            nhành hoa và buộc sợi ruy-băng cuối cùng.
+            Người nhận thích gì? Màu nào sẽ vừa với căn phòng? Món quà cần nói thay điều gì? Từ đó,
+            tiệm chọn chất liệu, thử sắc độ, rồi làm từng phần bằng tay.
           </p>
           <p>
-            Tiệm tin món quà đẹp không nhất thiết phải thật lớn. Nó cần vừa vặn với người nhận, và
-            đủ chân thành để nói thay những điều đôi khi ta chưa biết nói thế nào.
+            Hoa sáp không phải hoa tươi được giữ nguyên. Nó là một vật thể mới: có dấu tay, có độ
+            lệch nhẹ, và được làm để ở lại lâu hơn một mùa.
           </p>
-          <ArrowLink href="/cua-tiem">Ghé cửa tiệm</ArrowLink>
+          <ArrowLink href="/dat-rieng">Kể tiệm nghe gu của bạn</ArrowLink>
         </div>
       </section>
-      <section className="section story-section">
+      <section className="studio-block studio-block--lilac" aria-labelledby="how-we-work">
         <SectionHeading
           number="02"
-          eyebrow="SÁPA STUDIO"
+          eyebrow="SÁPA STUDIO / PROCESS"
           title={
             <>
-              Một góc nhỏ cho
-              <br />
-              <em>những điều có gu.</em>
+              Chất liệu trước. <br />
+              Lời hay để sau.
             </>
           }
         />
-        <div className="story-detail">
-          <p>
-            SÁPA Studio là tên gọi của phần xưởng phía sau Tiệm Hoa Có Gu — nơi những ý tưởng được
-            thử bằng chất liệu, màu sắc và đôi tay. Ở đây, không có hai bông hoa thủ công hoàn toàn
-            giống nhau; mỗi khác biệt nhỏ là dấu vết của người làm.
-          </p>
-          <p>
-            Tiệm làm hoa sáp để những lời thương có thêm hình dáng, và để bạn có thể tặng một điều
-            dịu dàng vào bất kỳ ngày nào.
-          </p>
-        </div>
+        <ol className="studio-process" id="how-we-work">
+          <li>
+            <strong>01</strong>
+            <h3>Chọn bảng màu</h3>
+            <p>Nhìn vào dịp tặng, người nhận và không gian để chọn cảm giác phù hợp.</p>
+          </li>
+          <li>
+            <strong>02</strong>
+            <h3>Thử bằng tay</h3>
+            <p>
+              Nắn cánh, dựng nhành, đặt cạnh nhau. Những khác biệt nhỏ là một phần của đồ thủ công.
+            </p>
+          </li>
+          <li>
+            <strong>03</strong>
+            <h3>Gói để trao đi</h3>
+            <p>Hoàn thiện bó, hộp hoặc bộ DIY với phần nhắn gửi dành riêng cho người nhận.</p>
+          </li>
+        </ol>
       </section>
-      <section className="editorial-split section">
-        <div className="editorial-copy">
-          <span className="eyebrow">03 / MỘT LỜI MỜI</span>
-          <h2>
-            Đến với tiệm bằng <em>sự tò mò.</em>
-          </h2>
+      <section className="studio-grid-2 studio-block" aria-labelledby="come-by">
+        <div className="studio-copy">
+          <p className="studio-kicker">03 / GÓC XƯỞNG</p>
+          <h2 id="come-by">Bạn có thể bắt đầu bằng một buổi workshop.</h2>
           <p>
-            Có thể là một bó hoa, một bộ DIY, hoặc một buổi chiều tự tay làm điều gì đó. Bạn không
-            cần biết trước mình sẽ làm thật khéo — chỉ cần bắt đầu.
+            Không cần biết trước mình sẽ làm thật khéo. Một buổi ở xưởng là cách đơn giản nhất để
+            chạm vào chất liệu và xem đôi tay muốn đi đâu.
           </p>
-          <ArrowLink href="/workshop">Hẹn một buổi ở xưởng</ArrowLink>
+          <ArrowLink href="/workshop">Xem các trải nghiệm</ArrowLink>
         </div>
-        <div className="editorial-photo">
+        <div className="studio-media">
           <Image
-            src="/images/hero-wax.webp"
-            alt="Bó hoa sáp thủ công trong ánh sáng dịu"
+            src="/images/ws-studio.webp"
+            alt="Không gian studio với bàn làm hoa"
             fill
-            sizes="(max-width: 800px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
+            sizes="(max-width: 760px) 100vw, 50vw"
           />
         </div>
       </section>
-      <div className="closing-note">
-        <FlowerMark />
-        <p>
-          Hoa không vội.
-          <br />
-          <em>Lời thương cũng thế.</em>
-        </p>
-        <ArrowLink href="/chuyen-cua-hoa">Đọc chuyện của hoa</ArrowLink>
+      <div className="studio-block studio-block--cobalt studio-footerline">
+        <span>Tiệm làm chậm, nhưng không làm mơ hồ.</span>
+        <ArrowLink href="/chuyen-cua-hoa" className="light">
+          Đọc chuyện của hoa <ArrowUpRight size={16} />
+        </ArrowLink>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,29 +1,23 @@
-# Một tiệm hoa có cá tính
+# Botanical Play — Tiệm Hoa Có Gu
 
-## Hướng thiết kế
+## Hướng hiện tại
 
-Tiệm hoa sáp thủ công, không phải cửa hàng nước hoa hay một trang SaaS. Trục chính là những điều được làm chậm: nền giấy ngà, màu mận trầm, màu olive tiết chế; chữ serif lớn, nhiều khoảng thở và nhịp ảnh lệch nhau. Thẻ sản phẩm phẳng, đường kẻ mảnh; không dùng gradient, glassmorphism, badge thành tích hay testimonial giả.
+Thay thế hướng editorial ngà–mận/serif trước đây bằng một florist studio có cá tính rõ: cobalt `#243db5`, citrus `#ebf28b`, warmwhite `#fffdf8`, lilac `#ece7f5`, nearblack `#1c2326`. Be Vietnam Pro 800 là chữ chủ đạo, serif italic chỉ dùng như một nét nhãn giấy nhỏ. Font tự host, có tiếng Việt.
 
-Hero mở bằng “Có những điều, để hoa nói.”, ảnh hoa chiếm nửa còn lại, dấu tròn nhỏ như tem gói quà. Workshop chuyển sang nền mận để thay nhịp thay vì lặp lại một lưới card. Footer dùng wordmark lớn làm điểm kết.
+Hero như một poster “Tặng hoa. Tặng gu.”; ảnh sản phẩm thật từ catalog, nhãn giá và đường vào cửa tiệm trực tiếp. Category shortcuts và form tìm quà đưa loại/ngân sách vào URL. Cửa tiệm có intro gọn, giá/lọc/sort/wishlist rõ và quick-add phản hồi ngay. PDP cho zoom ảnh, phân biệt ảnh sản phẩm với ảnh bối cảnh, thông tin phí chưa xác nhận và CTA mobile cố định.
 
-Cormorant Garamond cho cảm xúc, Be Vietnam Pro cho thông tin. Tất cả font tự host và có bộ ký tự tiếng Việt. Chuyển động chỉ gồm hover ảnh/nút và toast; tôn trọng `prefers-reduced-motion`.
+Các trang workshop, hoa làm riêng, câu chuyện, journal và FAQ dùng cùng ngôn ngữ studio. Không dùng UI kit, nền gradient, glassmorphism hay các bộ card thành tích/review hư cấu. Chuyển động phục vụ phản hồi; reduced motion, focus, native dialog/Escape và labels vẫn là ràng buộc thiết kế.
 
-## Tham khảo, không sao chép
+## Nghiên cứu
 
-- [Dribbble — Flower Shop Website](https://dribbble.com/tags/flower-shop-website): tham khảo tương quan ảnh, chữ và khoảng trắng.
-- [Framer — Urban Flora](https://www.framer.com/marketplace/templates/urban-flora/): cách ảnh và lời dẫn tạo đường đi đến inquiry.
-- [Awwwards — Orchid](https://www.awwwards.com/sites/orchid): nhịp editorial và hệ thống trang nội dung.
-
-Không dùng mã, font trả phí, screenshot hoặc ảnh sản phẩm từ các trang tham khảo.
+Nguồn đã đọc và quyết định áp dụng cụ thể: [Design rethink](DESIGN-RETHINK.md), gồm Awwwards Flower Dose, Framer Sweetpea, Baymard Product List UX, NNGroup Product Pages, Galerie Bloom Bar và Clover. Không sao chép mã, layout nguyên bản, font trả phí hoặc ảnh từ các website tham khảo.
 
 ## Ảnh & dữ liệu
 
-Ảnh WebP được kế thừa từ thư mục `assets/` của repository `PhamNghia1508/TiemHoaCoGu`, chuyển sang `public/images/`. Không tạo ảnh mới trong thay đổi này; nguồn gốc tác giả/giấy phép của ảnh kế thừa chưa được xác minh độc lập. Chủ tiệm cần xác nhận quyền sử dụng và độ đúng với hàng thực trước khi mở bán.
+Ảnh WebP kế thừa từ `assets/` của repository `PhamNghia1508/TiemHoaCoGu`, hiện ở `public/images/`. Không tạo ảnh sản phẩm mới. Chủ tiệm cần xác nhận giấy phép/quyền dùng và tính đúng với hàng thực trước khi mở bán. Ảnh bối cảnh không được coi là góc chụp khác của đúng sản phẩm.
 
-Giá tham khảo có nguồn từ `data/products.json` và `data/workshops.json` của repo cũ. Một số tên hiển thị được biên tập lại cho nhất quán. Không coi ảnh minh họa là cam kết quy cách sản phẩm.
+Giá/loại sản phẩm kế thừa dữ liệu repo cũ. Tên hiển thị được biên tập cho nhất quán. Bảng màu chỉ tham khảo, không tạo lựa chọn biến thể có giá/tồn kho giả. Cần bộ ảnh thật nhiều góc cho từng mẫu để hoàn thiện gallery thương mại.
 
-Không bịa địa chỉ, điện thoại, lượt bán, review, số chỗ hoặc lịch lớp. Chưa biết thông tin nào thì không đưa vào UI như dữ kiện thật.
+## Chưa giao dịch live
 
-## Chưa phải luồng giao dịch live
-
-UI cố ý không phát hành mã đơn, QR thanh toán hay vé workshop. Form chỉ xác thực và xem trước trên trang. Để mở bán cần hoàn thiện backend deployment, adapter dữ liệu, session/auth và kiểm tra write-flow; xem README và API-INTEGRATION.md.
+Không bịa địa chỉ, số điện thoại, lượt bán, khách hàng, review, số chỗ hoặc lịch lớp. UI không tạo mã đơn, QR thanh toán hoặc vé. Form chỉ xác thực và xem trước trên trang. Backend/API adapter/auth/checkout/shipping/workshop sessions cần nối và kiểm tra trước khi mở bán. Xem README và API-INTEGRATION.md.

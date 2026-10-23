@@ -1,22 +1,23 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { PageIntro } from '@/components/site';
 import Shop from '@/components/shop';
-export const metadata: Metadata = { title: 'Cửa tiệm — Một chút hoa, nhiều chút thương' };
+export const metadata: Metadata = { title: 'Cửa tiệm — Những món quà có gu' };
 export default function ShopPage() {
   return (
-    <>
+    <div className="commerce-page">
       <PageIntro
-        eyebrow="CỬA TIỆM / NHỮNG MÓN QUÀ CÓ GU"
+        eyebrow="CỬA TIỆM / HOA SÁP & QUÀ TẶNG"
         title={
           <>
-            Một chút hoa.
-            <br />
-            <em>Nhiều chút thương.</em>
+            Chọn quà <em>đúng gu.</em>
           </>
         }
-        description="Một bó hoa cho lời thương chưa nói. Một chiếc lọ cho góc nhà bình yên. Hay một chút khéo tay dành riêng cho bạn?"
+        description="Một bó hoa, một góc nhỏ hay một món quà tự tay làm. Lọc theo kiểu quà và ngân sách để tìm điều bạn thích."
       />
-      <Shop />
-    </>
+      <Suspense fallback={<div className="section">Đang sắp hoa lên kệ…</div>}>
+        <Shop />
+      </Suspense>
+    </div>
   );
 }

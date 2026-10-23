@@ -9,13 +9,19 @@ import '@fontsource/be-vietnam-pro/latin-400.css';
 import '@fontsource/be-vietnam-pro/vietnamese-400.css';
 import '@fontsource/be-vietnam-pro/latin-500.css';
 import '@fontsource/be-vietnam-pro/vietnamese-500.css';
+import '@fontsource/be-vietnam-pro/latin-700.css';
+import '@fontsource/be-vietnam-pro/vietnamese-700.css';
+import '@fontsource/be-vietnam-pro/latin-800.css';
+import '@fontsource/be-vietnam-pro/vietnamese-800.css';
 import './globals.css';
+import './commerce.css';
+import './studio.css';
 import { StoreProvider } from '@/components/store-provider';
 import { Header, Footer } from '@/components/site';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || 'http://localhost:3000'),
   title: {
-    default: 'Tiệm Hoa Có Gu — Hoa không vội. Lời thương cũng thế.',
+    default: 'Tiệm Hoa Có Gu — Tặng hoa. Tặng gu.',
     template: '%s · Tiệm Hoa Có Gu',
   },
   description:
@@ -36,7 +42,7 @@ export const metadata: Metadata = {
   },
   robots: { index: false, follow: true },
 };
-export const viewport: Viewport = { themeColor: '#f7f4ed', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#243db5', width: 'device-width', initialScale: 1 };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" data-scroll-behavior="smooth">

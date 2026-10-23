@@ -14,30 +14,30 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const p = products.find((p) => p.id === slug);
+  const p = products.find((x) => x.id === slug);
   return { title: p?.name || 'Không tìm thấy sản phẩm', description: p?.description };
 }
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const p = products.find((p) => p.id === slug);
+  const p = products.find((x) => x.id === slug);
   if (!p) notFound();
   return (
     <>
-      <div className="breadcrumb">
+      <nav className="breadcrumb commerce-breadcrumb" aria-label="Đường dẫn">
         <Link href="/">Tiệm</Link>
-        <span>/</span>
+        <span aria-hidden="true">/</span>
         <Link href="/cua-tiem">Cửa tiệm</Link>
-        <span>/</span>
-        <span>{p.name}</span>
-      </div>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{p.name}</span>
+      </nav>
       <ProductDetail product={p} />
       <section className="section">
         <SectionHeading
           number=""
-          eyebrow="CÓ THỂ BẠN CŨNG THÍCH"
+          eyebrow="XEM THÊM"
           title={
             <>
-              Thêm một chút <em>dịu dàng.</em>
+              Thêm một chút <em>màu vui.</em>
             </>
           }
         />

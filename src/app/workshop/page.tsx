@@ -3,134 +3,138 @@ import Image from 'next/image';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { PageIntro } from '@/components/site';
 import WorkshopForm from '@/components/workshop-form';
-export const metadata: Metadata = { title: 'Workshop — Hẹn nhau một ngày thật chậm' };
+
+export const metadata: Metadata = { title: 'Workshop — Làm hoa bằng tay' };
+const courses = [
+  {
+    name: 'Hoa Sáp Cơ Bản',
+    tag: '01 / LẦN ĐẦU CHẠM SÁP',
+    duration: '2,5 giờ',
+    price: '450.000 ₫ / người',
+    img: '/images/prod-kit.webp',
+    description: 'Làm quen chất liệu, nắn những cánh hoa đầu tiên và cắm vào lọ nhỏ mang về.',
+    takeaway: '3 bông hoa & lọ mini',
+  },
+  {
+    name: 'Bó Quà Tặng',
+    tag: '02 / TỰ TAY GÓI MỘT MÓN QUÀ',
+    duration: '3 giờ',
+    price: '690.000 ₫ / người',
+    img: '/images/prod-bouquet.webp',
+    description: 'Phối bảng màu, làm 7–9 bông hoa, học cách gói kraft và thắt nơ.',
+    takeaway: 'Một bó hoa gói hoàn chỉnh',
+  },
+];
 export default function WorkshopPage() {
   return (
-    <>
+    <div className="studio-shell">
       <PageIntro
-        eyebrow="WORKSHOP / HẸN NHAU Ở XƯỞNG"
-        title={
-          <>
-            Cho đôi tay bận.
-            <br />
-            <em>Cho tâm trí nghỉ.</em>
-          </>
-        }
-        description="Một buổi làm hoa, một tách trà, vài câu chuyện nhỏ. Không cần khéo tay, không cần vội. Chỉ cần bạn có mặt."
+        eyebrow="WORKSHOP / SÁPA STUDIO"
+        title={<>Một buổi chiều để đôi tay làm việc.</>}
+        description="Hai trải nghiệm tham khảo, cho người mới bắt đầu hoặc người muốn tự làm một món quà. Lịch chính thức chưa mở — không có ngày hay số chỗ được dựng sẵn."
       />
-      <div className="editorial-split">
-        <div className="editorial-photo">
+      <section className="studio-grid-2 studio-block" aria-labelledby="workshop-intro">
+        <div className="studio-media">
           <Image
-            src="/images/workshop-hands.webp"
-            alt="Tự tay nắn hoa sáp tại bàn gỗ trong xưởng"
+            src="/images/ws-hero.webp"
+            alt="Bàn workshop làm hoa sáp"
             fill
             priority
-            sizes="(max-width: 600px) 100vw, 50vw"
-            style={{ objectFit: 'cover' }}
+            sizes="(max-width: 760px) 100vw, 50vw"
           />
         </div>
-        <div className="editorial-copy">
-          <span className="eyebrow">MỘT BUỔI CHIỀU KHÁC ĐI</span>
-          <h2>
-            Bông hoa đẹp nhất
-            <br />
-            là bông hoa
-            <br />
-            <em>bạn tự tay làm.</em>
-          </h2>
+        <div className="studio-copy">
+          <p className="studio-kicker">MỘT TRẢI NGHIỆM THẬT, KHÔNG VỘI</p>
+          <h2 id="workshop-intro">Không cần khéo tay. Chỉ cần có mặt.</h2>
           <p>
-            Không có hai bàn tay giống nhau. Cũng không có hai bông hoa giống hệt. Ở xưởng, tiệm
-            không tìm sự hoàn hảo — tiệm muốn bạn tìm được niềm vui từ một việc nhỏ.
+            Tiệm hướng dẫn từ những phần đầu tiên. Bạn chọn màu, làm từng cánh, rồi mang thành quả
+            của chính mình về.
           </p>
-          <a href="#cac-trai-nghiem" className="text-link">
-            Chọn một trải nghiệm <ArrowDown size={18} />
+          <a className="button" href="#cac-trai-nghiem">
+            Chọn trải nghiệm <ArrowDown size={18} />
           </a>
         </div>
-      </div>
-      <section className="section workshop-list" id="cac-trai-nghiem">
-        {[
-          {
-            name: 'Hoa Sáp Cơ Bản',
-            tag: '01 / CHO LẦN ĐẦU CHẠM SÁP',
-            duration: '2,5 giờ',
-            price: '450.000 ₫ / người',
-            img: '/images/prod-kit.webp',
-            description:
-              'Làm quen chất liệu, nắn những cánh hoa đầu tiên và cắm vào lọ nhỏ mang về. Từng bước một, theo nhịp riêng của bạn.',
-            takeaway: '3 bông hoa & lọ mini',
-          },
-          {
-            name: 'Bó Quà Tặng',
-            tag: '02 / GÓI MỘT CHÚT THƯƠNG',
-            duration: '3 giờ',
-            price: '690.000 ₫ / người',
-            img: '/images/prod-bouquet.webp',
-            description:
-              'Phối một bảng màu, làm 7–9 bông hoa, học cách gói kraft và thắt nơ. Mang về một món quà do chính bạn tạo ra.',
-            takeaway: 'Một bó hoa gói hoàn chỉnh',
-          },
-        ].map((w) => (
-          <article className="workshop-card" key={w.name}>
-            <div className="workshop-card-image">
-              <Image
-                src={w.img}
-                alt={w.name}
-                fill
-                sizes="(max-width: 600px) 100vw, 45vw"
-                style={{ objectFit: 'cover' }}
-              />
-            </div>
-            <div>
-              <span className="eyebrow">{w.tag}</span>
-              <h2>{w.name}</h2>
-              <p>{w.description}</p>
-              <div className="workshop-meta">
-                <span>{w.duration}</span>
-                <i />
-                <span>{w.price}</span>
+      </section>
+      <section
+        className="studio-block studio-block--lilac"
+        id="cac-trai-nghiem"
+        aria-labelledby="course-heading"
+      >
+        <div className="studio-heading">
+          <p className="studio-kicker">CÁC TRẢI NGHIỆM</p>
+          <h2 id="course-heading">Chọn một nhịp làm phù hợp.</h2>
+          <p>
+            Thời lượng và giá dưới đây là thông tin tham khảo kế thừa từ bản trải nghiệm, chưa phải
+            báo giá hoặc vé.
+          </p>
+        </div>
+        <div className="studio-grid-2">
+          {courses.map((course) => (
+            <article className="studio-card" key={course.name}>
+              <div className="studio-card-image">
+                <Image
+                  src={course.img}
+                  alt={course.name}
+                  fill
+                  sizes="(max-width: 760px) 100vw, 50vw"
+                />
               </div>
-              <p>Mang về: {w.takeaway}</p>
-              <a href="#hen-o-xuong" className="button outline">
-                Phác một buổi hẹn <ArrowUpRight size={18} />
-              </a>
-            </div>
-          </article>
-        ))}
-        <p className="fine-print">
-          Nội dung & giá tham khảo được chuyển từ repository. Lịch, địa điểm và điều kiện tham gia
-          chính thức sẽ được xác nhận khi mở lớp.
-        </p>
-        <div className="workshop-facts">
-          <div>
-            <h3>Không cần khéo tay.</h3>
-            <p>Tiệm hướng dẫn từ những cánh hoa đầu tiên. Bạn chỉ cần mang sự tò mò.</p>
-          </div>
-          <div>
-            <h3>Chậm, mà vui.</h3>
-            <p>Một khoảng thời gian dành cho chất liệu, màu sắc và những câu chuyện nhỏ.</p>
-          </div>
-          <div>
-            <h3>Mang điều đẹp về.</h3>
-            <p>Thành phẩm do chính bạn làm, cùng một chút tự hào rất riêng.</p>
-          </div>
+              <div className="studio-card-body">
+                <span className="eyebrow">{course.tag}</span>
+                <h3>{course.name}</h3>
+                <p>{course.description}</p>
+                <div className="studio-meta">
+                  <span>{course.duration}</span>
+                  <span>{course.price}</span>
+                </div>
+                <p>
+                  <strong>Mang về:</strong> {course.takeaway}
+                </p>
+                <span className="studio-status">Lịch chưa mở</span>
+                <p>
+                  <a className="button outline" href="#hen-o-xuong">
+                    Để lại mong muốn <ArrowUpRight size={17} />
+                  </a>
+                </p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
-      <div className="form-layout">
+      <section className="studio-block" aria-labelledby="steps">
+        <div className="studio-heading">
+          <p className="studio-kicker">TỪ Ý MUỐN ĐẾN BUỔI LÀM</p>
+          <h2 id="steps">Ba bước, không có bước nào giả vờ là đã đặt.</h2>
+        </div>
+        <ol className="studio-process">
+          <li>
+            <strong>01</strong>
+            <h3>Chọn trải nghiệm</h3>
+            <p>Đọc nội dung, thời lượng và mức giá tham khảo.</p>
+          </li>
+          <li>
+            <strong>02</strong>
+            <h3>Gửi ngày mong muốn</h3>
+            <p>Form chỉ tạo bản xem trước ngay trên trình duyệt.</p>
+          </li>
+          <li>
+            <strong>03</strong>
+            <h3>Chờ lịch thật mở</h3>
+            <p>Ngày, chỗ và điều kiện sẽ chỉ được xác nhận khi có dữ liệu thực tế.</p>
+          </li>
+        </ol>
+      </section>
+      <section className="studio-form-wrap">
         <WorkshopForm />
-        <aside className="form-aside">
-          <span className="eyebrow">MỘT LỜI NHẮC NHỎ</span>
-          <h2 style={{ marginTop: 15 }}>
-            Không cần làm đẹp.
-            <br />
-            <em>Cứ làm bằng lòng.</em>
-          </h2>
+        <aside className="studio-form-aside">
+          <span className="eyebrow">MINH BẠCH TỪ ĐẦU</span>
+          <h2>Lịch chưa mở.</h2>
           <p>
-            Đây là phần xem trước trải nghiệm đặt chỗ. Chưa có ca lớp thật, vé, mã đặt chỗ hay thanh
-            toán cọc.
+            Ngày bạn chọn là mong muốn, không phải ca còn chỗ. Form không gửi đăng ký, không giữ chỗ
+            và không thu cọc.
           </p>
-          <p>Khi backend hoạt động, lịch sẽ lấy từ ca lớp thực tế thay vì dựng lịch mẫu.</p>
         </aside>
-      </div>
-    </>
+      </section>
+    </div>
   );
 }

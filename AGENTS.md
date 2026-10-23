@@ -20,6 +20,6 @@ Next.js App Router + TypeScript + React. Frontend repository tách biệt backen
 
 ## Design
 
-Nền giấy `#f7f4ed`, mận `#482c32`, olive `#72785a`. Font serif Cormorant Garamond, sans Be Vietnam Pro (tự host). Dùng CSS system trong `src/app/globals.css`, tránh UI kit, gradient loang và card bo tròn chung chung. Có responsive 320px+, reduced motion, accessible labels và keyboard navigation.
+Botanical Play: cobalt `#243db5`, citrus `#ebf28b`, warmwhite `#fffdf8`, lilac `#ece7f5`, nearblack `#1c2326`. Be Vietnam Pro 800 chủ đạo, Cormorant italic chỉ accent nhỏ. `globals.css` là design system chung, `commerce.css` và `studio.css` là các layer scoped được import sau. Không quay lại hướng editorial serif/ngà–mận cũ. Tránh UI kit, gradient loang, glassmorphism và số liệu/review hư cấu. Responsive 320px+, reduced motion, focus rõ, accessible labels và keyboard navigation. Xem `docs/DESIGN-RETHINK.md` trước khi sửa bố cục.
 
 Ảnh từ repository gốc nằm trong `public/images/`. Tài liệu prototype cũ trong `docs/yeu-cau-prototype.md` chỉ là tham chiếu lịch sử, không phải trạng thái đã triển khai.
