@@ -35,6 +35,8 @@ test('mọi route chính và 404 đều hoạt động', async ({ page }) => {
     '/cau-chuyen',
     '/chuyen-cua-hoa',
     '/chuyen-cua-hoa/giu-mot-mua-hoa',
+    '/chuyen-cua-hoa/mon-qua-co-gu',
+    '/chuyen-cua-hoa/mot-buoi-chieu-cham',
     '/hoi-dap',
     '/chinh-sach',
     '/tra-cuu',
