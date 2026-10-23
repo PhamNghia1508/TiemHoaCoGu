@@ -1,11 +1,17 @@
 'use client';
-import { useState, type FormEvent } from 'react';
+import { useState, useSyncExternalStore, type FormEvent } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+const subscribe = () => () => {};
 export default function WorkshopForm() {
+  const ready = useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
   const [review, setReview] = useState<{ course: string; date: string; guests: string } | null>(
     null,
   );
-  const today = new Date().toLocaleDateString('en-CA');
+  const today = ready ? new Date().toLocaleDateString('en-CA') : undefined;
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const d = new FormData(e.currentTarget);
@@ -16,7 +22,7 @@ export default function WorkshopForm() {
     });
   }
   return (
-    <form id="hen-o-xuong" onSubmit={submit} onChange={() => setReview(null)}>
+    <form id="hen-o-xuong" data-ready={ready} onSubmit={submit} onChange={() => setReview(null)}>
       <h2 className="form-section-title">Phác một buổi hẹn ở xưởng.</h2>
       <div className="form-grid">
         <label className="field full">
@@ -66,7 +72,7 @@ export default function WorkshopForm() {
         Lịch lớp thật chưa được mở. Ngày bạn chọn chỉ là mong muốn, không phải ca còn chỗ. Form này
         chỉ xem trước tại trình duyệt, không gửi đăng ký, không giữ chỗ và không thu cọc.
       </p>
-      <button className="button" type="submit">
+      <button className="button" type="submit" disabled={!ready}>
         Xem trước buổi hẹn <ArrowUpRight size={18} />
       </button>
       {review && (

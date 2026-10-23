@@ -134,6 +134,7 @@ test('form đặt riêng chỉ tạo bản nháp, không gửi API', async ({ pa
 
 test('workshop không giữ chỗ giả và tra cứu không tạo kết quả giả', async ({ page }) => {
   await page.goto('/workshop');
+  await expect(page.locator('#hen-o-xuong')).toHaveAttribute('data-ready', 'true');
   await page.getByLabel('Ngày bạn mong muốn').fill('2027-01-30');
   await page.getByLabel('Tên của bạn').fill('Khách kiểm thử');
   await page.getByLabel('Số điện thoại').fill('0901234567');
