@@ -75,7 +75,7 @@ test('tìm không dấu, lọc, sắp xếp và lưu yêu thích', async ({ page
   await page.getByRole('button', { name: 'Chỉ xem sản phẩm đã lưu' }).click();
   await expect(page.locator('.product-card')).toHaveCount(1);
   await page.getByRole('button', { name: 'Chỉ xem sản phẩm đã lưu' }).click();
-  await page.getByLabel('Sắp xếp sản phẩm').selectOption('price-up');
+  await page.locator('main').getByLabel('Sắp xếp sản phẩm').selectOption('price-up');
   await expect(page.locator('.product-card h3').first()).toContainText('Gói Ghém');
 });
 
@@ -120,29 +120,29 @@ test('form đặt riêng chỉ tạo bản nháp, không gửi API', async ({ pa
     if (r.method() === 'POST') writes.push(r.url());
   });
   await page.goto('/dat-rieng');
-  await page.getByLabel('Bạn muốn tặng ai?').selectOption('Sinh nhật');
-  await page.getByLabel('Khoảng ngân sách').selectOption('400.000 – 700.000 ₫');
-  await page.getByLabel('Điều bạn muốn gửi gắm').fill('Một bó hoa màu kem nhẹ nhàng.');
-  await page.getByLabel('Tên của bạn').fill('Khách kiểm thử');
-  await page.getByLabel('Số điện thoại').fill('0901234567');
+  await page.locator('main').getByLabel('Bạn muốn tặng ai?').selectOption('Sinh nhật');
+  await page.locator('main').getByLabel('Khoảng ngân sách').selectOption('400.000 – 700.000 ₫');
+  await page.locator('main').getByLabel('Điều bạn muốn gửi gắm').fill('Một bó hoa màu kem nhẹ nhàng.');
+  await page.locator('main').getByLabel('Tên của bạn').fill('Khách kiểm thử');
+  await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
   await page.getByRole('button', { name: 'Xem bản nháp yêu cầu' }).click();
   await expect(page.getByRole('status').filter({ hasText: 'BẢN NHÁP' })).toBeVisible();
   expect(writes).toEqual([]);
-  await page.getByLabel('Điều bạn muốn gửi gắm').fill('Đổi màu xanh.');
+  await page.locator('main').getByLabel('Điều bạn muốn gửi gắm').fill('Đổi màu xanh.');
   await expect(page.locator('.form-status')).toHaveCount(0);
 });
 
 test('workshop không giữ chỗ giả và tra cứu không tạo kết quả giả', async ({ page }) => {
   await page.goto('/workshop');
-  await expect(page.locator('#hen-o-xuong')).toHaveAttribute('data-ready', 'true');
-  await page.getByLabel('Ngày bạn mong muốn').fill('2027-01-30');
-  await page.getByLabel('Tên của bạn').fill('Khách kiểm thử');
-  await page.getByLabel('Số điện thoại').fill('0901234567');
+  await expect(page.locator('main #hen-o-xuong')).toHaveAttribute('data-ready', 'true');
+  await page.locator('main').getByLabel('Ngày bạn mong muốn').fill('2027-01-30');
+  await page.locator('main').getByLabel('Tên của bạn').fill('Khách kiểm thử');
+  await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
   await page.getByRole('button', { name: 'Xem trước buổi hẹn' }).click();
   await expect(page.locator('.form-status')).toContainText('CHƯA ĐẶT CHỖ');
   await page.goto('/tra-cuu');
-  await page.getByLabel('Mã đơn / mã đặt chỗ').fill('TEST-123');
-  await page.getByLabel('Số điện thoại').fill('0901234567');
+  await page.locator('main').getByLabel('Mã đơn / mã đặt chỗ').fill('TEST-123');
+  await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
   await page.getByRole('button', { name: 'Kiểm tra tra cứu' }).click();
   await expect(page.locator('.form-status')).toContainText('Chưa thể tra cứu');
 });
