@@ -1,72 +1,81 @@
-# Tiệm Hoa Có Gu — SÁPA Studio (Prototype)
+# Tiệm Hoa Có Gu
 
-Prototype website thương hiệu thủ công hoa sáp nghệ thuật & hệ thống đặt chỗ workshop trải nghiệm tại Hà Nội.
+Frontend Next.js cho tiệm hoa sáp thủ công & workshop SÁPA Studio. Giao diện tiếng Việt, tự thiết kế theo hướng editorial: nền giấy ấm, đỏ mận, serif Cormorant Garamond, sans Be Vietnam Pro và bố cục bất đối xứng. Không dùng UI kit hay sao chép template.
 
----
+**Trạng thái:** frontend trải nghiệm có tương tác; chưa mở bán, chưa nối dữ liệu trực tiếp với backend và chưa nhận đơn, giữ chỗ hoặc thanh toán thật. Backend ở repository riêng `ZidenVN/TiemHoaCoGu_BE`, không bị sửa trong PR này.
 
-## 🌸 Giới thiệu dự án
+## Chạy
 
-Dự án được xây dựng nhằm mô phỏng trải nghiệm người dùng và luồng vận hành thực tế cho **SÁPA Studio** (Tiệm Hoa Có Gu):
-- **Trải nghiệm thương hiệu:** Định vị theo phong cách *quiet luxury / handcrafted aesthetic*, tối ưu typography, bố cục bất đối xứng, chuyển động mượt mà (Lenis Smooth Scroll).
-- **Luồng đặt chỗ Workshop:** Mô phỏng chu trình đặt chỗ không cần đăng nhập (định danh bằng SĐT + mã đặt chỗ).
-- **Mô hình trạng thái hoàn chỉnh:** `pending` (giữ chỗ 10 phút đếm ngược) $\rightarrow$ `confirmed` (sau khi thanh toán cọc) $\rightarrow$ `attended` / `no_show` / `cancelled` (huỷ & hoàn tiền theo chính sách).
-- **Tra cứu & Quản lý đặt chỗ:** Khách hàng chủ động tra cứu vé, dời lịch hoặc huỷ lịch trực tiếp trên website.
-- **Studio Ops:** Bảng điều khiển mô phỏng vận hành lớp học, điểm danh và đối soát.
+Yêu cầu Node.js 22 trở lên và npm.
 
----
-
-## 📁 Cấu trúc thư mục
-
-```text
-TiemHoaCoGu/
-├── index.html              # Trang chủ: Bộ sưu tập, câu chuyện xưởng, review, CTA
-├── product.html            # Trang chi tiết sản phẩm hoa sáp & đặt mua
-├── workshop.html           # Lịch học, danh sách ca lớp & form đặt chỗ workshop
-├── tra-cuu.html            # Tra cứu đặt chỗ bằng Mã đặt chỗ + SĐT (đổi/huỷ lịch)
-├── studio.html             # Studio Ops: Quản trị ca lớp, điểm danh, trạng thái vé
-├── css/                    # Toàn bộ stylesheet giao diện
-│   ├── styles.css          # Phong cách chung, reset, layout, component hệ thống
-│   ├── product.css         # Style chi tiết sản phẩm, drawer giỏ hàng, modal
-│   ├── studio.css          # Style bảng điều khiển vận hành Studio Ops
-│   └── workshop.css        # Style lịch workshop, form đặt chỗ, timeline, modal
-├── js/                     # Toàn bộ script xử lý logic frontend
-│   ├── main.js             # Navigation, giỏ hàng localStorage, animation, toast
-│   ├── product.js          # Logic trang chi tiết sản phẩm, gallery ảnh
-│   ├── booking.js          # Engine mô phỏng quản lý đặt chỗ, session, trạng thái
-│   ├── workshop.js         # Luồng form đặt chỗ, đếm ngược giữ chỗ, xuất vé ICS
-│   ├── lookup.js           # Logic tra cứu, kiểm tra mã đặt chỗ, đổi ca lớp, huỷ vé
-│   ├── studio.js           # Logic dashboard Studio Ops, cập nhật trạng thái ca
-│   └── lenis.min.js        # Thư viện cuộn mượt (Smooth Scrolling)
-├── assets/                 # Tài nguyên hình ảnh định dạng WebP đã tối ưu
-└── docs/                   # Tài liệu thiết kế & đặc tả luồng
-    └── yeu-cau-prototype.md # Yêu cầu prototype & checklist trạng thái
+```bash
+npm ci
+cp .env.example .env.local
+npm run dev
+# http://localhost:3000
 ```
 
----
+```bash
+npm run build
+npm start
+```
 
-## 🚀 Hướng dẫn chạy thử nghiệm
+Font được đóng gói trong ứng dụng, không phụ thuộc Google Fonts lúc build/runtime. Ảnh dùng `next/image`, có kích thước responsive và ưu tiên tải hero.
 
-Dự án là ứng dụng thuần Web (HTML5 / CSS3 / Vanilla JavaScript), không phụ thuộc vào build tools phức tạp:
+## Có gì hoạt động?
 
-1. **Cách 1: Sử dụng VS Code Live Server**
-   - Mở thư mục dự án trong VS Code.
-   - Nhấp chuột phải vào `index.html` $\rightarrow$ chọn **Open with Live Server**.
+- Trang chủ, cửa tiệm, 6 chi tiết sản phẩm, câu chuyện tiệm, 3 bài đọc, FAQ và chính sách.
+- Lọc loại sản phẩm, tìm tiếng Việt không dấu, sắp xếp giá, tìm toàn trang.
+- Sản phẩm yêu thích và giỏ hàng lưu trên trình duyệt; tăng, giảm, xóa, tính tổng và giữ sau reload. Giới hạn 20 đơn vị mỗi sản phẩm trong bản trải nghiệm; đây không phải số tồn kho.
+- Drawer giỏ hàng & dialog tìm kiếm dùng native `<dialog>` với focus trap và Escape.
+- Form hoa đặt riêng & workshop: kiểm tra đầu vào, xem lại **bản nháp**, không gửi dữ liệu hoặc tạo mã đơn/vé giả.
+- Bước xem lại đơn và tra cứu có thông báo rõ phần chưa kết nối; không giả kết quả hoặc thu tiền.
+- Responsive, hỗ trợ reduced motion, skip link, trạng thái screen reader, 404 và error boundary.
+- Metadata tiếng Việt, Open Graph, favicon, sitemap và redirects URL HTML cũ. `robots.txt` chặn index bản trải nghiệm.
 
-2. **Cách 2: Sử dụng máy chủ HTTP cục bộ**
-   ```bash
-   # Dùng Python 3
-   python -m http.server 3000
+Danh mục/giá/ảnh kế thừa từ repository cũ để phát triển giao diện, không phải dữ liệu kinh doanh đã xác nhận. Không dùng review, số khách, địa chỉ hay lịch còn chỗ hư cấu.
 
-   # Hoặc dùng npx serve
-   npx serve .
-   ```
-   Sau đó truy cập `http://localhost:3000` trên trình duyệt.
+## Kết nối backend sau này
 
-3. **Cách 3: Mở trực tiếp**
-   - Nhấp đúp vào `index.html` để mở trực tiếp trong trình duyệt.
+`src/lib/api/` chứa typed client đọc từ hợp đồng API .NET hiện tại: catalog, orders, custom orders, workshops, bookings và CMS catalog. Có timeout, chuẩn hóa lỗi và tùy chọn JWT phía server. Xem [API integration](docs/API-INTEGRATION.md).
 
----
+**Chỉ điền `API_BASE_URL` chưa khiến giao diện chuyển sang live.** UI hiện dùng `src/lib/catalog.ts`; phải bổ sung adapter DTO → UI, dữ liệu sản phẩm thực/ID thực, server-side session/auth, checkout/shipping quote, ca workshop, kiểm tra tồn kho, chính sách và thanh toán trước khi nhận giao dịch. Không được gửi ID mẫu như `trang-non` vào API dùng GUID.
 
-## 📑 Tài liệu đặc tả
+Không lưu access token trong localStorage, không thêm token hay API key vào biến `NEXT_PUBLIC_*`. Form preview hiện không lưu tên, điện thoại, địa chỉ hoặc nội dung lời nhắn; chỉ giỏ/favorites được lưu localStorage.
 
-Chi tiết các quyết định thiết kế luồng, danh sách trạng thái workshop và các kịch bản kiểm thử tham khảo tại: [docs/yeu-cau-prototype.md](docs/yeu-cau-prototype.md).
+## Kiểm thử
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+# Để server ở terminal khác, rồi:
+CHROMIUM_PATH=/usr/bin/chromium npm run test:e2e
+```
+
+E2E dùng Playwright + axe cho desktop/mobile: routes/404, các breakpoint 320–1440px, tìm kiếm, lọc, yêu thích, giỏ hàng, form preview và accessibility trang chủ. Cài Chromium hệ thống hoặc `npx playwright install chromium`; nếu dùng Chromium Playwright, đặt `CHROMIUM_PATH` tới binary phù hợp. Có thể đặt `PLAYWRIGHT_BASE_URL` để kiểm tra production server.
+
+## Cấu trúc
+
+```text
+src/app/          Next.js App Router, trang và metadata
+src/components/  UI có tương tác và cấu phần chung
+src/lib/catalog.ts  Dữ liệu trải nghiệm + bài viết
+src/lib/api/     Typed API client phía server
+public/images/   Ảnh WebP kế thừa
+ tests/e2e/      Playwright tests
+ docs/           Tích hợp, thiết kế & tài liệu prototype lịch sử
+```
+
+## Triển khai
+
+Vercel: import repository, framework Next.js, build `npm run build`; thiết lập `SITE_URL` theo domain thực. Chưa chọn domain/deploy production trong thay đổi này.
+
+Docker: `docker build -t tiem-hoa-co-gu .` rồi `docker run --rm -p 3000:3000 -e SITE_URL=http://localhost:3000 tiem-hoa-co-gu`. Image dùng Next standalone, user không đặc quyền.
+
+Trước public launch: hoàn thiện các mục backend nêu trên, xác nhận quyền dùng ảnh, giá, địa chỉ/liên hệ, chính sách thật, thay robots/metadata index, đặt `SITE_URL` và test kết nối end-to-end trên staging.
+
+## Tinh thần thiết kế
+
+Tham khảo nguyên tắc bố cục editorial, nhịp typography và chuyển động tiết chế từ [Dribbble](https://dribbble.com/tags/flower-shop-website), [Framer Urban Flora](https://www.framer.com/marketplace/templates/urban-flora/) và [Awwwards Orchid](https://www.awwwards.com/sites/orchid). Không sao chép mã, layout nguyên bản hoặc tài sản hình ảnh của các website tham khảo. Nguồn ảnh chi tiết: [Design notes](docs/DESIGN.md).
