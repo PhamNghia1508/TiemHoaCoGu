@@ -1,6 +1,8 @@
 'use client';
 import AdminOperations from '@/components/admin/operations';
 import AdminOrderOperations from '@/components/admin/order-operations';
+import NotificationReconciliation from '@/components/admin/notification-reconciliation';
+import PaymentReconciliation from '@/components/admin/payment-reconciliation';
 import {
   VoucherManager,
   AccountManager,
@@ -19,7 +21,16 @@ import {
   storeRequest,
 } from '@/lib/admin-store';
 
-type Tab = 'dashboard' | 'catalog' | 'inventory' | 'orders' | 'vouchers' | 'accounts' | 'audit';
+type Tab =
+  | 'dashboard'
+  | 'catalog'
+  | 'inventory'
+  | 'orders'
+  | 'vouchers'
+  | 'accounts'
+  | 'notifications'
+  | 'payments'
+  | 'audit';
 type FormState = Record<string, string | boolean>;
 const money = (value?: number) =>
   new Intl.NumberFormat('vi-VN', {
@@ -37,6 +48,8 @@ function Field({
   onChange,
   type = 'text',
   required = false,
+  min,
+  max,
   children,
 }: {
   label: string;
@@ -45,6 +58,8 @@ function Field({
   onChange: (name: string, value: string | boolean) => void;
   type?: string;
   required?: boolean;
+  min?: number;
+  max?: number;
   children?: React.ReactNode;
 }) {
   return (
@@ -58,6 +73,8 @@ function Field({
           name={name}
           type={type}
           required={required}
+          min={min}
+          max={max}
           value={type === 'checkbox' ? undefined : String(value)}
           checked={type === 'checkbox' ? Boolean(value) : undefined}
           onChange={(e) => onChange(name, type === 'checkbox' ? e.target.checked : e.target.value)}
@@ -93,7 +110,7 @@ export default function AdminPage() {
     description: '',
     badge: '',
     section: '',
-    shippingWeightGrams: '500',
+    shippingWeightGrams: '',
     isCustomizable: false,
     isPreOrder: false,
     isActive: true,
@@ -247,6 +264,8 @@ export default function AdminPage() {
             ['orders', 'Đơn hàng'],
             ['vouchers', 'Voucher'],
             ['accounts', 'Tài khoản'],
+            ['notifications', 'Thông báo'],
+            ['payments', 'Thanh toán sandbox'],
             ['audit', 'Audit log'],
           ] as [Tab, string][]
         ).map(([key, label]) => (
@@ -319,6 +338,7 @@ export default function AdminPage() {
                 () => {
                   setEditingProduct('');
                   setProduct('code', '');
+                  setProduct('shippingWeightGrams', '');
                 },
               )
             }
@@ -345,6 +365,8 @@ export default function AdminPage() {
       {tab === 'orders' && <AdminOrderOperations />}
       {tab === 'vouchers' && <VoucherManager />}
       {tab === 'accounts' && <AccountManager />}
+      {tab === 'notifications' && <NotificationReconciliation />}
+      {tab === 'payments' && <PaymentReconciliation />}
       {tab === 'audit' && (
         <DataTable
           title="Audit log"
@@ -593,13 +615,22 @@ function CatalogView({
               onChange={setProduct}
               type="number"
             />
-            <Field
-              label="Khối lượng (gram)"
-              name="shippingWeightGrams"
-              value={productForm.shippingWeightGrams}
-              onChange={setProduct}
-              type="number"
-            />
+            <div>
+              <Field
+                label="Trọng lượng đóng gói thực tế (gram)"
+                name="shippingWeightGrams"
+                value={productForm.shippingWeightGrams}
+                onChange={setProduct}
+                type="number"
+                required
+                min={1}
+                max={1000000}
+              />
+              <small className="admin-muted">
+                Cân cả bao bì/hộp. Giá trị 500 g cũ chỉ là mặc định nâng cấp; hãy xác nhận thực tế
+                trước khi báo phí vận chuyển.
+              </small>
+            </div>
             <Field
               label="Ảnh thumbnail URL"
               name="thumbnailUrl"
@@ -655,6 +686,7 @@ function CatalogView({
                 <th>Mã</th>
                 <th>Tên</th>
                 <th>Giá</th>
+                <th>Khối lượng (g)</th>
                 <th>Trạng thái</th>
                 <th></th>
               </tr>
@@ -665,6 +697,7 @@ function CatalogView({
                   <td>{p.code}</td>
                   <td>{p.name}</td>
                   <td>{money(p.price)}</td>
+                  <td>{p.shippingWeightGrams ?? '—'}</td>
                   <td>{p.isActive ? 'Đang bán' : 'Tắt'}</td>
                   <td>
                     <button

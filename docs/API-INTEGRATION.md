@@ -21,7 +21,7 @@ Không dùng `NEXT_PUBLIC_` cho URL nội bộ, token hoặc secret. Không comm
 
 **Tài khoản:** `/tai-khoan` có đăng ký, đăng nhập, đăng xuất, đổi mật khẩu, sổ địa chỉ CRUD và giỏ máy chủ. Lưu/khôi phục giỏ tài khoản là thao tác chủ động; không tự trộn giỏ. Dữ liệu cục bộ chỉ gồm mã sản phẩm/số lượng và yêu thích, không PII/token. UI giới hạn 20 đơn vị mỗi sản phẩm và giải thích khi khôi phục giỏ.
 
-**Checkout:** lấy `shipping/quote` trước, hiển thị phí và hạn dùng rồi mới cho xác nhận tạo đơn. Giữ payload và idempotency key khi thử lại cùng lần gửi. Giá/tổng cuối do backend quyết định. Provider chưa có phải báo lỗi, không tự đặt phí 0 hoặc giả thành công.
+**Checkout:** lấy `shipping/quote` trước, hiển thị phí và hạn dùng rồi mới cho xác nhận tạo đơn. Giữ payload và idempotency key khi thử lại cùng lần gửi. Giá/tổng cuối do backend quyết định. Trong sandbox hiện tại vận chuyển bị khóa fail-closed cho đến khi GHN adapter và ánh xạ địa chỉ được xác minh; provider chưa sẵn sàng phải báo lỗi, không tự đặt phí 0 hoặc giả thành công. Khi payment sandbox đã cấu hình, checkout kiểm tra readiness trước khi tạo đơn, tạo đúng một MoMo charge với idempotency key, chỉ chuyển hướng tới host thanh toán thử nghiệm đã cho phép; trang quay về bỏ qua query claims và đọc số dư/trạng thái tin cậy từ backend.
 
 **Hoa đặt riêng:** chọn sản phẩm customizable thật; tạo, đọc/sửa yêu cầu theo trạng thái, xem và duyệt phiên báo giá rồi checkout. Tra cứu hỗ trợ tiếp tục sau khi tải lại trang. Đơn chờ thanh toán không có nghĩa là đã nhận tiền hay bắt đầu sản xuất.
 
@@ -29,7 +29,7 @@ Không dùng `NEXT_PUBLIC_` cho URL nội bộ, token hoặc secret. Không comm
 
 **Tra cứu:** `/tra-cuu` dùng phiên đăng nhập để xem đơn/giao hàng, booking và yêu cầu riêng. Không tra cứu công khai lịch sử khách bằng mã và số điện thoại.
 
-**CMS:** `/quan-tri` dành cho Admin: dashboard, danh mục/sản phẩm, tồn kho, workshop/session/roster và báo giá riêng. Có CRUD voucher, quản lý tài khoản/quyền/reset mật khẩu, gallery/upload media, phân trang/lọc đơn, cập nhật trạng thái, phiếu giao nội bộ, check-in roster và xuất CSV. Audit log chỉ đọc. Backend kiểm tra role/ownership. Phiếu giao nội bộ không đặt vận chuyển với nhà cung cấp; không có provider thanh toán/refund hoặc đánh dấu đã thu tiền giả.
+**CMS:** `/quan-tri` dành cho Admin: dashboard, danh mục/sản phẩm, tồn kho, workshop/session/roster và báo giá riêng. Form sản phẩm yêu cầu nhập trọng lượng đóng gói dương theo gram, không tự điền 500 g cho SKU mới; giá trị 500 g cũ phải được cân/xác nhận. Có CRUD voucher, quản lý tài khoản/quyền/reset mật khẩu, gallery/upload media, phân trang/lọc đơn, cập nhật trạng thái, phiếu giao nội bộ, check-in roster và xuất CSV. Tab **Thanh toán sandbox** tra cứu MoMo và chỉ cho xác nhận các kết quả cuối; lúc ghi sổ backend truy vấn MoMo lại, xác minh partner/order/request/amount/result và tự tạo bằng chứng đối soát. Pending/authorized/kết quả lạ vẫn bị giữ, không tự retry. Tab **Thông báo** liệt kê ID của bản tin `Unknown` (không lộ địa chỉ nhận/nội dung) và yêu cầu mã bằng chứng provider trước khi Admin ghi nhận provider đã chấp nhận hoặc xếp hàng retry; SMS sandbox luôn bỏ URL/token khôi phục tài khoản. Trạng thái `Sent` không khẳng định người nhận đã đọc. Audit log chỉ đọc. Backend kiểm tra role/ownership. Phiếu giao nội bộ không đặt vận chuyển với nhà cung cấp; mọi provider/live path vẫn bị cấm trong sandbox.
 
 ## BFF và phiên
 
@@ -39,7 +39,7 @@ Ghi yêu cầu `Origin` trùng chính xác origin request URL. Reverse proxy ph�
 
 Token chỉ trong cookie HttpOnly, SameSite=Lax, Secure ở production; auth chỉ trả user ra JavaScript. Logout xóa cookie ngay cả khi backend không liên lạc được; trường hợp này thông báo lỗi không có nghĩa đã thu hồi phiên từ xa. Đổi mật khẩu thành công xóa phiên. Chưa tự refresh: hết access token cần đăng nhập lại; refresh token dùng thu hồi khi logout, không mở route refresh ra BFF.
 
-CSV là endpoint cố định, chỉ phiên đủ quyền được tải và không cache. Payment/refund-provider routes không nằm trong allowlist. Bật write gate không làm hệ thống sẵn sàng mở bán.
+CSV là endpoint cố định, chỉ phiên đủ quyền được tải và không cache. BFF chỉ mở readiness/charge/balance cho checkout, cùng các route Admin cụ thể để query/reconcile thanh toán; refund-provider route không được mở ra khách hàng. Notification reconciliation chỉ mở hai route quản trị cụ thể; ghi yêu cầu `Origin` hợp lệ, write gate, cookie phiên và role Admin của backend. Bật write gate không làm hệ thống sẵn sàng mở bán.
 
 ## Chạy và kiểm thử
 
@@ -68,4 +68,4 @@ Toàn bộ suite cần file Admin tổng hợp hợp lệ (các test CMS không 
 
 ## Trước khi mở bán
 
-Backend chưa triển khai production. Cần host backend/DB bền vững, HTTPS/proxy đúng origin, secrets, backup/monitoring, chính sách bán hàng/dữ liệu, rồi kiểm thử provider thanh toán, shipping quote, webhook/reconciliation và thông báo thật. Provider do chủ tiệm làm sau, không được giả lập là tích hợp hoàn chỉnh. Không merge frontend PR khi chưa có yêu cầu.
+Backend chưa triển khai production. Chỉ MoMo sandbox adapter và Mailtrap/Twilio test-only transports đã có mã; chưa có secrets nên chưa gọi provider. GHN staging chưa được tích hợp, và quote hiện bị khóa. Cần staging cô lập, HTTPS/IPN URL, sandbox credentials, location/address mapping cùng cân nặng/kích thước thực tế của SKU, backup/restore drill và ngưỡng E2E/load do chủ tiệm xác nhận. Không dùng production/live credentials hoặc giao dịch thật; không merge frontend PR khi chưa có yêu cầu.

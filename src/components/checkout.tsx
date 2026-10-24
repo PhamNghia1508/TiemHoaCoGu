@@ -15,6 +15,13 @@ type OrderResult = {
   paymentStatus?: string;
   orderStatus?: string;
 };
+type GatewayAvailability = { provider: string; ready: boolean; sandbox: boolean };
+type GatewayCharge = {
+  orderId: string;
+  amount: number;
+  transactionCode: string;
+  redirectUrl?: string | null;
+};
 
 export default function Checkout() {
   const { cart, total, openCart, products, mode } = useStore();
@@ -74,6 +81,9 @@ export default function Checkout() {
         await requestQuote(form);
         return;
       }
+      const availability = await storeRequest<GatewayAvailability>('gateway/availability');
+      if (!availability.ready || availability.provider !== 'MomoSandbox' || !availability.sandbox)
+        throw new Error('MoMo sandbox chưa được cấu hình. Chưa tạo đơn hoặc gửi yêu cầu thu tiền.');
       if (!attempt.current && quote.expiresAt && new Date(quote.expiresAt).getTime() <= Date.now())
         throw new Error(
           'Báo phí đã hết hạn. Hãy kiểm tra lịch sử nếu đã gửi đơn, rồi bắt đầu báo phí mới.',
@@ -92,6 +102,39 @@ export default function Checkout() {
         'POST',
       );
       setResult(order);
+      if (!order.id || order.totalAmount === undefined)
+        throw new Error(
+          'Đơn đã tạo nhưng thiếu mã/tổng tiền trả về; không gửi yêu cầu thanh toán.',
+        );
+      if (
+        !Number.isInteger(order.totalAmount) ||
+        order.totalAmount < 1_000 ||
+        order.totalAmount > 50_000_000
+      )
+        throw new Error(
+          'Đơn đã tạo nhưng tổng tiền ngoài giới hạn MoMo sandbox (1.000–50.000.000 ₫); chưa chuyển sang thanh toán.',
+        );
+      const returnUrl = new URL('/thanh-toan/ket-qua', window.location.origin);
+      returnUrl.searchParams.set('orderId', order.id);
+      const charge = await storeRequest<GatewayCharge>(
+        `gateway/orders/${order.id}/charge`,
+        {
+          amount: order.totalAmount,
+          returnUrl: returnUrl.toString(),
+          idempotencyKey: crypto.randomUUID(),
+        },
+        'POST',
+      );
+      const redirect = charge.redirectUrl ? new URL(charge.redirectUrl) : null;
+      if (
+        !redirect ||
+        redirect.protocol !== 'https:' ||
+        redirect.hostname !== 'test-payment.momo.vn'
+      )
+        throw new Error(
+          'MoMo sandbox chưa trả về đường dẫn kiểm thử hợp lệ. Đừng gửi lại đơn; hãy kiểm tra trạng thái đơn.',
+        );
+      window.location.assign(redirect.toString());
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Không thể tạo đơn. Bạn có thể thử lại cùng báo giá.',
@@ -190,7 +233,7 @@ export default function Checkout() {
         ) : (
           <div className="form-notice">
             {quote
-              ? `Phí giao được báo từ hệ thống: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.expiresAt ? ` · hết hạn ${quote.expiresAt}` : ''}. Nhấn đặt đơn để xác nhận.`
+              ? `Phí giao được báo từ hệ thống: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.expiresAt ? ` · hết hạn ${quote.expiresAt}` : ''}. Bước tiếp theo chỉ dùng MoMo sandbox; không chuyển sang cổng thanh toán thật.`
               : 'Trước hết hãy lấy báo giá giao hàng thật; chưa tạo đơn.'}
           </div>
         )}
@@ -209,7 +252,7 @@ export default function Checkout() {
             ? 'Đang xử lý…'
             : mode === 'connected'
               ? quote
-                ? 'Xác nhận đặt đơn'
+                ? 'Tạo đơn & mở MoMo sandbox'
                 : 'Báo phí giao hàng'
               : 'Kiểm tra thông tin'}{' '}
           <ArrowUpRight size={18} />
@@ -244,8 +287,8 @@ export default function Checkout() {
           <div className="form-status" role="status">
             <span className="eyebrow">ĐƠN ĐÃ TẠO</span>
             <p>
-              Mã đơn: <strong>{result.orderCode || result.id}</strong>. Đơn đã được ghi nhận trên
-              backend, chưa xác nhận thu tiền.
+              Mã đơn: <strong>{result.orderCode || result.id}</strong>. Trạng thái thanh toán chỉ
+              được xác nhận từ backend sau IPN, không dựa vào trang chuyển hướng MoMo.
             </p>
             <p>
               Trạng thái: {result.orderStatus || 'Đang cập nhật'} · Thanh toán:{' '}
@@ -259,6 +302,16 @@ export default function Checkout() {
             <Link href="/tra-cuu" className="text-link">
               Xem đơn trong lịch sử tài khoản
             </Link>
+            {result.id && (
+              <p>
+                <Link
+                  href={`/thanh-toan/ket-qua?orderId=${encodeURIComponent(result.id)}`}
+                  className="text-link"
+                >
+                  Kiểm tra trạng thái thanh toán
+                </Link>
+              </p>
+            )}
           </div>
         )}
         {reviewed && (

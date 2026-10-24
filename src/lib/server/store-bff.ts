@@ -27,6 +27,8 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     'auth/me': { methods: ['GET'], protected: true },
     'auth/change-password': { methods: ['POST'], protected: true },
     status: { methods: ['GET'], protected: false },
+    'gateway/availability': { methods: ['GET'], protected: false },
+    'gateway/reconciliation': { methods: ['GET'], protected: true },
     orders: { methods: ['GET'], protected: true },
     'orders/staff': { methods: ['GET'], protected: true },
     'orders/checkout': { methods: ['POST'], protected: true },
@@ -45,6 +47,14 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
   const patterns: Array<{ pattern: RegExp; methods: string[]; protected: boolean }> = [
     { pattern: new RegExp(`^catalog/products/${GUID}$`), methods: ['GET'], protected: false },
     { pattern: new RegExp(`^orders/${GUID}$`), methods: ['GET'], protected: true },
+    { pattern: new RegExp(`^gateway/orders/${GUID}/charge$`), methods: ['POST'], protected: true },
+    { pattern: new RegExp(`^gateway/orders/${GUID}/balance$`), methods: ['GET'], protected: true },
+    {
+      pattern: new RegExp(`^gateway/reconciliation/${GUID}/query$`),
+      methods: ['POST'],
+      protected: true,
+    },
+    { pattern: new RegExp(`^gateway/reconciliation/${GUID}$`), methods: ['POST'], protected: true },
     {
       pattern: new RegExp(`^orders/${GUID}/deliveries$`),
       methods: ['GET', 'POST'],
@@ -89,6 +99,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     'management/vouchers': ['GET', 'POST'],
     'management/inventory': [],
     'management/accounts': ['GET', 'POST'],
+    'management/notifications': ['GET'],
     'management/permissions': ['GET'],
     'management/audit-logs': ['GET'],
     'management/orders': ['GET'],
@@ -115,6 +126,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: new RegExp(`^management/inventory/${GUID}$`), methods: ['PUT'] },
     { pattern: new RegExp(`^management/accounts/${GUID}$`), methods: ['PUT'] },
     { pattern: new RegExp(`^management/accounts/${GUID}/reset-password$`), methods: ['POST'] },
+    { pattern: new RegExp(`^management/notifications/${GUID}/reconcile$`), methods: ['POST'] },
   ];
   for (const candidate of managementPatterns) {
     if (candidate.pattern.test(p) && candidate.methods.includes(m))

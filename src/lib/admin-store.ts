@@ -119,6 +119,8 @@ export const adminPaths = {
   orders: '/api/management/orders',
   dashboard: '/api/management/dashboard',
   accounts: '/api/management/accounts',
+  notifications: '/api/management/notifications',
+  gatewayReconciliation: '/api/gateway/reconciliation',
   audit: '/api/management/audit-logs',
 };
 
@@ -132,5 +134,10 @@ export const adminBffWhitelist = [
   '/api/management/orders',
   '/api/management/vouchers',
   '/api/management/accounts',
+  '/api/management/notifications',
+  '/api/management/notifications/{id}/reconcile',
+  '/api/gateway/reconciliation',
+  '/api/gateway/reconciliation/{id}/query',
+  '/api/gateway/reconciliation/{id}',
   '/api/management/audit-logs',
 ] as const;
