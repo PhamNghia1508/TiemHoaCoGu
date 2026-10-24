@@ -43,6 +43,10 @@ async function product(api: APIRequestContext, customizable = false) {
     isCustomizable: customizable,
     isPreOrder: false,
     shippingWeightGrams: 500,
+    packageLengthCm: 30,
+    packageWidthCm: 20,
+    packageHeightCm: 10,
+    packagingSpecsConfirmed: true,
     isActive: true,
   };
   const created = (await (
@@ -150,12 +154,25 @@ test('UI catalog → túi → checkout: thiếu shipping provider trả lỗi th
   await page.locator('[name="streetAddress"]').fill('12 UI Integration Street');
   await page.locator('[name="provinceId"]').selectOption('1000001');
   await page.locator('[name="wardId"]').selectOption('1003580');
-  const quoteResponse = page.waitForResponse(
-    (r) => r.url().endsWith('/api/store/shipping/quote') && r.request().method() === 'POST',
-  );
-  await page.getByRole('button', { name: /Báo phí giao hàng/ }).click();
-  expect((await quoteResponse).status()).toBe(503);
-  await expect(page.locator('.form-status[role="alert"]')).toBeVisible();
+  let quoteRequests = 0;
+  page.on('request', (request) => {
+    if (request.url().endsWith('/api/store/shipping/quote')) quoteRequests += 1;
+  });
+  const quoteButton = page.getByRole('button', { name: /Báo phí giao hàng/ });
+  await expect(quoteButton).toBeDisabled();
+  await expect(page.locator('.form-notice')).toContainText('mapping phí GHN chính thức');
+  expect(quoteRequests).toBe(0);
+  const serverQuote = await customer.api.post('/api/store/shipping/quote', {
+    headers,
+    data: {
+      streetAddress: '12 UI Integration Street',
+      provinceId: 1000001,
+      wardId: 1003580,
+      items: [{ productId: p.id, quantity: 1 }],
+    },
+  });
+  expect(serverQuote.status()).toBe(503);
+  await expect(page.locator('.form-status[role="alert"]')).toHaveCount(0);
   expect(await (await customer.api.get('/api/store/orders')).json()).toEqual([]);
   await Promise.all([customer.context.close(), manager.close()]);
 });

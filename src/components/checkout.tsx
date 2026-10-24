@@ -24,6 +24,10 @@ type GatewayCharge = {
   redirectUrl?: string | null;
 };
 
+const GHN_FEE_MAPPING_SUPPORTED = false;
+const SHIPPING_NOT_READY =
+  'Chưa thể báo phí: chưa có mapping phí GHN chính thức cho danh mục địa chỉ hiện tại. Chưa tạo đơn hoặc thu tiền.';
+
 export default function Checkout() {
   const { cart, total, openCart, products, mode } = useStore();
   const [reviewed, setReviewed] = useState(false);
@@ -106,6 +110,7 @@ export default function Checkout() {
   }
 
   async function requestQuote(form: FormData) {
+    if (!GHN_FEE_MAPPING_SUPPORTED) throw new Error(SHIPPING_NOT_READY);
     const draft = buildPayload(form);
     if (!selectedProvince || !selectedWard)
       throw new Error('Hãy chọn tỉnh và phường trong danh mục GHN staging.');
@@ -135,6 +140,7 @@ export default function Checkout() {
     const form = new FormData(e.currentTarget);
     setPending(true);
     try {
+      if (!GHN_FEE_MAPPING_SUPPORTED) throw new Error(SHIPPING_NOT_READY);
       if (!quote) {
         await requestQuote(form);
         return;
@@ -360,7 +366,7 @@ export default function Checkout() {
           <div className="form-notice">
             {quote
               ? `Phí giao được báo từ hệ thống: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.expiresAt ? ` · hết hạn ${quote.expiresAt}` : ''}. Bước tiếp theo chỉ dùng MoMo sandbox; không chuyển sang cổng thanh toán thật.`
-              : 'Trước hết hãy lấy báo giá giao hàng thật; chưa tạo đơn.'}
+              : SHIPPING_NOT_READY}
           </div>
         )}
         {mode === 'preview' && (
@@ -377,7 +383,11 @@ export default function Checkout() {
             mode === 'unavailable' ||
             Boolean(result) ||
             (mode === 'connected' &&
-              (wardsLoading || !selectedProvince || !selectedWard || Boolean(locationError)))
+              (!GHN_FEE_MAPPING_SUPPORTED ||
+                wardsLoading ||
+                !selectedProvince ||
+                !selectedWard ||
+                Boolean(locationError)))
           }
         >
           {pending

@@ -28,7 +28,11 @@ export type Product = {
   section?: string;
   isCustomizable: boolean;
   isPreOrder: boolean;
-  shippingWeightGrams?: number;
+  shippingWeightGrams?: number | null;
+  packageLengthCm?: number | null;
+  packageWidthCm?: number | null;
+  packageHeightCm?: number | null;
+  packagingSpecsConfirmed: boolean;
   isActive: boolean;
   quantityAvailable?: number;
 };

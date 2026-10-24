@@ -227,9 +227,7 @@ test('cart và address CRUD dùng payload thực, customer khác không đọc �
   await Promise.all([closeAll(first.context), closeAll(second.context)]);
 });
 
-test('shipping provider không configured trả 503 với payload destination/items hợp lệ', async ({
-  browser,
-}) => {
+test('SKU seed chưa xác nhận đóng gói bị từ chối báo phí với 503', async ({ browser }) => {
   const { context, api } = await authenticatedContext(browser);
   const product = (await products(api))[0];
   const response = await api.post('/api/store/shipping/quote', {
@@ -237,7 +235,6 @@ test('shipping provider không configured trả 503 với payload destination/it
       streetAddress: '12 Integration Street',
       provinceId: 1000001,
       wardId: 1003580,
-      weight: 0.5,
       items: [{ productId: product.id, quantity: 1 }],
     },
     headers: origin,

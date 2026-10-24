@@ -32,6 +32,31 @@ type Tab =
   | 'payments'
   | 'audit';
 type FormState = Record<string, string | boolean>;
+const emptyProductForm: FormState = {
+  categoryId: '',
+  code: '',
+  name: '',
+  price: '0',
+  originalPrice: '',
+  thumbnailUrl: '',
+  description: '',
+  badge: '',
+  section: '',
+  shippingWeightGrams: '',
+  packageLengthCm: '',
+  packageWidthCm: '',
+  packageHeightCm: '',
+  packagingSpecsConfirmed: false,
+  isCustomizable: false,
+  isPreOrder: false,
+  isActive: true,
+};
+const optionalNumber = (value: string | boolean): number | null => {
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+};
 const money = (value?: number) =>
   new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -50,6 +75,7 @@ function Field({
   required = false,
   min,
   max,
+  step,
   children,
 }: {
   label: string;
@@ -60,6 +86,7 @@ function Field({
   required?: boolean;
   min?: number;
   max?: number;
+  step?: number;
   children?: React.ReactNode;
 }) {
   return (
@@ -75,6 +102,7 @@ function Field({
           required={required}
           min={min}
           max={max}
+          step={step}
           value={type === 'checkbox' ? undefined : String(value)}
           checked={type === 'checkbox' ? Boolean(value) : undefined}
           onChange={(e) => onChange(name, type === 'checkbox' ? e.target.checked : e.target.value)}
@@ -100,21 +128,7 @@ export default function AdminPage() {
     description: '',
     imageUrl: '',
   });
-  const [productForm, setProductForm] = useState<FormState>({
-    categoryId: '',
-    code: '',
-    name: '',
-    price: '0',
-    originalPrice: '',
-    thumbnailUrl: '',
-    description: '',
-    badge: '',
-    section: '',
-    shippingWeightGrams: '',
-    isCustomizable: false,
-    isPreOrder: false,
-    isActive: true,
-  });
+  const [productForm, setProductForm] = useState<FormState>({ ...emptyProductForm });
   const [editingCategory, setEditingCategory] = useState('');
   const [editingProduct, setEditingProduct] = useState('');
   const [inventory, setInventory] = useState<Record<string, string>>({});
@@ -331,14 +345,17 @@ export default function AdminPage() {
                   section: productForm.section || null,
                   isCustomizable: Boolean(productForm.isCustomizable),
                   isPreOrder: Boolean(productForm.isPreOrder),
-                  shippingWeightGrams: Number(productForm.shippingWeightGrams),
+                  shippingWeightGrams: optionalNumber(productForm.shippingWeightGrams),
+                  packageLengthCm: optionalNumber(productForm.packageLengthCm),
+                  packageWidthCm: optionalNumber(productForm.packageWidthCm),
+                  packageHeightCm: optionalNumber(productForm.packageHeightCm),
+                  packagingSpecsConfirmed: Boolean(productForm.packagingSpecsConfirmed),
                   isActive: Boolean(productForm.isActive),
                 },
                 editingProduct ? 'PUT' : 'POST',
                 () => {
                   setEditingProduct('');
-                  setProduct('code', '');
-                  setProduct('shippingWeightGrams', '');
+                  setProductForm({ ...emptyProductForm });
                 },
               )
             }
@@ -484,6 +501,10 @@ function CatalogView({
   setInventory: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   onInventory: (id: string) => void;
 }) {
+  const setPackagingMeasurement = (name: string, value: string | boolean) => {
+    setProduct(name, value);
+    setProduct('packagingSpecsConfirmed', false);
+  };
   return (
     <div className="admin-catalog">
       <section className="admin-card">
@@ -615,22 +636,54 @@ function CatalogView({
               onChange={setProduct}
               type="number"
             />
-            <div>
-              <Field
-                label="Trọng lượng đóng gói thực tế (gram)"
-                name="shippingWeightGrams"
-                value={productForm.shippingWeightGrams}
-                onChange={setProduct}
-                type="number"
-                required
-                min={1}
-                max={1000000}
-              />
-              <small className="admin-muted">
-                Cân cả bao bì/hộp. Giá trị 500 g cũ chỉ là mặc định nâng cấp; hãy xác nhận thực tế
-                trước khi báo phí vận chuyển.
-              </small>
-            </div>
+            <Field
+              label="Trọng lượng kiện hàng (g)"
+              name="shippingWeightGrams"
+              value={productForm.shippingWeightGrams}
+              onChange={setPackagingMeasurement}
+              type="number"
+              required={Boolean(productForm.packagingSpecsConfirmed)}
+              min={1}
+              max={1000000}
+              step={1}
+            />
+            <Field
+              label="Chiều dài kiện (cm)"
+              name="packageLengthCm"
+              value={productForm.packageLengthCm}
+              onChange={setPackagingMeasurement}
+              type="number"
+              required={Boolean(productForm.packagingSpecsConfirmed)}
+              min={0.01}
+              max={10000}
+              step={0.01}
+            />
+            <Field
+              label="Chiều rộng kiện (cm)"
+              name="packageWidthCm"
+              value={productForm.packageWidthCm}
+              onChange={setPackagingMeasurement}
+              type="number"
+              required={Boolean(productForm.packagingSpecsConfirmed)}
+              min={0.01}
+              max={10000}
+              step={0.01}
+            />
+            <Field
+              label="Chiều cao kiện (cm)"
+              name="packageHeightCm"
+              value={productForm.packageHeightCm}
+              onChange={setPackagingMeasurement}
+              type="number"
+              required={Boolean(productForm.packagingSpecsConfirmed)}
+              min={0.01}
+              max={10000}
+              step={0.01}
+            />
+            <p className="admin-muted">
+              Nhập số đo sau khi cân/đo kiện đã đóng gói. Dữ liệu cũ, kể cả 500 g, vẫn chưa được xác
+              nhận và không dùng để báo phí. Nếu chưa có số đo thật, để trống và chưa xác nhận.
+            </p>
             <Field
               label="Ảnh thumbnail URL"
               name="thumbnailUrl"
@@ -652,6 +705,13 @@ function CatalogView({
             onChange={setProduct}
           />
           <div className="admin-checks">
+            <Field
+              label="Tôi xác nhận đây là trọng lượng và kích thước thực tế của kiện đã đóng gói"
+              name="packagingSpecsConfirmed"
+              value={productForm.packagingSpecsConfirmed}
+              onChange={setProduct}
+              type="checkbox"
+            />
             <Field
               label="Tùy chỉnh"
               name="isCustomizable"
@@ -686,7 +746,7 @@ function CatalogView({
                 <th>Mã</th>
                 <th>Tên</th>
                 <th>Giá</th>
-                <th>Khối lượng (g)</th>
+                <th>Quy cách đóng gói</th>
                 <th>Trạng thái</th>
                 <th></th>
               </tr>
@@ -697,21 +757,41 @@ function CatalogView({
                   <td>{p.code}</td>
                   <td>{p.name}</td>
                   <td>{money(p.price)}</td>
-                  <td>{p.shippingWeightGrams ?? '—'}</td>
+                  <td>
+                    {p.packagingSpecsConfirmed
+                      ? `${p.shippingWeightGrams} g · ${p.packageLengthCm} × ${p.packageWidthCm} × ${p.packageHeightCm} cm`
+                      : `Chưa xác nhận${p.shippingWeightGrams == null ? '' : ` · ${p.shippingWeightGrams} g cũ chưa xác minh`}`}
+                  </td>
                   <td>{p.isActive ? 'Đang bán' : 'Tắt'}</td>
                   <td>
                     <button
                       className="button button-outline"
                       onClick={() => {
                         setEditingProduct(p.id);
-                        Object.entries(p).forEach(([k, v]) => {
-                          if (
-                            typeof v === 'string' ||
-                            typeof v === 'boolean' ||
-                            typeof v === 'number'
-                          )
-                            setProduct(k, typeof v === 'boolean' ? v : String(v));
-                        });
+                        const values: FormState = {
+                          ...emptyProductForm,
+                          categoryId: p.categoryId,
+                          code: p.code,
+                          name: p.name,
+                          price: String(p.price),
+                          originalPrice: p.originalPrice == null ? '' : String(p.originalPrice),
+                          thumbnailUrl: p.thumbnailUrl ?? '',
+                          description: p.description ?? '',
+                          badge: p.badge ?? '',
+                          section: p.section ?? '',
+                          shippingWeightGrams:
+                            p.shippingWeightGrams == null ? '' : String(p.shippingWeightGrams),
+                          packageLengthCm:
+                            p.packageLengthCm == null ? '' : String(p.packageLengthCm),
+                          packageWidthCm: p.packageWidthCm == null ? '' : String(p.packageWidthCm),
+                          packageHeightCm:
+                            p.packageHeightCm == null ? '' : String(p.packageHeightCm),
+                          packagingSpecsConfirmed: p.packagingSpecsConfirmed,
+                          isCustomizable: p.isCustomizable,
+                          isPreOrder: p.isPreOrder,
+                          isActive: p.isActive,
+                        };
+                        Object.entries(values).forEach(([key, value]) => setProduct(key, value));
                       }}
                     >
                       Sửa

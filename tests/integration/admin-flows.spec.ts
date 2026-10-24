@@ -113,7 +113,12 @@ test('CMS media upload, gallery CRUD và inventory dùng đúng contract', async
     isCustomizable: false,
     isPreOrder: false,
     isActive: true,
+    // Synthetic measurements exist only to exercise the Admin API contract.
     shippingWeightGrams: 500,
+    packageLengthCm: 30,
+    packageWidthCm: 20,
+    packageHeightCm: 10,
+    packagingSpecsConfirmed: true,
   };
   const product = (await (
     await ok(await request.post('/api/store/management/products', { headers, data: body }))
@@ -129,8 +134,26 @@ test('CMS media upload, gallery CRUD và inventory dùng đúng contract', async
   );
   const detail = (await (
     await ok(await request.get(`/api/store/management/products/${product.id}`))
-  ).json()) as { isCustomizable: boolean; isPreOrder: boolean; quantityAvailable: number };
-  expect(detail).toMatchObject({ isCustomizable: false, isPreOrder: false, quantityAvailable: 7 });
+  ).json()) as {
+    isCustomizable: boolean;
+    isPreOrder: boolean;
+    quantityAvailable: number;
+    shippingWeightGrams: number;
+    packageLengthCm: number;
+    packageWidthCm: number;
+    packageHeightCm: number;
+    packagingSpecsConfirmed: boolean;
+  };
+  expect(detail).toMatchObject({
+    isCustomizable: false,
+    isPreOrder: false,
+    quantityAvailable: 7,
+    shippingWeightGrams: 500,
+    packageLengthCm: 30,
+    packageWidthCm: 20,
+    packageHeightCm: 10,
+    packagingSpecsConfirmed: true,
+  });
   const image = Buffer.from(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+yGZkAAAAASUVORK5CYII=',
     'base64',
@@ -199,6 +222,7 @@ test('CMS CSV và staff delivery read, payment provider không được mở', a
             isCustomizable: true,
             isPreOrder: false,
             isActive: true,
+            // This product is only used for custom-order tests and remains unconfirmed for shipping.
             shippingWeightGrams: 500,
           },
         }),
