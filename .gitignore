@@ -16,3 +16,16 @@ desktop.ini
 # Dependency & Log Files
 node_modules/
 *.log
+
+# Next.js / private environment
+.next/
+.next-*/
+out/
+coverage/
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/
+artifacts/
