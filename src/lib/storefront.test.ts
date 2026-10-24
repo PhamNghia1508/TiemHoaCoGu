@@ -8,6 +8,7 @@ const product = (n: number) => ({
   name: `Hoa backend ${n}`,
   categoryId: category.id,
   price: 123000,
+  quantityAvailable: n === 1 ? 0 : 7,
   isPreOrder: false,
   isCustomizable: true,
   thumbnailUrl: '/api/media/0123456789abcdef0123456789abcdef.png',
@@ -64,7 +65,9 @@ describe('adapter storefront SSR', () => {
       price: 123000,
       category: category.id,
       isCustomizable: true,
+      quantityAvailable: 7,
     });
+    expect(value.products[0].quantityAvailable).toBe(0);
     expect(value.workshops).toBeUndefined();
   });
   it('detail 404 trả null thay vì sản phẩm mẫu', async () => {

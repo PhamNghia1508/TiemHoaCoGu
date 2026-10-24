@@ -99,6 +99,7 @@ export default function Shop() {
             <button
               type="button"
               key={c.id}
+              data-category-id={c.id}
               className={category === c.id ? 'is-active' : ''}
               aria-pressed={category === c.id}
               onClick={() => setCategory(c.id)}

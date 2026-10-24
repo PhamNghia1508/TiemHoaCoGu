@@ -6,7 +6,7 @@ Frontend Next.js cho tiệm hoa sáp thủ công & workshop SÁPA Studio. Giao d
 
 ## Chạy
 
-Yêu cầu Node.js 22 trở lên và npm.
+Yêu cầu Node.js 22.x (từ 22.12), 24.x hoặc từ 26 trở lên và npm.
 
 ```bash
 npm ci
@@ -24,7 +24,7 @@ Font được đóng gói trong ứng dụng, không phụ thuộc Google Fonts 
 
 ## Có gì hoạt động?
 
-- Trang chủ, cửa tiệm, 6 chi tiết sản phẩm, câu chuyện tiệm, 3 bài đọc, FAQ và chính sách.
+- Trang chủ, cửa tiệm và chi tiết theo catalog (6 sản phẩm mẫu ở preview), câu chuyện tiệm, 3 bài đọc, FAQ và chính sách.
 - Tìm quà theo loại/ngân sách từ trang chủ; bộ lọc giá desktop/mobile, active chips/reset, tìm tiếng Việt không dấu, sắp xếp giá, tìm toàn trang.
 - Quick-add có feedback, zoom ảnh và CTA cố định trên mobile. Ảnh bối cảnh được ghi rõ, không giả thành góc chụp sản phẩm.
 - Sản phẩm yêu thích và giỏ hàng lưu trên trình duyệt; tăng, giảm, xóa, tính tổng và giữ sau reload. Giới hạn 20 đơn vị mỗi sản phẩm trong bản trải nghiệm; đây không phải số tồn kho.
@@ -59,6 +59,16 @@ CHROMIUM_PATH=/usr/bin/chromium npm run test:e2e
 
 E2E dùng Playwright + axe cho desktop/mobile: routes/404, các breakpoint 320–1440px, tìm kiếm, lọc, yêu thích, giỏ hàng, form preview và accessibility trang chủ. Cài Chromium hệ thống hoặc `npx playwright install chromium`; nếu dùng Chromium Playwright, đặt `CHROMIUM_PATH` tới binary phù hợp. Có thể đặt `PLAYWRIGHT_BASE_URL` để kiểm tra production server.
 
+Suite đọc ID/URL, tên, giá và danh mục từ catalog đang hiển thị, không chốt số lượng 6 hay slug preview. Assertions vẫn kiểm tra tập sản phẩm sau lọc, thứ tự giá, tổng giỏ, persistence, 404 và WCAG.
+
+Để chạy cùng suite với **production build local nối backend/SQL thật**, dùng database và tài khoản tổng hợp, bật write gate chỉ ở stack test và chạy integration trước theo [hướng dẫn](docs/API-INTEGRATION.md). Catalog test cần sản phẩm có đủ tồn cho thao tác giỏ, ít nhất một sản phẩm cho phép đặt riêng và ca workshop tương lai còn chỗ. Sau khi production server test đã chạy:
+
+```bash
+E2E_EXPECT_CONNECTED=true PLAYWRIGHT_BASE_URL=http://localhost:3100 npm run test:e2e
+```
+
+Connected E2E chỉ chấp nhận loopback, không dùng production thật. Hai test form xác minh guest nhận 401 từ BFF và không có yêu cầu/hold/kết quả giả; preview vẫn bắt buộc không gửi POST. Các luồng đăng nhập, tạo báo giá/đơn Unpaid, hold và CMS upload thật nằm trong `npm run test:integration`; không thay backend bằng fixture mock.
+
 ## Cấu trúc
 
 ```text
@@ -69,7 +79,7 @@ src/lib/api/     Typed API client phía server
 src/lib/server/  BFF allowlist, cookie và proxy
 src/lib/storefront.ts  Adapter DTO backend → UI
 public/images/   Ảnh WebP kế thừa
-tests/e2e/       Preview regression desktop/mobile
+tests/e2e/       Catalog-driven regression desktop/mobile (preview hoặc connected local)
 tests/integration/ BFF + backend + browser tests
  docs/           Tích hợp, thiết kế & tài liệu prototype lịch sử
 ```

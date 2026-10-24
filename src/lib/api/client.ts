@@ -96,6 +96,7 @@ export type Product = {
   isCustomizable: boolean;
   isPreOrder: boolean;
   isActive: boolean;
+  quantityAvailable?: number;
 };
 export type ProductDetail = Product & {
   quantityAvailable: number;

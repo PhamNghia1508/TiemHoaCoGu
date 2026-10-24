@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { FavoriteButton, useStore } from './store-provider';
 import { money, type Product } from '@/lib/catalog';
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
-  const { add, ready, mode } = useStore();
+  const { add, ready, mode, categories } = useStore();
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(
@@ -18,6 +18,8 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
   return (
     <article
       className="product-card"
+      data-category-id={product.category}
+      data-store-ready={ready ? 'true' : 'false'}
       style={
         {
           '--card-tone': ['#f1e6e7', '#edf0de', '#e9e7f0', '#f3e7d5'][index % 4],
@@ -43,11 +45,14 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
       <div className="product-info">
         <div>
           <p className="product-kind">
-            {product.category === 'bo'
-              ? 'HOA SÁP THỦ CÔNG'
-              : product.category === 'lo'
-                ? 'CHO GÓC NHỎ'
-                : 'QUÀ & DIY'}
+            {mode === 'connected'
+              ? categories.find((category) => category.id === product.category)?.label ||
+                'Hoa & quà tặng'
+              : product.category === 'bo'
+                ? 'HOA SÁP THỦ CÔNG'
+                : product.category === 'lo'
+                  ? 'CHO GÓC NHỎ'
+                  : 'QUÀ & DIY'}
           </p>
           <Link href={`/cua-tiem/${product.id}`}>
             <h3>{product.name}</h3>

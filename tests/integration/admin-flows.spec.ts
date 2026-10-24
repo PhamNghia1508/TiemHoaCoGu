@@ -170,17 +170,115 @@ test('CMS media upload, gallery CRUD và inventory dùng đúng contract', async
   await ok(await request.delete(`/api/store/management/categories/${category.id}`, { headers }));
 });
 
-test('CMS CSV và staff delivery read, payment provider không được mở', async ({ request }) => {
+test('CMS CSV và staff delivery read, payment provider không được mở', async ({
+  request,
+  browser,
+}) => {
   await admin(request);
-  const csv = await ok(await request.get('/api/store/management/reports/orders.csv'));
-  expect(csv.headers()['content-type']).toContain('text/csv');
-  expect(csv.headers()['content-disposition']).toContain('attachment');
-  expect(await csv.text()).not.toBe('null');
-  const orders = (await (
-    await ok(await request.get('/api/store/management/orders?page=1&pageSize=50'))
-  ).json()) as { items: { id: string }[] };
-  expect(orders.items.length).toBeGreaterThan(0);
-  for (const order of orders.items.slice(0, 3))
-    await ok(await request.get(`/api/store/orders/staff/${order.id}/deliveries`));
-  expect((await request.post('/api/store/payments', { headers, data: {} })).status()).toBe(404);
+  const customer = await authenticatedContext(browser);
+  try {
+    // Provision through real business APIs: this test must also pass on a fresh DB.
+    const key = randomUUID().slice(0, 8);
+    const category = (await (
+      await ok(
+        await request.post('/api/store/management/categories', {
+          headers,
+          data: { code: `CSV-C-${key}`, name: `CSV ${key}` },
+        }),
+      )
+    ).json()) as { id: string };
+    const product = (await (
+      await ok(
+        await request.post('/api/store/management/products', {
+          headers,
+          data: {
+            categoryId: category.id,
+            code: `CSV-P-${key}`,
+            name: `CSV product ${key}`,
+            price: 125000,
+            isCustomizable: true,
+            isPreOrder: false,
+            isActive: true,
+            shippingWeightGrams: 500,
+          },
+        }),
+      )
+    ).json()) as { id: string };
+    const custom = (await (
+      await ok(
+        await customer.api.post('/api/store/custom-orders', {
+          headers,
+          data: { productId: product.id, quantity: 1, description: 'Synthetic CSV setup' },
+        }),
+      )
+    ).json()) as { id: string };
+    await ok(
+      await request.post(`/api/store/custom-orders/${custom.id}/quote`, {
+        headers,
+        data: {
+          unitPrice: 125000,
+          depositPercent: 50,
+          completionDate: new Date(Date.now() + 14 * 86400000).toISOString(),
+          expiresAt: new Date(Date.now() + 86400000).toISOString(),
+          adminNote: 'Synthetic CSV quote',
+        },
+      }),
+    );
+    const quote = (await (
+      await ok(await customer.api.get(`/api/store/custom-orders/${custom.id}`))
+    ).json()) as { currentRevision: number };
+    await ok(
+      await customer.api.post(`/api/store/custom-orders/${custom.id}/approve`, {
+        headers,
+        data: { version: quote.currentRevision },
+      }),
+    );
+    const created = (await (
+      await ok(
+        await customer.api.post(`/api/store/custom-orders/${custom.id}/checkout`, {
+          headers,
+          data: {
+            shippingAddress: '12 Synthetic CSV Street',
+            note: 'Unpaid integration setup; no payment provider',
+            idempotencyKey: randomUUID(),
+          },
+        }),
+      )
+    ).json()) as { orderId: string; orderCode: string; paymentStatus: string };
+    expect(created.paymentStatus).toBe('Unpaid');
+    const stored = await (
+      await ok(await customer.api.get(`/api/store/orders/${created.orderId}`))
+    ).json();
+    expect(stored).toMatchObject({
+      id: created.orderId,
+      paymentStatus: 'Unpaid',
+      totalAmount: 125000,
+    });
+
+    const search = encodeURIComponent(created.orderCode);
+    const csv = await ok(
+      await request.get(`/api/store/management/reports/orders.csv?search=${search}`),
+    );
+    expect(csv.headers()['content-type']).toContain('text/csv');
+    expect(csv.headers()['content-disposition']).toContain('attachment');
+    const text = await csv.text();
+    expect(text).toContain(created.orderCode);
+    expect(text).toContain('Unpaid');
+    expect(text).toContain('125000.00');
+    const orders = (await (
+      await ok(
+        await request.get(`/api/store/management/orders?search=${search}&page=1&pageSize=50`),
+      )
+    ).json()) as { items: { id: string; paymentStatus: string }[] };
+    expect(orders.items).toContainEqual(
+      expect.objectContaining({ id: created.orderId, paymentStatus: 'Unpaid' }),
+    );
+    const deliveries = await ok(
+      await request.get(`/api/store/orders/staff/${created.orderId}/deliveries`),
+    );
+    expect(await deliveries.json()).toEqual([]);
+    expect((await request.post('/api/store/payments', { headers, data: {} })).status()).toBe(404);
+  } finally {
+    await customer.context.close();
+  }
 });

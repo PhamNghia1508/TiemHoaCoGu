@@ -1,18 +1,23 @@
 # Kết quả tích hợp Tiệm Hoa Có Gu
 
-Frontend đã nối API ASP.NET Core, không chỉ dựng giao diện. Các kiểm thử dưới đây dùng backend `main` tại commit `41f11144ad6c24465ff11f0e929ecb3ad9dc0205`, database SQLite riêng và tài khoản/dữ liệu tổng hợp. Không dùng tài khoản khách thật, không triển khai production và không sửa backend gốc.
+Frontend đã nối API ASP.NET Core, không chỉ dựng giao diện. Regression ngày 24/10/2026 chạy với standalone production FE, API từ Dockerfile đã sửa trên branch backend `fix/docker-nonroot-runtime-permissions` (gốc main `41f11144ad6c24465ff11f0e929ecb3ad9dc0205`) và SQL Server 2022 Docker. Chỉ dùng tài khoản/dữ liệu tổng hợp trên loopback; không triển khai production.
 
 ## Kết quả cuối
 
-| Kiểm tra                            | Kết quả                        |
-| ----------------------------------- | ------------------------------ |
-| Unit test                           | 30/30 đạt                      |
-| E2E preview, desktop và mobile      | 30/30 đạt                      |
-| Integration với backend thật        | 21/21 đạt, gồm 6 browser flows |
-| ESLint, TypeScript, Prettier        | Đạt                            |
-| Next.js standalone production build | Đạt                            |
+| Kiểm tra                                           | Kết quả                               |
+| -------------------------------------------------- | ------------------------------------- |
+| Unit test                                          | 30/30 đạt                             |
+| E2E preview, desktop và mobile                     | 30/30 đạt                             |
+| E2E production FE + API + SQL thật, desktop/mobile | 30/30 đạt                             |
+| Integration với backend thật                       | 21/21 đạt, gồm 6 browser flows        |
+| Backend, bật SQL Server tests                      | 193/193 đạt, 0 skip; gồm 12 SQL tests |
+| ESLint, TypeScript, Prettier                       | Đạt                                   |
+| Next.js standalone production build                | Đạt                                   |
+| npm audit                                          | 0 vulnerabilities                     |
 
 Integration cuối chạy trên standalone production, `API_BASE_URL` và write gate được đặt khi khởi động server. Như vậy cùng bản build có thể nhận cấu hình backend ở runtime, không bị đóng băng thành preview lúc build. Các bộ integration không mock backend hoặc bịa response thành công của nhà cung cấp.
+
+Docker API chạy UID/GID 1654/1654, đọc được appsettings và ghi media ở đường dẫn mặc định; upload HTTP thật đã qua. Catalog list trả tồn kho khớp detail (dương/0/thiếu inventory), tránh quick-add cho hàng hết tồn. Gift-finder/nhãn loại dùng danh mục API thay slug mẫu. E2E lấy GUID/tên/giá/tập sản phẩm từ catalog, chờ hydration và vẫn kiểm tra đầy đủ lọc, sắp xếp, tổng giỏ, persistence, 404, WCAG. Test CSV tự tạo đơn Unpaid qua API thật và đã chạy thành công từ DB mới có 0 đơn, không phụ thuộc lượt test trước. Vitest nâng 3.x → 5.0.5, cấu hình ESM và yêu cầu Node được cập nhật theo engines.
 
 ## Đã kiểm chứng trực tiếp
 
@@ -32,7 +37,7 @@ Integration cuối chạy trên standalone production, `API_BASE_URL` và write 
 
 Backend chưa có triển khai production. Chưa tích hợp thanh toán, shipping provider, email/SMS hoặc webhook từ nhà cung cấp thật. Giữ chỗ không phải mua vé; duyệt giá không phải trả tiền; đơn Unpaid không phải đã thu tiền; phiếu giao nội bộ không phải đã đặt hãng vận chuyển.
 
-Bộ integration này dùng SQLite; không dùng nó thay bằng chứng kiểm thử SQL Server. Các kết quả backend 192/192 và SQL Server trước tích hợp là baseline riêng, không được cộng vào kết quả mới ở bảng trên.
+Lượt SQLite 21/21 và backend 192/192 trước đây là baseline lịch sử; bảng trên là lượt Docker/SQL mới với 193 backend tests (thêm regression tồn kho). Số test giữa các bộ được báo riêng, không cộng thành một bộ duy nhất.
 
 Trước khi bật ghi ở production phải có backend/DB bền vững, HTTPS, secrets, backup/monitoring, kiểm tra cookie/CSRF qua reverse proxy và kiểm thử provider/webhook thật. `STOREFRONT_WRITES_ENABLED` mặc định tắt; chưa được phép merge frontend PR.
 

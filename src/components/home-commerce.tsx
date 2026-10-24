@@ -7,6 +7,7 @@ import { useStore } from './store-provider';
 import ProductCard from './product-card';
 export function GiftFinder() {
   const router = useRouter();
+  const { categories } = useStore();
   const [category, setCategory] = useState('all');
   const [budget, setBudget] = useState('all');
   return (
@@ -31,9 +32,13 @@ export function GiftFinder() {
         Kiểu quà bạn đang nghĩ đến
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="all">Một chút bất ngờ</option>
-          <option value="bo">Một bó hoa sáp</option>
-          <option value="lo">Một góc nhỏ xinh</option>
-          <option value="diy">Quà & tự tay làm</option>
+          {categories
+            .filter((item) => item.id !== 'all')
+            .map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
         </select>
       </label>
       <label>
