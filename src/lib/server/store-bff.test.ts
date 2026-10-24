@@ -7,6 +7,18 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['orders', 'checkout'], 'POST')).not.toBeNull();
     expect(resolveStoreRoute(['admin', 'users'], 'GET')).toBeNull();
     expect(resolveStoreRoute(['orders'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['shipping', 'locations', 'provinces'], 'GET')).toEqual({
+      upstream: '/api/shipping/locations/provinces',
+      protected: true,
+      write: false,
+    });
+    expect(resolveStoreRoute(['shipping', 'locations', 'wards'], 'GET')).toEqual({
+      upstream: '/api/shipping/locations/wards',
+      protected: true,
+      write: false,
+    });
+    expect(resolveStoreRoute(['shipping', 'locations', 'wards'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['shipping', 'locations', 'custom'], 'GET')).toBeNull();
   });
   it('allows only public payment readiness and authenticated order-scoped MoMo sandbox routes', () => {
     const id = '00000000-0000-4000-8000-000000000001';

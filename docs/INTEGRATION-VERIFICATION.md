@@ -25,7 +25,7 @@ Docker API chạy UID/GID 1654/1654, đọc được appsettings và ghi media �
 
 **Tài khoản và giỏ:** đăng nhập bằng giao diện, tạo/sửa/xóa địa chỉ, lưu/khôi phục giỏ máy chủ, kiểm tra trên mobile và reload. localStorage chỉ giữ GUID/số lượng giỏ và yêu thích, không chứa token hoặc thông tin giao hàng. Có test mô phỏng response kiểm tra phiên cũ về muộn: response đó không được ghi đè phiên vừa đăng nhập.
 
-**Catalog và checkout:** giá/GUID/danh mục/ảnh từ API; phân trang catalog; ảnh không hợp lệ bị loại. Thêm sản phẩm thực vào túi rồi yêu cầu phí giao hàng bằng UI. Backend hiện khóa carrier `Disabled` cho tới khi GHN staging adapter được xác minh nên trả **503**; UI báo lỗi và không tạo đơn giả. Branch follow-up kiểm tra MoMo sandbox readiness trước khi tạo đơn, dùng idempotent charge một lần và trang return đọc trạng thái từ backend, không tin query claims của trình duyệt. Backend không liên lạc được thì catalog không fallback dữ liệu mẫu.
+**Catalog và checkout:** giá/GUID/danh mục/ảnh từ API; phân trang catalog; ảnh không hợp lệ bị loại. Checkout lấy danh mục tỉnh/phường mới qua BFF, E2E dùng fixture địa chỉ tổng hợp; không có token trong browser. Carrier vẫn `Disabled` vì GHN chưa công bố mapping báo phí chính thức nên quote trả **503**; UI báo lỗi và không tạo đơn giả. Checkout backend cũng từ chối payload thiếu quote. Branch follow-up kiểm tra MoMo sandbox readiness trước khi tạo đơn, dùng idempotent charge một lần và trang return đọc trạng thái từ backend, không tin query claims của trình duyệt. Backend không liên lạc được thì catalog không fallback dữ liệu mẫu.
 
 **Hoa đặt riêng:** UI tạo yêu cầu thực; Admin fixture phát hành báo giá; khách tải lại, đọc giá/tiền cọc/điều kiện, duyệt và checkout. Đơn được đọc lại từ backend với trạng thái **Unpaid**. Tra cứu bằng UI hiển thị đúng mã đơn vừa tạo. Idempotency và ownership cũng được kiểm tra qua API.
 
@@ -35,16 +35,16 @@ Docker API chạy UID/GID 1654/1654, đọc được appsettings và ghi media �
 
 ## Không được hiểu nhầm là đã mở bán
 
-Backend chưa có triển khai production. MoMo adapter khóa endpoint sandbox; Mailtrap Email Sandbox và Twilio Test Credentials có code test-only nhưng chưa được cấu hình secrets hoặc gọi thật. GHN chưa được tích hợp nên carrier bị disable. Giữ chỗ không phải mua vé; duyệt giá không phải trả tiền; đơn Unpaid không phải đã thu tiền; phiếu giao nội bộ không phải đã đặt hãng vận chuyển.
+Backend chưa có triển khai production. MoMo adapter khóa endpoint sandbox; Mailtrap Email Sandbox và Twilio Test Credentials có code test-only; không gọi provider trong lượt này. GHN v3 staging chỉ đọc catalog tỉnh/phường; quote/checkout vẫn khóa do fee mapping chưa được xác nhận. Giữ chỗ không phải mua vé; duyệt giá không phải trả tiền; đơn Unpaid không phải đã thu tiền; phiếu giao nội bộ không phải đã đặt hãng vận chuyển.
 
 Lượt SQLite 21/21 và backend 192/192 trước đây là baseline lịch sử; bảng trên là lượt Docker/SQL mới với 193 backend tests (thêm regression tồn kho). Số test giữa các bộ được báo riêng, không cộng thành một bộ duy nhất.
 
 ## Sandbox follow-up (branch local, chưa merge/deploy)
 
-Backend thêm MoMo sandbox create/IPN/query/refund, Admin reconciliation tự query provider lần nữa trước khi ghi sổ, Mailtrap/Twilio test-only transports, SMS template bỏ recovery URL/token, notification reconciliation có audit, và carrier `Disabled` tới khi GHN được xác minh. FE thêm checkout handoff/return status và Admin panels qua BFF allowlist.
+Backend thêm MoMo sandbox create/IPN/query/refund, Admin reconciliation tự query provider lần nữa trước khi ghi sổ, Mailtrap/Twilio test-only transports, SMS template bỏ recovery URL/token, notification reconciliation có audit, GHN staging province/ward catalog read-only và carrier `Disabled` tới khi mapping phí được GHN xác minh. FE thêm selector tỉnh/phường, checkout handoff/return status và Admin panels qua BFF allowlist.
 
-Lượt kiểm tra mới nhất: backend Release **205 passed, 12 skipped, 0 failed**; 12 test cần `HOASAP_TEST_SQLSERVER` nên không chạy trong sandbox này. FE lint, typecheck, **32/32 unit tests**, Prettier và production build đạt; preview E2E trước đó **30/30 đạt**. Không có provider call thật. Chưa có sandbox credentials để xác thực wire behavior; chưa có GHN adapter, staging backup/restore thực tế hoặc ngưỡng load do team duyệt. Không coi đây là acceptance staging hay production.
+Lượt kiểm tra mới nhất: backend Release **211 passed, 12 skipped, 0 failed**; 12 test cần `HOASAP_TEST_SQLSERVER` nên không chạy trong sandbox này. FE lint, typecheck, **32/32 unit tests**, Prettier, production build và preview E2E **30/30** đều đạt. Test hiện tại không gọi payment/email/SMS provider. Mailtrap Email Sandbox đã nhận một email `.test` tổng hợp ở smoke test trước; GHN staging area catalog chỉ đọc được xác minh, nhưng không có mapping báo phí chính thức cho địa giới mới nên quote/checkout thường vẫn khóa. MoMo M4B onboarding còn bước kinh doanh/pháp lý của chủ tài khoản; Twilio Test Credentials chưa được cấp. SQL Server/volume/key-ring restore trên staging và load acceptance vẫn chưa chạy; không coi đây là acceptance staging hay production.
 
-Trước khi bật ghi ở production phải có backend/DB bền vững, HTTPS, secrets, backup/monitoring, kiểm tra cookie/CSRF qua reverse proxy và kiểm thử provider/webhook thật. `STOREFRONT_WRITES_ENABLED` mặc định tắt; chưa được phép merge frontend PR.
+Trước khi bật ghi ở production phải có backend/DB bền vững, HTTPS, secrets, backup/monitoring, kiểm tra cookie/CSRF qua reverse proxy và kiểm thử provider/webhook thật. `STOREFRONT_WRITES_ENABLED` mặc định tắt; các PR có thể được cập nhật nhưng merge/deploy cần chỉ thị riêng.
 
 Cách chạy và cấu hình: [API-INTEGRATION.md](./API-INTEGRATION.md).

@@ -35,6 +35,8 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     workshops: { methods: ['GET'], protected: false },
     'catalog/products': { methods: ['GET'], protected: false },
     'catalog/categories': { methods: ['GET'], protected: false },
+    'shipping/locations/provinces': { methods: ['GET'], protected: true },
+    'shipping/locations/wards': { methods: ['GET'], protected: true },
     'shipping/quote': { methods: ['POST'], protected: true },
     cart: { methods: ['GET', 'POST'], protected: true },
     addresses: { methods: ['GET', 'POST'], protected: true },

@@ -234,7 +234,9 @@ test('shipping provider không configured trả 503 với payload destination/it
   const product = (await products(api))[0];
   const response = await api.post('/api/store/shipping/quote', {
     data: {
-      destination: '12 Integration Street, Ho Chi Minh City',
+      streetAddress: '12 Integration Street',
+      provinceId: 1000001,
+      wardId: 1003580,
       weight: 0.5,
       items: [{ productId: product.id, quantity: 1 }],
     },

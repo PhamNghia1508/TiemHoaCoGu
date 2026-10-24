@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowUpRight, ShoppingBag, PencilLine } from 'lucide-react';
 import { useStore } from './store-provider';
 import { money } from '@/lib/catalog';
@@ -16,6 +16,7 @@ type OrderResult = {
   orderStatus?: string;
 };
 type GatewayAvailability = { provider: string; ready: boolean; sandbox: boolean };
+type ShippingArea = { id: number; name: string; parentId?: number | null };
 type GatewayCharge = {
   orderId: string;
   amount: number;
@@ -30,6 +31,12 @@ export default function Checkout() {
   const [error, setError] = useState('');
   const [quote, setQuote] = useState<ShippingQuote | null>(null);
   const [result, setResult] = useState<OrderResult | null>(null);
+  const [provinces, setProvinces] = useState<ShippingArea[]>([]);
+  const [wards, setWards] = useState<ShippingArea[]>([]);
+  const [provinceId, setProvinceId] = useState('');
+  const [wardId, setWardId] = useState('');
+  const [wardsLoading, setWardsLoading] = useState(false);
+  const [locationError, setLocationError] = useState('');
   const attempt = useRef<{ fingerprint: string; payload: CheckoutPayload } | null>(null);
   const lines = cart
     .map((line) => ({ line, product: products.find((p) => p.id === line.id) }))
@@ -37,13 +44,57 @@ export default function Checkout() {
       Boolean(x.product),
     );
 
+  const selectedProvince = provinces.find((area) => String(area.id) === provinceId);
+  const selectedWard = wards.find((area) => String(area.id) === wardId);
+
+  useEffect(() => {
+    if (mode !== 'connected') return;
+    let active = true;
+    storeRequest<ShippingArea[]>('shipping/locations/provinces')
+      .then((areas) => {
+        if (!active) return;
+        setProvinces(areas);
+        if (!areas.length) setLocationError('Danh mục tỉnh GHN staging hiện chưa sẵn sàng.');
+      })
+      .catch(() => {
+        if (active) setLocationError('Không tải được danh mục tỉnh GHN staging.');
+      });
+    return () => {
+      active = false;
+    };
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== 'connected' || !provinceId) return;
+    let active = true;
+    const query = new URLSearchParams({ provinceId });
+    storeRequest<ShippingArea[]>(`shipping/locations/wards?${query.toString()}`)
+      .then((areas) => {
+        if (!active) return;
+        setWards(areas);
+        if (!areas.length) setLocationError('GHN không trả danh mục phường cho tỉnh đã chọn.');
+      })
+      .catch(() => {
+        if (active) setLocationError('Không tải được danh mục phường GHN staging.');
+      })
+      .finally(() => {
+        if (active) setWardsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [mode, provinceId]);
+
   function buildPayload(form: FormData, shippingQuoteId?: string): CheckoutPayload {
+    const streetAddress = String(form.get('streetAddress') || '').trim();
     const items = lines.map(({ line, product }) => ({
       productId: product.id,
       quantity: line.quantity,
     }));
     return {
-      shippingAddress: String(form.get('address') || ''),
+      shippingAddress: [streetAddress, selectedWard?.name, selectedProvince?.name]
+        .filter(Boolean)
+        .join(', '),
       receiverName: String(form.get('name') || ''),
       receiverPhone: String(form.get('phone') || ''),
       receiverEmail: String(form.get('email') || '') || undefined,
@@ -56,9 +107,16 @@ export default function Checkout() {
 
   async function requestQuote(form: FormData) {
     const draft = buildPayload(form);
+    if (!selectedProvince || !selectedWard)
+      throw new Error('Hãy chọn tỉnh và phường trong danh mục GHN staging.');
     const response = await storeRequest<ShippingQuote>(
       'shipping/quote',
-      { destination: draft.shippingAddress, items: draft.items },
+      {
+        streetAddress: String(form.get('streetAddress') || '').trim(),
+        provinceId: selectedProvince.id,
+        wardId: selectedWard.id,
+        items: draft.items,
+      },
       'POST',
     );
     if (!response.id) throw new Error('Báo giá giao hàng không hợp lệ.');
@@ -203,17 +261,85 @@ export default function Checkout() {
               placeholder="Để nhận thông tin đơn"
             />
           </label>
-          <label className="field full">
-            Địa chỉ giao hoa *
-            <textarea
-              name="address"
-              autoComplete="shipping street-address"
-              required
-              maxLength={500}
-              placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"
-              style={{ minHeight: 85 }}
-            />
-          </label>
+          {mode === 'connected' ? (
+            <>
+              <label className="field full">
+                Số nhà, tên đường *
+                <textarea
+                  name="streetAddress"
+                  autoComplete="shipping street-address"
+                  required
+                  maxLength={500}
+                  placeholder="Số nhà, tên đường"
+                  style={{ minHeight: 85 }}
+                />
+              </label>
+              <label className="field">
+                Tỉnh/thành phố *
+                <select
+                  name="provinceId"
+                  value={provinceId}
+                  required
+                  disabled={provinces.length === 0}
+                  onChange={(event) => {
+                    const selected = event.currentTarget.value;
+                    setProvinceId(selected);
+                    setWardId('');
+                    setWards([]);
+                    setWardsLoading(Boolean(selected));
+                    setLocationError('');
+                  }}
+                >
+                  <option value="">
+                    {provinces.length === 0
+                      ? locationError
+                        ? 'Danh mục tỉnh chưa sẵn sàng'
+                        : 'Đang tải tỉnh…'
+                      : 'Chọn tỉnh/thành phố'}
+                  </option>
+                  {provinces.map((area) => (
+                    <option key={area.id} value={area.id}>
+                      {area.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field">
+                Phường/xã *
+                <select
+                  name="wardId"
+                  value={wardId}
+                  required
+                  disabled={!provinceId || wardsLoading || wards.length === 0}
+                  onChange={(event) => setWardId(event.currentTarget.value)}
+                >
+                  <option value="">{wardsLoading ? 'Đang tải phường…' : 'Chọn phường/xã'}</option>
+                  {wards.map((area) => (
+                    <option key={area.id} value={area.id}>
+                      {area.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {locationError && (
+                <p className="field full form-status" role="alert">
+                  {locationError}
+                </p>
+              )}
+            </>
+          ) : (
+            <label className="field full">
+              Địa chỉ giao hoa *
+              <textarea
+                name="address"
+                autoComplete="shipping street-address"
+                required
+                maxLength={500}
+                placeholder="Số nhà, đường, phường/xã, tỉnh/thành phố"
+                style={{ minHeight: 85 }}
+              />
+            </label>
+          )}
           <label className="field full">
             Một lời nhắn gửi cùng hoa
             <textarea
@@ -246,7 +372,13 @@ export default function Checkout() {
         <button
           type="submit"
           className="button"
-          disabled={pending || mode === 'unavailable' || Boolean(result)}
+          disabled={
+            pending ||
+            mode === 'unavailable' ||
+            Boolean(result) ||
+            (mode === 'connected' &&
+              (wardsLoading || !selectedProvince || !selectedWard || Boolean(locationError)))
+          }
         >
           {pending
             ? 'Đang xử lý…'

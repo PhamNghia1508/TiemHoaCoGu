@@ -122,6 +122,20 @@ test('UI catalog → túi → checkout: thiếu shipping provider trả lỗi th
   const p = await product(manager.request);
   const customer = await authenticatedContext(browser);
   const page = await customer.context.newPage();
+  await page.route('**/api/store/shipping/locations/provinces', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([{ id: 1000001, name: 'Hồ Chí Minh', parentId: 1 }]),
+    }),
+  );
+  await page.route('**/api/store/shipping/locations/wards**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([{ id: 1003580, name: 'Phường Thủ Đức', parentId: 1000001 }]),
+    }),
+  );
   await page.goto(`/cua-tiem/${p.id}`);
   await expect(page.getByRole('heading', { name: p.name, exact: true })).toBeVisible();
   await page
@@ -133,7 +147,9 @@ test('UI catalog → túi → checkout: thiếu shipping provider trả lỗi th
   await page.locator('[name="name"]').fill(customer.user.fullName);
   await page.locator('[name="phone"]').fill(customer.user.phoneNumber);
   await page.locator('[name="email"]').fill(customer.user.email);
-  await page.locator('[name="address"]').fill('12 UI Integration Street, Ho Chi Minh City');
+  await page.locator('[name="streetAddress"]').fill('12 UI Integration Street');
+  await page.locator('[name="provinceId"]').selectOption('1000001');
+  await page.locator('[name="wardId"]').selectOption('1003580');
   const quoteResponse = page.waitForResponse(
     (r) => r.url().endsWith('/api/store/shipping/quote') && r.request().method() === 'POST',
   );
