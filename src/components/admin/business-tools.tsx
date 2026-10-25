@@ -1,7 +1,16 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { storeRequest } from '@/lib/browser-api';
+import {
+  AdminDialog,
+  AdminEmpty,
+  AdminLoading,
+  StatusBadge,
+  useAdminConfirm,
+  useDebouncedValue,
+} from './primitives';
 
 type Page<T> = { items: T[]; total: number; page: number; pageSize: number };
 type Voucher = {
@@ -35,11 +44,6 @@ type VoucherForm = Omit<Voucher, 'id' | 'usedCount' | 'isActive'>;
 type AccountForm = Pick<Account, 'fullName' | 'email' | 'phoneNumber' | 'role' | 'isActive'>;
 type ImageForm = Pick<ProductImage, 'imageUrl' | 'displayOrder'>;
 
-function localDateTime(value: string) {
-  const date = new Date(value);
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-}
-const errorText = (e: unknown) => (e instanceof Error ? e.message : 'Không thể thực hiện yêu cầu.');
 const blankVoucher: VoucherForm = {
   code: '',
   description: '',
@@ -59,6 +63,11 @@ const blankAccount: AccountForm = {
   isActive: true,
 };
 const blankImage: ImageForm = { imageUrl: '', displayOrder: 0 };
+const errorText = (e: unknown) => (e instanceof Error ? e.message : 'Không thể thực hiện yêu cầu.');
+const localDateTime = (value: string) => {
+  const d = new Date(value);
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+};
 
 function Feedback({ error, notice }: { error: string; notice: string }) {
   return (
@@ -80,60 +89,82 @@ function Pager({
   page,
   pageSize,
   total,
+  busy,
   onPage,
 }: {
   page: number;
   pageSize: number;
   total: number;
-  onPage: (p: number) => void;
+  busy?: boolean;
+  onPage: (page: number) => void;
 }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
   return (
     <div className="admin-pagination">
-      <button type="button" disabled={page <= 1} onClick={() => onPage(page - 1)}>
+      <button type="button" disabled={busy || page <= 1} onClick={() => onPage(page - 1)}>
         Trước
       </button>
-      <span>
+      <span aria-live="polite">
         Trang {page}/{pages} · {total}
       </span>
-      <button type="button" disabled={page >= pages} onClick={() => onPage(page + 1)}>
+      <button type="button" disabled={busy || page >= pages} onClick={() => onPage(page + 1)}>
         Sau
       </button>
     </div>
   );
 }
 
-export function VoucherManager() {
+export function VoucherManager({ readOnly = false }: { readOnly?: boolean }) {
   const [data, setData] = useState<Page<Voucher>>({ items: [], total: 0, page: 1, pageSize: 20 });
-  const [form, setForm] = useState<VoucherForm>(blankVoucher);
+  const [form, setForm] = useState(blankVoucher);
   const [editing, setEditing] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Voucher | null>(null);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search);
   const [active, setActive] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const confirm = useAdminConfirm();
   const load = useCallback(
     async (page = 1) => {
+      setLoading(true);
+      setError('');
       try {
         const q = new URLSearchParams({ page: String(page), pageSize: String(data.pageSize) });
-        if (search.trim()) q.set('search', search.trim());
+        if (debouncedSearch.trim()) q.set('search', debouncedSearch.trim());
         if (active) q.set('isActive', active);
         setData(await storeRequest<Page<Voucher>>(`management/vouchers?${q}`));
       } catch (e) {
         setError(errorText(e));
+      } finally {
+        setLoading(false);
       }
     },
-    [active, data.pageSize, search],
+    [active, data.pageSize, debouncedSearch],
   );
-  // load is intentionally invoked only when the user changes filters; its paging callback is stable for this view.
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void load(1);
-    }, 0);
-    return () => window.clearTimeout(timer);
+    void load(1);
   }, [load]);
+  const openEdit = (v: Voucher) => {
+    setSelected(v);
+    setEditing(v.id);
+    setForm({
+      code: v.code,
+      description: v.description,
+      discountType: v.discountType,
+      discountValue: v.discountValue,
+      minOrderAmount: v.minOrderAmount,
+      maxDiscountAmount: v.maxDiscountAmount,
+      startDate: localDateTime(v.startDate),
+      endDate: localDateTime(v.endDate),
+      usageLimit: v.usageLimit,
+    });
+  };
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (readOnly || busy) return;
     setBusy(true);
     setError('');
     try {
@@ -151,20 +182,26 @@ export function VoucherManager() {
         editing ? 'PUT' : 'POST',
       );
       setNotice(editing ? 'Đã cập nhật voucher.' : 'Đã tạo voucher.');
-      setForm(blankVoucher);
       setEditing(null);
+      setSelected(null);
+      setForm(blankVoucher);
       await load();
-    } catch (x) {
-      setError(errorText(x));
+    } catch (e) {
+      setError(errorText(e));
     } finally {
       setBusy(false);
     }
   };
   const toggle = async (v: Voucher) => {
     if (
-      !window.confirm(
-        `${v.isActive ? 'Tắt' : 'Bật'} voucher ${v.code}? Backend sẽ kiểm tra điều kiện nghiệp vụ.`,
-      )
+      readOnly ||
+      busy ||
+      !(await confirm({
+        title: `${v.isActive ? 'Tắt' : 'Bật'} voucher ${v.code}?`,
+        description: 'Backend sẽ kiểm tra điều kiện nghiệp vụ.',
+        confirmLabel: v.isActive ? 'Tắt voucher' : 'Bật voucher',
+        destructive: v.isActive,
+      }))
     )
       return;
     setBusy(true);
@@ -174,7 +211,8 @@ export function VoucherManager() {
         undefined,
         'PATCH',
       );
-      await load();
+      setNotice('Đã cập nhật trạng thái voucher.');
+      await load(data.page);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -183,8 +221,26 @@ export function VoucherManager() {
   };
   return (
     <section className="admin-card">
-      <h2>Voucher</h2>
-      <Feedback error={error} notice={notice} />
+      <div className="admin-section-heading">
+        <div>
+          <h2>Voucher</h2>
+          <p className="admin-muted">Danh sách voucher và trạng thái sử dụng.</p>
+        </div>
+        {!readOnly && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => {
+              setEditing('');
+              setSelected(null);
+              setForm(blankVoucher);
+            }}
+          >
+            Tạo voucher
+          </button>
+        )}
+      </div>
+      {!editing && <Feedback error={error} notice={notice} />}
       <div className="admin-toolbar">
         <input
           aria-label="Tìm voucher"
@@ -202,217 +258,296 @@ export function VoucherManager() {
           <option value="false">Đang tắt</option>
         </select>
       </div>
-      <form onSubmit={submit} className="admin-form">
-        <label className="admin-field">
-          <span>Mã voucher</span>
-          <input
-            required
-            maxLength={40}
-            placeholder="Code"
-            value={form.code}
-            onChange={(e) => setForm({ ...form, code: e.target.value })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Mô tả voucher</span>
-          <input
-            maxLength={1000}
-            placeholder="Mô tả"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
-        </label>
-        <select
-          aria-label="Loại giảm giá"
-          value={form.discountType}
-          onChange={(e) =>
-            setForm({ ...form, discountType: e.target.value as VoucherForm['discountType'] })
-          }
-        >
-          <option value="Percentage">Phần trăm</option>
-          <option value="FixedAmount">Số tiền</option>
-        </select>
-        <label className="admin-field">
-          <span>Giá trị giảm</span>
-          <input
-            required
-            type="number"
-            step="0.01"
-            min="0.01"
-            value={form.discountValue}
-            onChange={(e) => setForm({ ...form, discountValue: Number(e.target.value) })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Giá trị đơn tối thiểu</span>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            value={form.minOrderAmount}
-            onChange={(e) => setForm({ ...form, minOrderAmount: Number(e.target.value) })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Mức giảm tối đa (không bắt buộc)</span>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            placeholder="Giảm tối đa (tuỳ chọn)"
-            value={form.maxDiscountAmount ?? ''}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                maxDiscountAmount: e.target.value ? Number(e.target.value) : null,
-              })
-            }
-          />
-        </label>
-        <label>
-          Bắt đầu{' '}
-          <input
-            required
-            type="datetime-local"
-            value={form.startDate.slice(0, 16)}
-            onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-          />
-        </label>
-        <label>
-          Kết thúc{' '}
-          <input
-            required
-            type="datetime-local"
-            value={form.endDate.slice(0, 16)}
-            onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Giới hạn lượt dùng</span>
-          <input
-            required
-            type="number"
-            min="1"
-            value={form.usageLimit}
-            onChange={(e) => setForm({ ...form, usageLimit: Number(e.target.value) })}
-          />
-        </label>
-        <button disabled={busy} type="submit">
-          {editing ? 'Lưu voucher' : 'Tạo voucher'}
-        </button>
-        {editing && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditing(null);
-              setForm(blankVoucher);
-            }}
-          >
-            Hủy
-          </button>
-        )}
-      </form>
-      <ul>
-        {data.items.map((v) => (
-          <li key={v.id}>
-            <strong>{v.code}</strong> · {v.discountType} {v.discountValue} · dùng {v.usedCount}/
-            {v.usageLimit} · {v.isActive ? 'Bật' : 'Tắt'}{' '}
+      {loading ? (
+        <AdminLoading />
+      ) : data.items.length === 0 ? (
+        <AdminEmpty title="Chưa có voucher phù hợp" description="Thử đổi từ khóa hoặc bộ lọc." />
+      ) : (
+        <div className="admin-record-list">
+          {data.items.map((v) => (
+            <article
+              className={`admin-record ${selected?.id === v.id ? 'is-selected' : ''}`}
+              key={v.id}
+            >
+              <div>
+                <strong>{v.code}</strong>
+                <p className="admin-muted">
+                  {v.description || 'Không có mô tả'} ·{' '}
+                  {v.discountType === 'Percentage' ? `${v.discountValue}%` : `${v.discountValue} đ`}{' '}
+                  · dùng {v.usedCount}/{v.usageLimit}
+                </p>
+              </div>
+              <StatusBadge status={v.isActive ? 'Đang bật' : 'Đang tắt'} />
+              <div className="admin-actions">
+                <button type="button" className="button button-outline" onClick={() => openEdit(v)}>
+                  Chi tiết
+                </button>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    className="button"
+                    disabled={busy}
+                    onClick={() => void toggle(v)}
+                  >
+                    {v.isActive ? 'Tắt' : 'Bật'}
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+      <Pager {...data} busy={loading || busy} onPage={(p) => void load(p)} />
+      <AdminDialog
+        open={editing !== null}
+        onClose={() => {
+          setEditing(null);
+          setSelected(null);
+          setForm(blankVoucher);
+        }}
+        title={editing ? (readOnly ? 'Xem voucher' : 'Sửa voucher') : 'Tạo voucher'}
+        description={readOnly ? 'Chế độ chỉ đọc: các thao tác ghi đang bị vô hiệu hóa.' : undefined}
+        wide
+      >
+        <form onSubmit={submit} className="admin-form" aria-busy={busy}>
+          <Feedback error={error} notice={notice} />
+          <div className="admin-form-section">
+            <h4>Thông tin voucher</h4>
+            <div className="admin-form-grid">
+              <label className="admin-field">
+                <span>Mã voucher</span>
+                <input
+                  required
+                  maxLength={40}
+                  value={form.code}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, code: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Mô tả voucher</span>
+                <input
+                  maxLength={1000}
+                  value={form.description}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Loại giảm giá</span>
+                <select
+                  value={form.discountType}
+                  disabled={readOnly || busy}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      discountType: e.target.value as VoucherForm['discountType'],
+                    })
+                  }
+                >
+                  <option value="Percentage">Phần trăm</option>
+                  <option value="FixedAmount">Số tiền</option>
+                </select>
+              </label>
+              <label className="admin-field">
+                <span>Giá trị giảm</span>
+                <input
+                  required
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={form.discountValue}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, discountValue: Number(e.target.value) })}
+                />
+              </label>
+            </div>
+          </div>
+          <div className="admin-form-section">
+            <h4>Điều kiện và thời hạn</h4>
+            <div className="admin-form-grid">
+              <label className="admin-field">
+                <span>Giá trị đơn tối thiểu</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.minOrderAmount}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, minOrderAmount: Number(e.target.value) })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Mức giảm tối đa (không bắt buộc)</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.maxDiscountAmount ?? ''}
+                  disabled={readOnly || busy}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      maxDiscountAmount: e.target.value ? Number(e.target.value) : null,
+                    })
+                  }
+                />
+              </label>
+              <label className="admin-field">
+                <span>Bắt đầu</span>
+                <input
+                  required
+                  type="datetime-local"
+                  value={form.startDate}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Kết thúc</span>
+                <input
+                  required
+                  type="datetime-local"
+                  value={form.endDate}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Giới hạn lượt dùng</span>
+                <input
+                  required
+                  type="number"
+                  min="1"
+                  value={form.usageLimit}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, usageLimit: Number(e.target.value) })}
+                />
+              </label>
+            </div>
+          </div>
+          <div className="admin-form-actions">
+            <button type="submit" className="button" disabled={busy || readOnly}>
+              {editing ? 'Lưu voucher' : 'Tạo voucher'}
+            </button>
             <button
               type="button"
+              className="button button-outline"
               onClick={() => {
-                setEditing(v.id);
-                setForm({
-                  code: v.code,
-                  description: v.description,
-                  discountType: v.discountType,
-                  discountValue: v.discountValue,
-                  minOrderAmount: v.minOrderAmount,
-                  maxDiscountAmount: v.maxDiscountAmount,
-                  startDate: localDateTime(v.startDate),
-                  endDate: localDateTime(v.endDate),
-                  usageLimit: v.usageLimit,
-                });
+                setEditing(null);
+                setSelected(null);
               }}
             >
-              Sửa
+              Hủy
             </button>
-            <button type="button" disabled={busy} onClick={() => void toggle(v)}>
-              {v.isActive ? 'Tắt' : 'Bật'}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <Pager {...data} onPage={(p) => void load(p)} />
+          </div>
+        </form>
+      </AdminDialog>
     </section>
   );
 }
 
-export function AccountManager() {
+export function AccountManager({ readOnly = false }: { readOnly?: boolean }) {
   const [data, setData] = useState<Page<Account>>({ items: [], total: 0, page: 1, pageSize: 20 });
-  const [form, setForm] = useState<AccountForm>(blankAccount);
+  const [form, setForm] = useState(blankAccount);
   const [password, setPassword] = useState('');
   const [resetTarget, setResetTarget] = useState<Account | null>(null);
   const [resetPassword, setResetPassword] = useState('');
   const [editing, setEditing] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Account | null>(null);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search);
   const [role, setRole] = useState('');
   const [isActive, setIsActive] = useState('');
   const [permissions, setPermissions] = useState<Permissions | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const confirm = useAdminConfirm();
   const load = useCallback(
     async (page = 1) => {
+      setLoading(true);
+      setError('');
       try {
         const q = new URLSearchParams({ page: String(page), pageSize: String(data.pageSize) });
-        if (search.trim()) q.set('search', search.trim());
+        if (debouncedSearch.trim()) q.set('search', debouncedSearch.trim());
         if (role) q.set('role', role);
         if (isActive) q.set('isActive', isActive);
         setData(await storeRequest<Page<Account>>(`management/accounts?${q}`));
       } catch (e) {
         setError(errorText(e));
+      } finally {
+        setLoading(false);
       }
     },
-    [data.pageSize, isActive, role, search],
-  ); // Filter changes reload accounts and permissions; paging changes are handled by the pager.
+    [data.pageSize, debouncedSearch, isActive, role],
+  );
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void load(1);
-      void storeRequest<Permissions>('management/permissions')
-        .then(setPermissions)
-        .catch((e) => setError(errorText(e)));
-    }, 0);
-    return () => window.clearTimeout(timer);
+    void load(1);
+    void storeRequest<Permissions>('management/permissions')
+      .then(setPermissions)
+      .catch((e) => setError(errorText(e)));
   }, [load]);
+  const openEdit = (a: Account) => {
+    setSelected(a);
+    setEditing(a.id);
+    setForm({
+      fullName: a.fullName,
+      email: a.email,
+      phoneNumber: a.phoneNumber,
+      role: a.role,
+      isActive: a.isActive,
+    });
+  };
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (editing && !window.confirm('Xác nhận cập nhật tài khoản, quyền và trạng thái truy cập?'))
+    if (
+      readOnly ||
+      busy ||
+      (editing &&
+        !(await confirm({
+          title: 'Xác nhận cập nhật tài khoản?',
+          description: 'Thay đổi quyền và trạng thái truy cập sẽ có hiệu lực ngay.',
+          confirmLabel: 'Cập nhật',
+        })))
+    )
       return;
     setBusy(true);
-    setError('');
     try {
       if (editing) await storeRequest<Account>(`management/accounts/${editing}`, form, 'PUT');
-      else await storeRequest<Account>('management/accounts', { ...form, password });
+      else await storeRequest<Account>('management/accounts', { ...form, password }, 'POST');
       setNotice(editing ? 'Đã cập nhật tài khoản.' : 'Đã tạo tài khoản.');
       setForm(blankAccount);
       setPassword('');
       setEditing(null);
+      setSelected(null);
       await load();
-    } catch (x) {
-      setError(errorText(x));
+    } catch (e) {
+      setError(errorText(e));
     } finally {
       setBusy(false);
     }
   };
   const reset = async (a: Account) => {
-    const next = resetPassword;
-    if (!next) return;
-    if (!window.confirm('Xác nhận reset mật khẩu? Các phiên đăng nhập sẽ bị thu hồi.')) return;
+    if (
+      readOnly ||
+      busy ||
+      !resetPassword ||
+      !(await confirm({
+        title: `Reset mật khẩu cho ${a.email}?`,
+        description:
+          'Các phiên đăng nhập sẽ bị thu hồi. Mật khẩu mới chỉ gửi một lần và không được lưu trong giao diện.',
+        confirmLabel: 'Reset mật khẩu',
+        destructive: true,
+      }))
+    )
+      return;
     setBusy(true);
     try {
       await storeRequest<void>(
         `management/accounts/${a.id}/reset-password`,
-        { newPassword: next },
+        { newPassword: resetPassword },
         'POST',
       );
       setNotice('Đã reset mật khẩu.');
@@ -426,10 +561,29 @@ export function AccountManager() {
   };
   return (
     <section className="admin-card">
-      <h2>Tài khoản</h2>
-      <Feedback error={error} notice={notice} />
+      <div className="admin-section-heading">
+        <div>
+          <h2>Tài khoản</h2>
+          <p className="admin-muted">Quản lý hồ sơ, quyền và trạng thái truy cập.</p>
+        </div>
+        {!readOnly && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => {
+              setEditing('');
+              setSelected(null);
+              setForm(blankAccount);
+            }}
+          >
+            Tạo tài khoản
+          </button>
+        )}
+      </div>
+      {!editing && !resetTarget && <Feedback error={error} notice={notice} />}
       <div className="admin-toolbar">
         <input
+          aria-label="Tìm tài khoản"
           placeholder="Tìm tên, email, số điện thoại"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -454,78 +608,177 @@ export function AccountManager() {
           <option value="false">Đã khóa</option>
         </select>
       </div>
-      <form onSubmit={submit} className="admin-form">
-        <label className="admin-field">
-          <span>Họ tên</span>
-          <input
-            required
-            minLength={2}
-            maxLength={120}
-            placeholder="Họ tên"
-            value={form.fullName}
-            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Email tài khoản</span>
-          <input
-            required
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-          />
-        </label>
-        <label className="admin-field">
-          <span>Số điện thoại</span>
-          <input
-            required
-            pattern="[+]?[0-9]{9,15}"
-            placeholder="Số điện thoại"
-            value={form.phoneNumber}
-            onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
-          />
-        </label>
-        <select
-          aria-label="Quyền tài khoản"
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value as AccountForm['role'] })}
-        >
-          <option>Customer</option>
-          <option>Staff</option>
-          <option>Admin</option>
-        </select>
-        {!editing && (
-          <input
-            required
-            minLength={10}
-            type="password"
-            placeholder="Mật khẩu"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        )}
-        <label>
-          <input
-            type="checkbox"
-            checked={form.isActive}
-            onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-          />{' '}
-          Hoạt động
-        </label>
-        <button disabled={busy} type="submit">
-          {editing ? 'Lưu tài khoản' : 'Tạo tài khoản'}
-        </button>
-      </form>
-      {resetTarget && (
+      {loading ? (
+        <AdminLoading />
+      ) : data.items.length === 0 ? (
+        <AdminEmpty title="Chưa có tài khoản phù hợp" description="Thử đổi từ khóa hoặc bộ lọc." />
+      ) : (
+        <div className="admin-record-list">
+          {data.items.map((a) => (
+            <article
+              className={`admin-record ${selected?.id === a.id ? 'is-selected' : ''}`}
+              key={a.id}
+            >
+              <div>
+                <strong>{a.fullName}</strong>
+                <p className="admin-muted">
+                  {a.email} · {a.phoneNumber} · {a.role}
+                </p>
+              </div>
+              <StatusBadge status={a.isActive ? 'Hoạt động' : 'Đã khóa'} />
+              <div className="admin-actions">
+                <button type="button" className="button button-outline" onClick={() => openEdit(a)}>
+                  Chi tiết
+                </button>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    className="button button-outline"
+                    disabled={busy}
+                    onClick={() => {
+                      setResetTarget(a);
+                      setResetPassword('');
+                    }}
+                  >
+                    Reset mật khẩu
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+      <Pager {...data} busy={busy || loading} onPage={(p) => void load(p)} />
+      <AdminDialog
+        open={editing !== null}
+        onClose={() => {
+          setEditing(null);
+          setSelected(null);
+        }}
+        title={editing ? (readOnly ? 'Xem tài khoản' : 'Sửa tài khoản') : 'Tạo tài khoản'}
+        description={
+          readOnly
+            ? 'Chế độ chỉ đọc: biểu mẫu chỉ để xem, mọi thao tác ghi đã bị vô hiệu hóa.'
+            : undefined
+        }
+      >
+        <form onSubmit={submit} className="admin-form" aria-busy={busy}>
+          <Feedback error={error} notice={notice} />
+          <div className="admin-form-section">
+            <h4>Thông tin tài khoản</h4>
+            <div className="admin-form-grid">
+              <label className="admin-field">
+                <span>Họ tên</span>
+                <input
+                  required
+                  minLength={2}
+                  maxLength={120}
+                  value={form.fullName}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Email tài khoản</span>
+                <input
+                  required
+                  type="email"
+                  value={form.email}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Số điện thoại</span>
+                <input
+                  required
+                  pattern="[+]?[0-9]{9,15}"
+                  value={form.phoneNumber}
+                  disabled={readOnly || busy}
+                  onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+                />
+              </label>
+              <label className="admin-field">
+                <span>Quyền tài khoản</span>
+                <select
+                  value={form.role}
+                  disabled={readOnly || busy}
+                  onChange={(e) =>
+                    setForm({ ...form, role: e.target.value as AccountForm['role'] })
+                  }
+                >
+                  <option>Customer</option>
+                  <option>Staff</option>
+                  <option>Admin</option>
+                </select>
+              </label>
+              {!editing && (
+                <label className="admin-field">
+                  <span>Mật khẩu (ít nhất 10 ký tự)</span>
+                  <input
+                    required
+                    minLength={10}
+                    type="password"
+                    autoComplete="new-password"
+                    value={password}
+                    disabled={readOnly || busy}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <small className="admin-helper">
+                    Không hiển thị lại và không lưu trong giao diện.
+                  </small>
+                </label>
+              )}
+              <label className="admin-field">
+                <span>Trạng thái</span>
+                <span>
+                  <input
+                    type="checkbox"
+                    checked={form.isActive}
+                    disabled={readOnly || busy}
+                    onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
+                  />{' '}
+                  Hoạt động
+                </span>
+              </label>
+            </div>
+          </div>
+          <div className="admin-form-actions">
+            <button type="submit" className="button" disabled={busy || readOnly}>
+              {editing ? 'Lưu tài khoản' : 'Tạo tài khoản'}
+            </button>
+            <button
+              type="button"
+              className="button button-outline"
+              onClick={() => setEditing(null)}
+            >
+              Hủy
+            </button>
+          </div>
+        </form>
+      </AdminDialog>
+      <AdminDialog
+        open={Boolean(resetTarget)}
+        onClose={() => {
+          setResetTarget(null);
+          setResetPassword('');
+        }}
+        title="Đặt lại mật khẩu"
+        description={
+          resetTarget
+            ? `Tài khoản đích: ${resetTarget.fullName} · ${resetTarget.email}. Mật khẩu không được lưu hoặc hiển thị lại.`
+            : undefined
+        }
+      >
         <form
           className="admin-form"
+          aria-busy={busy}
           onSubmit={(e) => {
             e.preventDefault();
-            void reset(resetTarget);
+            if (resetTarget) void reset(resetTarget);
           }}
         >
-          <h3>Đặt lại mật khẩu cho {resetTarget.email}</h3>
+          <Feedback error={error} notice={notice} />
           <label className="admin-field">
             <span>Mật khẩu mới (ít nhất 10 ký tự, có chữ hoa, chữ thường và số)</span>
             <input
@@ -535,104 +788,92 @@ export function AccountManager() {
               type="password"
               autoComplete="new-password"
               value={resetPassword}
+              disabled={readOnly || busy}
               onChange={(e) => setResetPassword(e.target.value)}
             />
           </label>
-          <button type="submit" disabled={busy}>
-            Xác nhận đặt lại mật khẩu
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setResetTarget(null);
-              setResetPassword('');
-            }}
-          >
-            Hủy
-          </button>
-        </form>
-      )}
-      <ul>
-        {data.items.map((a) => (
-          <li key={a.id}>
-            <strong>{a.fullName}</strong> · {a.email} · {a.role} ·{' '}
-            {a.isActive ? 'Hoạt động' : 'Khóa'}{' '}
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(a.id);
-                setForm({
-                  fullName: a.fullName,
-                  email: a.email,
-                  phoneNumber: a.phoneNumber,
-                  role: a.role,
-                  isActive: a.isActive,
-                });
-              }}
-            >
-              Sửa
+          <div className="admin-form-actions">
+            <button type="submit" className="button button-danger" disabled={busy || readOnly}>
+              Xác nhận đặt lại mật khẩu
             </button>
             <button
               type="button"
-              disabled={busy}
+              className="button button-outline"
               onClick={() => {
-                setResetTarget(a);
+                setResetTarget(null);
                 setResetPassword('');
               }}
             >
-              Reset mật khẩu
+              Hủy
             </button>
-          </li>
-        ))}
-      </ul>
-      <Pager {...data} onPage={(p) => void load(p)} />
-      {permissions && (
-        <details>
-          <summary>Quyền hệ thống</summary>
-          {permissions.roles.map((r) => (
+          </div>
+        </form>
+      </AdminDialog>
+      <details className="admin-detail">
+        <summary>Quyền hệ thống (chi tiết phụ)</summary>
+        {permissions ? (
+          permissions.roles.map((r) => (
             <p key={r.role}>
               <strong>{r.role}</strong>: {r.description}
             </p>
-          ))}
-        </details>
-      )}
+          ))
+        ) : (
+          <AdminLoading label="Đang tải quyền…" />
+        )}
+      </details>
     </section>
   );
 }
 
-export function ProductMediaManager({ productId }: { productId?: string }) {
+export function ProductMediaManager({
+  productId,
+  readOnly = false,
+}: {
+  productId?: string;
+  readOnly?: boolean;
+}) {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState(productId ?? '');
   const [images, setImages] = useState<ProductImage[]>([]);
-  const [form, setForm] = useState<ImageForm>(blankImage);
+  const [form, setForm] = useState(blankImage);
   const [editing, setEditing] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const loadId = useRef(0);
+  const confirm = useAdminConfirm();
   useEffect(() => {
+    setSelected(productId ?? '');
+    setImages([]);
+    setEditing(null);
+    setForm(blankImage);
     if (productId) return;
-    const timer = window.setTimeout(() => {
-      void storeRequest<Page<Product>>('management/products?page=1&pageSize=100')
-        .then((r) => setProducts(r.items))
-        .catch((e) => setError(errorText(e)));
-    }, 0);
-    return () => window.clearTimeout(timer);
+    storeRequest<Page<Product>>('management/products?page=1&pageSize=100')
+      .then((r) => setProducts(r.items))
+      .catch((e) => setError(errorText(e)));
   }, [productId]);
   const load = useCallback(async () => {
     if (!selected) return;
+    const requestId = ++loadId.current;
+    const productAtStart = selected;
+    setLoading(true);
     try {
-      setImages(await storeRequest<ProductImage[]>(`management/products/${selected}/images`));
+      const result = await storeRequest<ProductImage[]>(
+        `management/products/${productAtStart}/images`,
+      );
+      if (requestId === loadId.current && productAtStart === selected) setImages(result);
     } catch (e) {
-      setError(errorText(e));
+      if (requestId === loadId.current && productAtStart === selected) setError(errorText(e));
+    } finally {
+      if (requestId === loadId.current && productAtStart === selected) setLoading(false);
     }
   }, [selected]);
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void load();
-    }, 0);
-    return () => window.clearTimeout(timer);
+    void load();
   }, [load]);
   const upload = async (file: File) => {
+    if (readOnly || busy) return;
     if (file.size > 900 * 1024) {
       setError('Ảnh không quá 900 KiB.');
       return;
@@ -674,7 +915,7 @@ export function ProductMediaManager({ productId }: { productId?: string }) {
   };
   const save = async (e: FormEvent) => {
     e.preventDefault();
-    if (!selected) return;
+    if (readOnly || busy || !selected) return;
     setBusy(true);
     try {
       await storeRequest<ProductImage>(
@@ -686,14 +927,24 @@ export function ProductMediaManager({ productId }: { productId?: string }) {
       setForm(blankImage);
       setEditing(null);
       await load();
-    } catch (x) {
-      setError(errorText(x));
+    } catch (e) {
+      setError(errorText(e));
     } finally {
       setBusy(false);
     }
   };
   const remove = async (image: ProductImage) => {
-    if (!window.confirm('Xóa ảnh khỏi gallery?')) return;
+    if (
+      readOnly ||
+      busy ||
+      !(await confirm({
+        title: 'Xóa ảnh khỏi gallery?',
+        description: 'Ảnh sẽ bị gỡ khỏi sản phẩm này.',
+        confirmLabel: 'Xóa ảnh',
+        destructive: true,
+      }))
+    )
+      return;
     setBusy(true);
     try {
       await storeRequest<void>(
@@ -701,6 +952,7 @@ export function ProductMediaManager({ productId }: { productId?: string }) {
         undefined,
         'DELETE',
       );
+      setNotice('Đã xóa ảnh khỏi gallery.');
       await load();
     } catch (e) {
       setError(errorText(e));
@@ -708,97 +960,173 @@ export function ProductMediaManager({ productId }: { productId?: string }) {
       setBusy(false);
     }
   };
+  const selectedProduct = products.find((p) => p.id === selected);
   return (
     <section className="admin-card">
-      <h2>Ảnh sản phẩm</h2>
-      <Feedback error={error} notice={notice} />
+      <div className="admin-section-heading">
+        <div>
+          <h2>Ảnh sản phẩm</h2>
+          <p className="admin-muted">Gallery theo sản phẩm, không dùng ảnh hoặc dữ liệu giả.</p>
+        </div>
+        {selected && !readOnly && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => {
+              setEditing('');
+              setForm(blankImage);
+            }}
+          >
+            Thêm ảnh
+          </button>
+        )}
+      </div>
+      {!editing && <Feedback error={error} notice={notice} />}
       {!productId && (
-        <select
-          aria-label="Chọn sản phẩm quản lý ảnh"
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-        >
-          <option value="">Chọn sản phẩm</option>
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.code} · {p.name}
-            </option>
-          ))}
-        </select>
+        <label className="admin-field">
+          <span>Chọn sản phẩm</span>
+          <select
+            aria-label="Chọn sản phẩm quản lý ảnh"
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+          >
+            <option value="">Chọn sản phẩm</option>
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.code} · {p.name}
+              </option>
+            ))}
+          </select>
+        </label>
       )}
       {selected && (
         <>
-          <form onSubmit={save} className="admin-form">
-            <label className="admin-field">
-              <span>URL ảnh</span>
-              <input
-                required
-                maxLength={2000}
-                placeholder="URL ảnh hoặc managed media path"
-                value={form.imageUrl}
-                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-              />
-            </label>
-            <label className="admin-field">
-              <span>Thứ tự ảnh</span>
-              <input
-                required
-                min="0"
-                type="number"
-                value={form.displayOrder}
-                onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) })}
-              />
-            </label>
-            <label>
-              Upload (PNG/JPEG/WebP, tối đa 900 KiB){' '}
-              <input
-                disabled={busy}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) void upload(file);
-                  e.currentTarget.value = '';
-                }}
-              />
-            </label>
-            <button disabled={busy || !form.imageUrl} type="submit">
-              {editing ? 'Lưu ảnh' : 'Thêm vào gallery'}
-            </button>
-            {editing && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditing(null);
-                  setForm(blankImage);
-                }}
-              >
-                Hủy
-              </button>
-            )}
-          </form>
-          <ul>
-            {images.map((image) => (
-              <li key={image.id}>
-                <a href={image.imageUrl} target="_blank" rel="noreferrer">
-                  {image.imageUrl}
-                </a>{' '}
-                · thứ tự {image.displayOrder}{' '}
+          <div className="admin-detail">
+            <strong>
+              {selectedProduct
+                ? `${selectedProduct.code} · ${selectedProduct.name}`
+                : 'Sản phẩm đã chọn'}
+            </strong>
+            <span className="admin-muted"> · {images.length} ảnh trong gallery</span>
+          </div>
+          {loading ? (
+            <AdminLoading />
+          ) : images.length === 0 ? (
+            <AdminEmpty
+              title="Sản phẩm chưa có ảnh"
+              description="Thêm ảnh để xây dựng gallery chính thức."
+            />
+          ) : (
+            <div className="admin-record-list">
+              {images.map((image) => (
+                <article className="admin-record" key={image.id}>
+                  <div>
+                    <a href={image.imageUrl} target="_blank" rel="noreferrer">
+                      {image.imageUrl}
+                    </a>
+                    <p className="admin-muted">Thứ tự {image.displayOrder}</p>
+                  </div>
+                  <div className="admin-actions">
+                    <button
+                      type="button"
+                      className="button button-outline"
+                      onClick={() => {
+                        setEditing(image.id);
+                        setForm({ imageUrl: image.imageUrl, displayOrder: image.displayOrder });
+                      }}
+                    >
+                      Chi tiết
+                    </button>
+                    {!readOnly && (
+                      <button
+                        type="button"
+                        className="button button-danger"
+                        disabled={busy}
+                        onClick={() => void remove(image)}
+                      >
+                        Xóa
+                      </button>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+          <AdminDialog
+            open={editing !== null}
+            onClose={() => {
+              setEditing(null);
+              setForm(blankImage);
+            }}
+            title={editing ? (readOnly ? 'Xem ảnh' : 'Sửa ảnh') : 'Thêm ảnh vào gallery'}
+            description={
+              readOnly
+                ? 'Chế độ chỉ đọc: upload, lưu và xóa đã bị vô hiệu hóa.'
+                : 'Giới hạn upload: PNG/JPEG/WebP, tối đa 900 KiB.'
+            }
+          >
+            <form onSubmit={save} className="admin-form" aria-busy={busy}>
+              <Feedback error={error} notice={notice} />
+              <div className="admin-form-section">
+                <h4>Thông tin ảnh</h4>
+                <div className="admin-form-grid">
+                  <label className="admin-field">
+                    <span>URL ảnh</span>
+                    <input
+                      required
+                      maxLength={2000}
+                      value={form.imageUrl}
+                      disabled={readOnly || busy}
+                      onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                    />
+                  </label>
+                  <label className="admin-field">
+                    <span>Thứ tự ảnh</span>
+                    <input
+                      required
+                      min="0"
+                      type="number"
+                      value={form.displayOrder}
+                      disabled={readOnly || busy}
+                      onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) })}
+                    />
+                  </label>
+                </div>
+              </div>
+              <label className="admin-field">
+                <span>Upload (PNG/JPEG/WebP, tối đa 900 KiB)</span>
+                <input
+                  disabled={busy || readOnly}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) void upload(file);
+                    e.currentTarget.value = '';
+                  }}
+                />
+              </label>
+              <div className="admin-form-actions">
+                <button
+                  type="submit"
+                  className="button"
+                  disabled={busy || readOnly || !form.imageUrl}
+                >
+                  {editing ? 'Lưu ảnh' : 'Thêm vào gallery'}
+                </button>
                 <button
                   type="button"
+                  className="button button-outline"
                   onClick={() => {
-                    setEditing(image.id);
-                    setForm({ imageUrl: image.imageUrl, displayOrder: image.displayOrder });
+                    setEditing(null);
+                    setForm(blankImage);
                   }}
                 >
-                  Sửa
+                  Hủy
                 </button>
-                <button type="button" disabled={busy} onClick={() => void remove(image)}>
-                  Xóa
-                </button>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </form>
+          </AdminDialog>
         </>
       )}
     </section>
