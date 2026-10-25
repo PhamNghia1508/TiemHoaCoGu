@@ -22,7 +22,7 @@ Feedback màu/selection khoảng 120ms; dialog vào 220ms và đóng ngay để 
 
 ## Ranh giới không đổi
 
-Mọi request tiếp tục qua BFF cùng origin và exact allowlist; role/ownership, write gate và nghiệp vụ vẫn do server quyết định. UI nhận capability boolean để báo và khóa thao tác ghi trong preview, không nhận URL nội bộ/token. Không mở provider/live payment, vận chuyển, email/SMS hay production data. Thông báo không lộ người nhận/nội dung; đối soát phải có chứng cứ; MoMo chỉ sandbox và không tự retry charge. Audit chỉ đọc. Không merge hoặc deploy production trong thay đổi này.
+Mọi request tiếp tục qua BFF cùng origin và exact allowlist; role/ownership, write gate và nghiệp vụ vẫn do server quyết định. UI nhận capability boolean để báo và khóa thao tác ghi trong preview, không nhận URL nội bộ/token. Không mở provider/live payment, vận chuyển, email/SMS hay production data. Thông báo không lộ người nhận/nội dung; đối soát phải có chứng cứ; MoMo chỉ sandbox và không tự retry charge. Audit chỉ đọc. Riêng HTTPS preview có exact `PREVIEW_ORIGIN` dùng cookie `Secure; SameSite=None` để giữ phiên khi nhúng; local không cấu hình preview tiếp tục `SameSite=Lax`. Origin check và write gate vẫn áp dụng trước mutation. Không merge hoặc deploy production trong thay đổi này.
 
 ## Chạy kiểm tra giao diện
 

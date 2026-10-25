@@ -153,9 +153,22 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
   return null;
 }
 
+function configuredPreviewOrigin(): string | undefined {
+  const value = process.env.PREVIEW_ORIGIN?.trim();
+  if (!value) return undefined;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:' && parsed.origin === value ? parsed.origin : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function sameOrigin(request: Request): boolean {
   const origin = request.headers.get('origin');
-  return Boolean(origin && origin === new URL(request.url).origin);
+  return Boolean(
+    origin && (origin === new URL(request.url).origin || origin === configuredPreviewOrigin()),
+  );
 }
 
 function apiBase(): string {
@@ -249,10 +262,11 @@ export async function storeCookies() {
   return cookies();
 }
 export function cookieOptions(maxAge?: number) {
+  const securePreview = Boolean(configuredPreviewOrigin());
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
+    secure: securePreview || process.env.NODE_ENV === 'production',
+    sameSite: securePreview ? ('none' as const) : ('lax' as const),
     path: '/',
     ...(maxAge !== undefined ? { maxAge } : {}),
   };
