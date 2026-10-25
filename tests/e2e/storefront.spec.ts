@@ -228,16 +228,32 @@ test('đặt riêng: preview không gửi API, chế độ thật yêu cầu đ�
 });
 
 test('workshop không giữ chỗ giả và tra cứu không tạo kết quả giả', async ({ page }) => {
+  const bookingPosts: string[] = [];
+  page.on('request', (request) => {
+    if (request.method() === 'POST') bookingPosts.push(request.url());
+  });
   await page.goto('/workshop');
   const form = page.locator('main #hen-o-xuong');
   await expect(form).toHaveAttribute('data-ready', 'true');
+  const connected = (await form.getByLabel('Trải nghiệm bạn muốn thử').count()) > 0;
   await page.locator('main').getByLabel('Tên của bạn').fill('Khách kiểm thử');
   await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
-  if (connectedMode) {
+  if (connected) {
     await expect(form.locator('.form-notice')).toContainText('chưa có thanh toán');
     const session = form.getByLabel('Ca thực tế');
     await expect.poll(() => session.locator('option').count()).toBeGreaterThan(1);
     await session.selectOption({ index: 1 });
+    await page.route('**/api/store/bookings/sessions/**', async (route) => {
+      if (route.request().method() === 'POST') {
+        await route.fulfill({
+          status: 401,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'Đăng nhập để tiếp tục.' }),
+        });
+        return;
+      }
+      await route.continue();
+    });
     const response = page.waitForResponse(
       (r) => /\/api\/store\/bookings\/sessions\//.test(r.url()) && r.request().method() === 'POST',
     );
@@ -245,14 +261,20 @@ test('workshop không giữ chỗ giả và tra cứu không tạo kết quả g
     expect((await response).status()).toBe(401);
     await expect(form.getByRole('alert')).toContainText(/đăng nhập/i);
     await expect(form.locator('.form-status[role="status"]')).toHaveCount(0);
+    expect(bookingPosts).toHaveLength(1);
+    expect(bookingPosts[0]).toMatch(/\/api\/store\/bookings\/sessions\//);
   } else {
+    await expect(page.locator('.workshop-course-card')).toHaveCount(0);
+    await expect(page.getByText('Lịch lớp thật chưa được mở.')).toBeVisible();
+    await form.getByLabel('Workshop bạn quan tâm').fill('Một buổi làm hoa cùng bạn bè');
     const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
     await page.locator('main').getByLabel('Ngày bạn mong muốn').fill(tomorrow);
     await page.getByRole('button', { name: 'Xem trước buổi hẹn' }).click();
     await expect(page.locator('.form-status')).toContainText('CHƯA ĐẶT CHỖ');
+    expect(bookingPosts).toEqual([]);
   }
   await page.goto('/tra-cuu');
-  if (connectedMode) {
+  if (connected) {
     await expect(page.getByLabel('Mã đơn / mã đặt chỗ')).toHaveCount(0);
     await expect(page.locator('.lookup-card .form-notice')).toContainText(
       'không tra cứu công khai',
