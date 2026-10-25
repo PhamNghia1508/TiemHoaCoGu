@@ -8,6 +8,19 @@ import {
   AccountManager,
   ProductMediaManager,
 } from '@/components/admin/business-tools';
+import {
+  Bell,
+  Boxes,
+  CircleDollarSign,
+  ClipboardList,
+  Flower2,
+  LayoutDashboard,
+  Package,
+  ScrollText,
+  TicketPercent,
+  UsersRound,
+  type LucideIcon,
+} from 'lucide-react';
 
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import './admin.css';
@@ -30,8 +43,39 @@ type Tab =
   | 'accounts'
   | 'notifications'
   | 'payments'
-  | 'audit';
+  | 'audit'
+  | 'operations';
 type FormState = Record<string, string | boolean>;
+const adminNavigation: {
+  title: string;
+  items: { key: Tab; label: string; Icon: LucideIcon }[];
+}[] = [
+  {
+    title: 'Cửa hàng',
+    items: [
+      { key: 'dashboard', label: 'Tổng quan', Icon: LayoutDashboard },
+      { key: 'catalog', label: 'Danh mục & sản phẩm', Icon: Package },
+      { key: 'inventory', label: 'Tồn kho', Icon: Boxes },
+      { key: 'orders', label: 'Đơn hàng', Icon: ClipboardList },
+      { key: 'vouchers', label: 'Voucher', Icon: TicketPercent },
+    ],
+  },
+  {
+    title: 'Khách hàng & vận hành',
+    items: [
+      { key: 'accounts', label: 'Tài khoản', Icon: UsersRound },
+      { key: 'operations', label: 'Workshop & đơn đặt riêng', Icon: Flower2 },
+    ],
+  },
+  {
+    title: 'Đối soát & hệ thống',
+    items: [
+      { key: 'notifications', label: 'Thông báo', Icon: Bell },
+      { key: 'payments', label: 'Thanh toán sandbox', Icon: CircleDollarSign },
+      { key: 'audit', label: 'Audit log', Icon: ScrollText },
+    ],
+  },
+];
 const emptyProductForm: FormState = {
   categoryId: '',
   code: '',
@@ -131,6 +175,7 @@ export default function AdminPage() {
   const [productForm, setProductForm] = useState<FormState>({ ...emptyProductForm });
   const [editingCategory, setEditingCategory] = useState('');
   const [editingProduct, setEditingProduct] = useState('');
+  const [productFormOpen, setProductFormOpen] = useState(false);
   const [inventory, setInventory] = useState<Record<string, string>>({});
   const [search] = useState('');
   const update =
@@ -269,136 +314,155 @@ export default function AdminPage() {
           {error}
         </p>
       )}
-      <nav className="admin-tabs" aria-label="Điều hướng quản trị">
-        {(
-          [
-            ['dashboard', 'Tổng quan'],
-            ['catalog', 'Danh mục & sản phẩm'],
-            ['inventory', 'Tồn kho'],
-            ['orders', 'Đơn hàng'],
-            ['vouchers', 'Voucher'],
-            ['accounts', 'Tài khoản'],
-            ['notifications', 'Thông báo'],
-            ['payments', 'Thanh toán sandbox'],
-            ['audit', 'Audit log'],
-          ] as [Tab, string][]
-        ).map(([key, label]) => (
-          <button
-            key={key}
-            className={tab === key ? 'admin-tab active' : 'admin-tab'}
-            onClick={() => setTab(key)}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-      {tab === 'dashboard' && <DashboardView data={dashboard} />}
-      {(tab === 'catalog' || tab === 'inventory') && (
-        <fieldset disabled={saving} style={{ border: 0, padding: 0, minWidth: 0 }}>
-          <CatalogView
-            onDeleteCategory={(id) => deleteEntry('categories', id)}
-            onDeleteProduct={(id) => deleteEntry('products', id)}
-            categories={categories}
-            products={products}
-            categoryForm={categoryForm}
-            productForm={productForm}
-            setCategory={setCategory}
-            setProduct={setProduct}
-            editingCategory={editingCategory}
-            editingProduct={editingProduct}
-            setEditingCategory={setEditingCategory}
-            setEditingProduct={setEditingProduct}
-            onCategory={(e) =>
-              write(
-                e,
-                editingCategory
-                  ? `${adminPaths.categories}/${editingCategory}`
-                  : adminPaths.categories,
-                {
-                  code: categoryForm.code,
-                  name: categoryForm.name,
-                  description: categoryForm.description,
-                  imageUrl: categoryForm.imageUrl,
-                },
-                editingCategory ? 'PUT' : 'POST',
-                () => {
-                  setEditingCategory('');
-                  setCategoryForm({ code: '', name: '', description: '', imageUrl: '' });
-                },
-              )
+      <div className="admin-workspace">
+        <aside className="admin-sidebar" aria-label="Khu vực quản trị">
+          <p className="admin-sidebar-label">KHÔNG GIAN LÀM VIỆC</p>
+          <nav className="admin-tabs" aria-label="Điều hướng quản trị">
+            {adminNavigation.map((group) => (
+              <div className="admin-nav-group" key={group.title}>
+                <p className="admin-nav-group-title">{group.title}</p>
+                {group.items.map(({ key, label, Icon }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-current={tab === key ? 'page' : undefined}
+                    className={tab === key ? 'admin-tab active' : 'admin-tab'}
+                    onClick={() => setTab(key)}
+                  >
+                    <Icon aria-hidden="true" size={17} strokeWidth={1.8} />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            ))}
+          </nav>
+        </aside>
+        <div className="admin-workspace-main">
+          <div className="admin-section-kicker">
+            {
+              adminNavigation.flatMap((group) => group.items).find((item) => item.key === tab)
+                ?.label
             }
-            onProduct={(e) =>
-              write(
-                e,
-                editingProduct ? `${adminPaths.products}/${editingProduct}` : adminPaths.products,
-                {
-                  categoryId: productForm.categoryId,
-                  code: productForm.code,
-                  name: productForm.name,
-                  price: Number(productForm.price),
-                  originalPrice: productForm.originalPrice
-                    ? Number(productForm.originalPrice)
-                    : null,
-                  thumbnailUrl: productForm.thumbnailUrl || null,
-                  description: productForm.description || null,
-                  badge: productForm.badge || null,
-                  section: productForm.section || null,
-                  isCustomizable: Boolean(productForm.isCustomizable),
-                  isPreOrder: Boolean(productForm.isPreOrder),
-                  shippingWeightGrams: optionalNumber(productForm.shippingWeightGrams),
-                  packageLengthCm: optionalNumber(productForm.packageLengthCm),
-                  packageWidthCm: optionalNumber(productForm.packageWidthCm),
-                  packageHeightCm: optionalNumber(productForm.packageHeightCm),
-                  packagingSpecsConfirmed: Boolean(productForm.packagingSpecsConfirmed),
-                  isActive: Boolean(productForm.isActive),
-                },
-                editingProduct ? 'PUT' : 'POST',
-                () => {
-                  setEditingProduct('');
-                  setProductForm({ ...emptyProductForm });
-                },
-              )
-            }
-            inventory={inventory}
-            setInventory={setInventory}
-            onInventory={(id) =>
-              run(
-                adminPaths.inventory(id) + `?quantity=${encodeURIComponent(inventory[id] || '0')}`,
-                undefined,
-                'PUT',
-              )
-                .then(() => {
-                  setNotice('Đã cập nhật tồn kho.');
-                  refresh('inventory');
-                })
-                .catch((e) =>
-                  setError(e instanceof Error ? e.message : 'Không thể cập nhật tồn kho'),
-                )
-            }
-          />
-        </fieldset>
-      )}
-      {tab === 'catalog' && <ProductMediaManager />}
-      {tab === 'orders' && <AdminOrderOperations />}
-      {tab === 'vouchers' && <VoucherManager />}
-      {tab === 'accounts' && <AccountManager />}
-      {tab === 'notifications' && <NotificationReconciliation />}
-      {tab === 'payments' && <PaymentReconciliation />}
-      {tab === 'audit' && (
-        <DataTable
-          title="Audit log"
-          columns={['Thời điểm', 'Actor', 'Entity', 'Action', 'Mô tả']}
-          rows={audit.map((a) => [
-            date(String(a.occurredAtUtc || '')),
-            String(a.actorId || '—'),
-            String(a.entityType || '—'),
-            String(a.action || '—'),
-            String(a.description || a.entityId || '—'),
-          ])}
-          empty="Chưa có log."
-        />
-      )}
-      <AdminOperations />
+          </div>
+          <div className="admin-panel" key={tab}>
+            {tab === 'dashboard' && <DashboardView data={dashboard} />}
+            {(tab === 'catalog' || tab === 'inventory') && (
+              <fieldset disabled={saving} className="admin-catalog-fieldset">
+                <CatalogView
+                  mode={tab}
+                  onDeleteCategory={(id) => deleteEntry('categories', id)}
+                  onDeleteProduct={(id) => deleteEntry('products', id)}
+                  categories={categories}
+                  products={products}
+                  categoryForm={categoryForm}
+                  productForm={productForm}
+                  setCategory={setCategory}
+                  setProduct={setProduct}
+                  resetProductForm={() => setProductForm({ ...emptyProductForm })}
+                  editingCategory={editingCategory}
+                  editingProduct={editingProduct}
+                  setEditingCategory={setEditingCategory}
+                  setEditingProduct={setEditingProduct}
+                  productFormOpen={productFormOpen}
+                  setProductFormOpen={setProductFormOpen}
+                  onCategory={(e) =>
+                    write(
+                      e,
+                      editingCategory
+                        ? `${adminPaths.categories}/${editingCategory}`
+                        : adminPaths.categories,
+                      {
+                        code: categoryForm.code,
+                        name: categoryForm.name,
+                        description: categoryForm.description,
+                        imageUrl: categoryForm.imageUrl,
+                      },
+                      editingCategory ? 'PUT' : 'POST',
+                      () => {
+                        setEditingCategory('');
+                        setCategoryForm({ code: '', name: '', description: '', imageUrl: '' });
+                      },
+                    )
+                  }
+                  onProduct={(e) =>
+                    write(
+                      e,
+                      editingProduct
+                        ? `${adminPaths.products}/${editingProduct}`
+                        : adminPaths.products,
+                      {
+                        categoryId: productForm.categoryId,
+                        code: productForm.code,
+                        name: productForm.name,
+                        price: Number(productForm.price),
+                        originalPrice: productForm.originalPrice
+                          ? Number(productForm.originalPrice)
+                          : null,
+                        thumbnailUrl: productForm.thumbnailUrl || null,
+                        description: productForm.description || null,
+                        badge: productForm.badge || null,
+                        section: productForm.section || null,
+                        isCustomizable: Boolean(productForm.isCustomizable),
+                        isPreOrder: Boolean(productForm.isPreOrder),
+                        shippingWeightGrams: optionalNumber(productForm.shippingWeightGrams),
+                        packageLengthCm: optionalNumber(productForm.packageLengthCm),
+                        packageWidthCm: optionalNumber(productForm.packageWidthCm),
+                        packageHeightCm: optionalNumber(productForm.packageHeightCm),
+                        packagingSpecsConfirmed: Boolean(productForm.packagingSpecsConfirmed),
+                        isActive: Boolean(productForm.isActive),
+                      },
+                      editingProduct ? 'PUT' : 'POST',
+                      () => {
+                        setEditingProduct('');
+                        setProductForm({ ...emptyProductForm });
+                        setProductFormOpen(false);
+                      },
+                    )
+                  }
+                  inventory={inventory}
+                  setInventory={setInventory}
+                  onInventory={(id) =>
+                    run(
+                      adminPaths.inventory(id) +
+                        `?quantity=${encodeURIComponent(inventory[id] || '0')}`,
+                      undefined,
+                      'PUT',
+                    )
+                      .then(() => {
+                        setNotice('Đã cập nhật tồn kho.');
+                        refresh('inventory');
+                      })
+                      .catch((e) =>
+                        setError(e instanceof Error ? e.message : 'Không thể cập nhật tồn kho'),
+                      )
+                  }
+                />
+              </fieldset>
+            )}
+            {tab === 'catalog' && <ProductMediaManager />}
+            {tab === 'orders' && <AdminOrderOperations />}
+            {tab === 'vouchers' && <VoucherManager />}
+            {tab === 'accounts' && <AccountManager />}
+            {tab === 'notifications' && <NotificationReconciliation />}
+            {tab === 'payments' && <PaymentReconciliation />}
+            {tab === 'operations' && <AdminOperations />}
+            {tab === 'audit' && (
+              <DataTable
+                title="Audit log"
+                columns={['Thời điểm', 'Actor', 'Entity', 'Action', 'Mô tả']}
+                rows={audit.map((a) => [
+                  date(String(a.occurredAtUtc || '')),
+                  String(a.actorId || '—'),
+                  String(a.entityType || '—'),
+                  String(a.action || '—'),
+                  String(a.description || a.entityId || '—'),
+                ])}
+                empty="Chưa có log."
+              />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -465,16 +529,20 @@ function DashboardView({ data }: { data: Dashboard | null }) {
 }
 
 function CatalogView({
+  mode,
   categories,
   products,
   categoryForm,
   productForm,
   setCategory,
   setProduct,
+  resetProductForm,
   editingCategory,
   editingProduct,
   setEditingCategory,
   setEditingProduct,
+  productFormOpen,
+  setProductFormOpen,
   onCategory,
   onProduct,
   inventory,
@@ -483,6 +551,7 @@ function CatalogView({
   onDeleteCategory,
   onDeleteProduct,
 }: {
+  mode: 'catalog' | 'inventory';
   onDeleteCategory: (id: string) => void;
   onDeleteProduct: (id: string) => void;
   categories: Category[];
@@ -491,10 +560,13 @@ function CatalogView({
   productForm: FormState;
   setCategory: (n: string, v: string | boolean) => void;
   setProduct: (n: string, v: string | boolean) => void;
+  resetProductForm: () => void;
   editingCategory: string;
   editingProduct: string;
   setEditingCategory: (v: string) => void;
   setEditingProduct: (v: string) => void;
+  productFormOpen: boolean;
+  setProductFormOpen: (v: boolean) => void;
   onCategory: (e: FormEvent) => void;
   onProduct: (e: FormEvent) => void;
   inventory: Record<string, string>;
@@ -506,316 +578,364 @@ function CatalogView({
     setProduct('packagingSpecsConfirmed', false);
   };
   return (
-    <div className="admin-catalog">
-      <section className="admin-card">
-        <div className="admin-section-heading">
-          <h2>Danh mục</h2>
-          <span>{categories.length} mục</span>
-        </div>
-        <form className="admin-form" onSubmit={onCategory}>
-          <Field
-            label="Mã danh mục"
-            name="code"
-            value={categoryForm.code}
-            onChange={setCategory}
-            required
-          />
-          <Field
-            label="Tên"
-            name="name"
-            value={categoryForm.name}
-            onChange={setCategory}
-            required
-          />
-          <Field
-            label="Mô tả"
-            name="description"
-            value={categoryForm.description}
-            onChange={setCategory}
-          />
-          <Field
-            label="Ảnh URL (HTTP(S))"
-            name="imageUrl"
-            value={categoryForm.imageUrl}
-            onChange={setCategory}
-          />
-          <div>
-            <button className="button" type="submit">
-              {editingCategory ? 'Cập nhật' : 'Tạo danh mục'}
-            </button>
-            {editingCategory && (
-              <button
-                className="button button-outline"
-                type="button"
-                onClick={() => setEditingCategory('')}
-              >
-                Hủy
-              </button>
-            )}
-          </div>
-        </form>
-        <ul className="admin-list">
-          {categories.map((c) => (
-            <li key={c.id}>
-              <span>
-                <strong>{c.name}</strong>
-                <small>{c.code}</small>
-              </span>
-              <button
-                className="button button-outline"
-                onClick={() => {
-                  setEditingCategory(c.id);
-                  setCategory('code', c.code);
-                  setCategory('name', c.name);
-                  setCategory('description', c.description || '');
-                  setCategory('imageUrl', c.imageUrl || '');
-                }}
-              >
-                Sửa
-              </button>
-              <button className="button button-outline" onClick={() => onDeleteCategory(c.id)}>
-                Xóa
-              </button>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section className="admin-card">
-        <div className="admin-section-heading">
-          <h2>Sản phẩm</h2>
-          <span>{products.length} sản phẩm</span>
-        </div>
-        <form className="admin-form" onSubmit={onProduct}>
-          <div className="admin-form-grid">
-            <Field
-              label="Danh mục"
-              name="categoryId"
-              value={productForm.categoryId}
-              onChange={setProduct}
-              required
-            >
-              <select
-                value={String(productForm.categoryId)}
-                onChange={(e) => setProduct('categoryId', e.target.value)}
+    <div className={mode === 'catalog' ? 'admin-catalog' : 'admin-inventory'}>
+      {mode === 'catalog' && (
+        <>
+          <section className="admin-card">
+            <div className="admin-section-heading">
+              <h2>Danh mục</h2>
+              <span>{categories.length} mục</span>
+            </div>
+            <form className="admin-form" onSubmit={onCategory}>
+              <Field
+                label="Mã danh mục"
+                name="code"
+                value={categoryForm.code}
+                onChange={setCategory}
                 required
-              >
-                <option value="">Chọn danh mục</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field
-              label="Mã sản phẩm"
-              name="code"
-              value={productForm.code}
-              onChange={setProduct}
-              required
-            />
-            <Field
-              label="Tên sản phẩm"
-              name="name"
-              value={productForm.name}
-              onChange={setProduct}
-              required
-            />
-            <Field
-              label="Giá"
-              name="price"
-              value={productForm.price}
-              onChange={setProduct}
-              type="number"
-              required
-            />
-            <Field
-              label="Giá gốc"
-              name="originalPrice"
-              value={productForm.originalPrice}
-              onChange={setProduct}
-              type="number"
-            />
-            <Field
-              label="Trọng lượng kiện hàng (g)"
-              name="shippingWeightGrams"
-              value={productForm.shippingWeightGrams}
-              onChange={setPackagingMeasurement}
-              type="number"
-              required={Boolean(productForm.packagingSpecsConfirmed)}
-              min={1}
-              max={1000000}
-              step={1}
-            />
-            <Field
-              label="Chiều dài kiện (cm)"
-              name="packageLengthCm"
-              value={productForm.packageLengthCm}
-              onChange={setPackagingMeasurement}
-              type="number"
-              required={Boolean(productForm.packagingSpecsConfirmed)}
-              min={0.01}
-              max={10000}
-              step={0.01}
-            />
-            <Field
-              label="Chiều rộng kiện (cm)"
-              name="packageWidthCm"
-              value={productForm.packageWidthCm}
-              onChange={setPackagingMeasurement}
-              type="number"
-              required={Boolean(productForm.packagingSpecsConfirmed)}
-              min={0.01}
-              max={10000}
-              step={0.01}
-            />
-            <Field
-              label="Chiều cao kiện (cm)"
-              name="packageHeightCm"
-              value={productForm.packageHeightCm}
-              onChange={setPackagingMeasurement}
-              type="number"
-              required={Boolean(productForm.packagingSpecsConfirmed)}
-              min={0.01}
-              max={10000}
-              step={0.01}
-            />
-            <p className="admin-muted">
-              Nhập số đo sau khi cân/đo kiện đã đóng gói. Dữ liệu cũ, kể cả 500 g, vẫn chưa được xác
-              nhận và không dùng để báo phí. Nếu chưa có số đo thật, để trống và chưa xác nhận.
-            </p>
-            <Field
-              label="Ảnh thumbnail URL"
-              name="thumbnailUrl"
-              value={productForm.thumbnailUrl}
-              onChange={setProduct}
-            />
-            <Field label="Badge" name="badge" value={productForm.badge} onChange={setProduct} />
-            <Field
-              label="Section"
-              name="section"
-              value={productForm.section}
-              onChange={setProduct}
-            />
-          </div>
-          <Field
-            label="Mô tả"
-            name="description"
-            value={productForm.description}
-            onChange={setProduct}
-          />
-          <div className="admin-checks">
-            <Field
-              label="Tôi xác nhận đây là trọng lượng và kích thước thực tế của kiện đã đóng gói"
-              name="packagingSpecsConfirmed"
-              value={productForm.packagingSpecsConfirmed}
-              onChange={setProduct}
-              type="checkbox"
-            />
-            <Field
-              label="Tùy chỉnh"
-              name="isCustomizable"
-              value={productForm.isCustomizable}
-              onChange={setProduct}
-              type="checkbox"
-            />
-            <Field
-              label="Pre-order"
-              name="isPreOrder"
-              value={productForm.isPreOrder}
-              onChange={setProduct}
-              type="checkbox"
-            />
-            <Field
-              label="Đang bán"
-              name="isActive"
-              value={productForm.isActive}
-              onChange={setProduct}
-              type="checkbox"
-            />
-          </div>
-          <button className="button" type="submit">
-            {editingProduct ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm'}
-          </button>
-        </form>
-        <div className="admin-table-wrap">
-          <table>
-            <caption className="sr-only">Danh sách sản phẩm</caption>
-            <thead>
-              <tr>
-                <th>Mã</th>
-                <th>Tên</th>
-                <th>Giá</th>
-                <th>Quy cách đóng gói</th>
-                <th>Trạng thái</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.code}</td>
-                  <td>{p.name}</td>
-                  <td>{money(p.price)}</td>
-                  <td>
-                    {p.packagingSpecsConfirmed
-                      ? `${p.shippingWeightGrams} g · ${p.packageLengthCm} × ${p.packageWidthCm} × ${p.packageHeightCm} cm`
-                      : `Chưa xác nhận${p.shippingWeightGrams == null ? '' : ` · ${p.shippingWeightGrams} g cũ chưa xác minh`}`}
-                  </td>
-                  <td>{p.isActive ? 'Đang bán' : 'Tắt'}</td>
-                  <td>
-                    <button
-                      className="button button-outline"
-                      onClick={() => {
-                        setEditingProduct(p.id);
-                        const values: FormState = {
-                          ...emptyProductForm,
-                          categoryId: p.categoryId,
-                          code: p.code,
-                          name: p.name,
-                          price: String(p.price),
-                          originalPrice: p.originalPrice == null ? '' : String(p.originalPrice),
-                          thumbnailUrl: p.thumbnailUrl ?? '',
-                          description: p.description ?? '',
-                          badge: p.badge ?? '',
-                          section: p.section ?? '',
-                          shippingWeightGrams:
-                            p.shippingWeightGrams == null ? '' : String(p.shippingWeightGrams),
-                          packageLengthCm:
-                            p.packageLengthCm == null ? '' : String(p.packageLengthCm),
-                          packageWidthCm: p.packageWidthCm == null ? '' : String(p.packageWidthCm),
-                          packageHeightCm:
-                            p.packageHeightCm == null ? '' : String(p.packageHeightCm),
-                          packagingSpecsConfirmed: p.packagingSpecsConfirmed,
-                          isCustomizable: p.isCustomizable,
-                          isPreOrder: p.isPreOrder,
-                          isActive: p.isActive,
-                        };
-                        Object.entries(values).forEach(([key, value]) => setProduct(key, value));
-                      }}
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      type="button"
-                      className="text-link"
-                      onClick={() => onDeleteProduct(p.id)}
-                    >
-                      Xóa
-                    </button>
-                  </td>
-                </tr>
+              />
+              <Field
+                label="Tên"
+                name="name"
+                value={categoryForm.name}
+                onChange={setCategory}
+                required
+              />
+              <Field
+                label="Mô tả"
+                name="description"
+                value={categoryForm.description}
+                onChange={setCategory}
+              />
+              <Field
+                label="Ảnh URL (HTTP(S))"
+                name="imageUrl"
+                value={categoryForm.imageUrl}
+                onChange={setCategory}
+              />
+              <div>
+                <button className="button" type="submit">
+                  {editingCategory ? 'Cập nhật' : 'Tạo danh mục'}
+                </button>
+                {editingCategory && (
+                  <button
+                    className="button button-outline"
+                    type="button"
+                    onClick={() => setEditingCategory('')}
+                  >
+                    Hủy
+                  </button>
+                )}
+              </div>
+            </form>
+            <ul className="admin-list">
+              {categories.map((c) => (
+                <li key={c.id}>
+                  <span>
+                    <strong>{c.name}</strong>
+                    <small>{c.code}</small>
+                  </span>
+                  <button
+                    className="button button-outline"
+                    onClick={() => {
+                      setEditingCategory(c.id);
+                      setCategory('code', c.code);
+                      setCategory('name', c.name);
+                      setCategory('description', c.description || '');
+                      setCategory('imageUrl', c.imageUrl || '');
+                    }}
+                  >
+                    Sửa
+                  </button>
+                  <button className="button button-outline" onClick={() => onDeleteCategory(c.id)}>
+                    Xóa
+                  </button>
+                </li>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-      {products.length > 0 && (
+            </ul>
+          </section>
+          <section className="admin-card">
+            <div className="admin-section-heading">
+              <div>
+                <h2>Sản phẩm</h2>
+                <p className="admin-muted">Quản lý thông tin, giá và quy cách đóng gói.</p>
+              </div>
+              <div className="admin-heading-actions">
+                <span>{products.length} sản phẩm</span>
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => {
+                    if (!productFormOpen && !editingProduct) resetProductForm();
+                    setProductFormOpen(!productFormOpen);
+                  }}
+                  aria-expanded={productFormOpen}
+                >
+                  {productFormOpen ? 'Đóng biểu mẫu' : 'Thêm sản phẩm'}
+                </button>
+              </div>
+            </div>
+            {productFormOpen && (
+              <form className="admin-form admin-product-form" onSubmit={onProduct}>
+                <div className="admin-form-grid">
+                  <Field
+                    label="Danh mục"
+                    name="categoryId"
+                    value={productForm.categoryId}
+                    onChange={setProduct}
+                    required
+                  >
+                    <select
+                      value={String(productForm.categoryId)}
+                      onChange={(e) => setProduct('categoryId', e.target.value)}
+                      required
+                    >
+                      <option value="">Chọn danh mục</option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field
+                    label="Mã sản phẩm"
+                    name="code"
+                    value={productForm.code}
+                    onChange={setProduct}
+                    required
+                  />
+                  <Field
+                    label="Tên sản phẩm"
+                    name="name"
+                    value={productForm.name}
+                    onChange={setProduct}
+                    required
+                  />
+                  <Field
+                    label="Giá"
+                    name="price"
+                    value={productForm.price}
+                    onChange={setProduct}
+                    type="number"
+                    required
+                  />
+                  <Field
+                    label="Giá gốc"
+                    name="originalPrice"
+                    value={productForm.originalPrice}
+                    onChange={setProduct}
+                    type="number"
+                  />
+                  <Field
+                    label="Trọng lượng kiện hàng (g)"
+                    name="shippingWeightGrams"
+                    value={productForm.shippingWeightGrams}
+                    onChange={setPackagingMeasurement}
+                    type="number"
+                    required={Boolean(productForm.packagingSpecsConfirmed)}
+                    min={1}
+                    max={1000000}
+                    step={1}
+                  />
+                  <Field
+                    label="Chiều dài kiện (cm)"
+                    name="packageLengthCm"
+                    value={productForm.packageLengthCm}
+                    onChange={setPackagingMeasurement}
+                    type="number"
+                    required={Boolean(productForm.packagingSpecsConfirmed)}
+                    min={0.01}
+                    max={10000}
+                    step={0.01}
+                  />
+                  <Field
+                    label="Chiều rộng kiện (cm)"
+                    name="packageWidthCm"
+                    value={productForm.packageWidthCm}
+                    onChange={setPackagingMeasurement}
+                    type="number"
+                    required={Boolean(productForm.packagingSpecsConfirmed)}
+                    min={0.01}
+                    max={10000}
+                    step={0.01}
+                  />
+                  <Field
+                    label="Chiều cao kiện (cm)"
+                    name="packageHeightCm"
+                    value={productForm.packageHeightCm}
+                    onChange={setPackagingMeasurement}
+                    type="number"
+                    required={Boolean(productForm.packagingSpecsConfirmed)}
+                    min={0.01}
+                    max={10000}
+                    step={0.01}
+                  />
+                  <p className="admin-muted">
+                    Nhập số đo sau khi cân/đo kiện đã đóng gói. Dữ liệu cũ, kể cả 500 g, vẫn chưa
+                    được xác nhận và không dùng để báo phí. Nếu chưa có số đo thật, để trống và chưa
+                    xác nhận.
+                  </p>
+                  <Field
+                    label="Ảnh thumbnail URL"
+                    name="thumbnailUrl"
+                    value={productForm.thumbnailUrl}
+                    onChange={setProduct}
+                  />
+                  <Field
+                    label="Badge"
+                    name="badge"
+                    value={productForm.badge}
+                    onChange={setProduct}
+                  />
+                  <Field
+                    label="Section"
+                    name="section"
+                    value={productForm.section}
+                    onChange={setProduct}
+                  />
+                </div>
+                <Field
+                  label="Mô tả"
+                  name="description"
+                  value={productForm.description}
+                  onChange={setProduct}
+                />
+                <div className="admin-checks">
+                  <Field
+                    label="Tôi xác nhận đây là trọng lượng và kích thước thực tế của kiện đã đóng gói"
+                    name="packagingSpecsConfirmed"
+                    value={productForm.packagingSpecsConfirmed}
+                    onChange={setProduct}
+                    type="checkbox"
+                  />
+                  <Field
+                    label="Tùy chỉnh"
+                    name="isCustomizable"
+                    value={productForm.isCustomizable}
+                    onChange={setProduct}
+                    type="checkbox"
+                  />
+                  <Field
+                    label="Pre-order"
+                    name="isPreOrder"
+                    value={productForm.isPreOrder}
+                    onChange={setProduct}
+                    type="checkbox"
+                  />
+                  <Field
+                    label="Đang bán"
+                    name="isActive"
+                    value={productForm.isActive}
+                    onChange={setProduct}
+                    type="checkbox"
+                  />
+                </div>
+                <button className="button" type="submit">
+                  {editingProduct ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm'}
+                </button>
+                <button
+                  className="button button-outline"
+                  type="button"
+                  onClick={() => {
+                    setEditingProduct('');
+                    resetProductForm();
+                    setProductFormOpen(false);
+                  }}
+                >
+                  Hủy
+                </button>
+              </form>
+            )}
+            <div className="admin-table-wrap">
+              <table>
+                <caption className="sr-only">Danh sách sản phẩm</caption>
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên</th>
+                    <th>Giá</th>
+                    <th>Quy cách đóng gói</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p) => (
+                    <tr key={p.id}>
+                      <td>{p.code}</td>
+                      <td>{p.name}</td>
+                      <td>{money(p.price)}</td>
+                      <td>
+                        {p.packagingSpecsConfirmed
+                          ? `${p.shippingWeightGrams} g · ${p.packageLengthCm} × ${p.packageWidthCm} × ${p.packageHeightCm} cm`
+                          : `Chưa xác nhận${p.shippingWeightGrams == null ? '' : ` · ${p.shippingWeightGrams} g cũ chưa xác minh`}`}
+                      </td>
+                      <td>{p.isActive ? 'Đang bán' : 'Tắt'}</td>
+                      <td>
+                        <button
+                          className="button button-outline"
+                          onClick={() => {
+                            setEditingProduct(p.id);
+                            setProductFormOpen(true);
+                            const values: FormState = {
+                              ...emptyProductForm,
+                              categoryId: p.categoryId,
+                              code: p.code,
+                              name: p.name,
+                              price: String(p.price),
+                              originalPrice: p.originalPrice == null ? '' : String(p.originalPrice),
+                              thumbnailUrl: p.thumbnailUrl ?? '',
+                              description: p.description ?? '',
+                              badge: p.badge ?? '',
+                              section: p.section ?? '',
+                              shippingWeightGrams:
+                                p.shippingWeightGrams == null ? '' : String(p.shippingWeightGrams),
+                              packageLengthCm:
+                                p.packageLengthCm == null ? '' : String(p.packageLengthCm),
+                              packageWidthCm:
+                                p.packageWidthCm == null ? '' : String(p.packageWidthCm),
+                              packageHeightCm:
+                                p.packageHeightCm == null ? '' : String(p.packageHeightCm),
+                              packagingSpecsConfirmed: p.packagingSpecsConfirmed,
+                              isCustomizable: p.isCustomizable,
+                              isPreOrder: p.isPreOrder,
+                              isActive: p.isActive,
+                            };
+                            Object.entries(values).forEach(([key, value]) =>
+                              setProduct(key, value),
+                            );
+                          }}
+                        >
+                          Sửa
+                        </button>
+                        <button
+                          type="button"
+                          className="text-link"
+                          onClick={() => onDeleteProduct(p.id)}
+                        >
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
+      {mode === 'inventory' && products.length > 0 && (
         <section className="admin-card">
-          <h2>Điều chỉnh tồn kho</h2>
-          <p className="admin-muted">
-            Nhập số lượng khả dụng mới. Bucket đã giữ chỗ không bị thay đổi.
-          </p>
+          <div className="admin-section-heading">
+            <div>
+              <h2>Tồn kho</h2>
+              <p className="admin-muted">
+                Cập nhật số lượng khả dụng. Hàng đã giữ chỗ được bảo toàn.
+              </p>
+            </div>
+            <span>{products.length} sản phẩm</span>
+          </div>
           <div className="admin-table-wrap">
             <table>
               <thead>
@@ -852,6 +972,13 @@ function CatalogView({
               </tbody>
             </table>
           </div>
+        </section>
+      )}
+      {mode === 'inventory' && products.length === 0 && (
+        <section className="admin-card admin-empty-state">
+          <Boxes aria-hidden="true" size={24} />
+          <h2>Chưa có sản phẩm để cập nhật</h2>
+          <p className="admin-muted">Tạo sản phẩm trong Danh mục & sản phẩm để quản lý tồn kho.</p>
         </section>
       )}
     </div>
