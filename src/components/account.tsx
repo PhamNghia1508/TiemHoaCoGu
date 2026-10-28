@@ -672,10 +672,20 @@ export default function Account() {
   const isAdmin = user.role?.toLowerCase() === 'admin';
   const isStaff = user.role?.toLowerCase() === 'staff';
 
+  // Filter active vs cancelled/expired bookings
+  const activeBookings = bookings.filter((b) => {
+    const s = (b.bookingStatus || '').toLowerCase();
+    return s !== 'cancelled' && s !== 'expired';
+  });
+
   // Compute Current Week Days for Calendar
   const weekDays = getWeekDays(currentWeekMonday);
   const selectedDateBookings = bookings.filter((b) => isSameDay(getBookingDate(b), selectedDate));
-  const weekHasBookings = bookings.filter((b) =>
+  const selectedDateActiveBookings = selectedDateBookings.filter((b) => {
+    const s = (b.bookingStatus || '').toLowerCase();
+    return s !== 'cancelled' && s !== 'expired';
+  });
+  const weekHasBookings = activeBookings.filter((b) =>
     weekDays.some((wd) => isSameDay(getBookingDate(b), wd))
   );
 
@@ -696,12 +706,53 @@ export default function Account() {
       ? `/workshop/${wsId}?sessionId=${booking.sessionId}&bookingCode=${booking.bookingCode}`
       : `/workshop?bookingCode=${booking.bookingCode}`;
 
+    const status = (booking.bookingStatus || '').toLowerCase();
+    const isPending = status === 'pending';
+    const isConfirmed = status === 'confirmed';
+    const isAttended = status === 'attended';
+    const isCancelled = status === 'cancelled';
+    const isExpired = status === 'expired';
+
     return (
       <article key={booking.id} className="workshop-ticket-card">
         <div className="ticket-body" style={{ padding: '22px 24px' }}>
-          <h2 className="ticket-title" style={{ fontSize: '18px', marginBottom: '14px' }}>
-            {workshopTitle}
-          </h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+            <div>
+              <span style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                MÃ VÉ: {booking.bookingCode || booking.id.slice(0, 8)}
+              </span>
+              <h2 className="ticket-title" style={{ fontSize: '18px', margin: '4px 0 0' }}>
+                {workshopTitle}
+              </h2>
+            </div>
+            <div>
+              {isConfirmed && (
+                <span className="badge-status confirmed" style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}>
+                  ✅ Đã thanh toán
+                </span>
+              )}
+              {isPending && (
+                <span className="badge-status" style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
+                  ⏳ Chờ thanh toán
+                </span>
+              )}
+              {isAttended && (
+                <span className="badge-status attended" style={{ background: '#edf1fc', color: '#243db5', border: '1px solid #cbd5e1' }}>
+                  ✨ Đã tham gia
+                </span>
+              )}
+              {isCancelled && (
+                <span className="badge-status" style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca' }}>
+                  ❌ Đã hủy
+                </span>
+              )}
+              {isExpired && (
+                <span className="badge-status" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' }}>
+                  ⚠️ Hết hạn
+                </span>
+              )}
+            </div>
+          </div>
 
           <div className="ticket-info-list" style={{ marginBottom: '16px' }}>
             <div className="ticket-info-row">
@@ -733,17 +784,39 @@ export default function Account() {
               alignItems: 'center',
             }}
           >
-            {canCancelBooking(booking) ? (
-              <button
-                type="button"
-                className="account-btn-secondary"
-                style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
-                onClick={() => void handleCancelBooking(booking.id)}
-                disabled={busy}
-              >
-                Hủy vé
-              </button>
-            ) : <span />}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              {isPending && (
+                <Link
+                  href={`/thanh-toan?bookingId=${booking.id}`}
+                  className="account-btn-primary"
+                  style={{
+                    padding: '6px 14px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    background: '#243db5',
+                    color: '#ffffff',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  Thanh toán ngay →
+                </Link>
+              )}
+              {canCancelBooking(booking) ? (
+                <button
+                  type="button"
+                  className="account-btn-secondary"
+                  style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                  onClick={() => void handleCancelBooking(booking.id)}
+                  disabled={busy}
+                >
+                  {isPending ? 'Hủy giữ chỗ' : 'Hủy vé'}
+                </button>
+              ) : null}
+            </div>
             <Link
               href={detailUrl}
               className="account-btn-secondary"
@@ -974,7 +1047,7 @@ export default function Account() {
                             setSelectedDate(newDate);
                             setCurrentWeekMonday(getMonday(newDate));
                           }}
-                          sessionsDates={bookings.map((b) => getBookingDate(b).toISOString())}
+                          sessionsDates={activeBookings.map((b) => getBookingDate(b).toISOString())}
                         />
                       </>
                     )}
@@ -985,7 +1058,7 @@ export default function Account() {
                 {calendarViewMode === 'weekly' && (
                   <div className="calendar-week-grid" role="grid" aria-label="Lịch theo tuần">
                     {weekDays.map((day, idx) => {
-                      const dayBookings = bookings.filter((b) => isSameDay(getBookingDate(b), day));
+                      const dayBookings = activeBookings.filter((b) => isSameDay(getBookingDate(b), day));
                       const hasEvents = dayBookings.length > 0;
                       const isSelected = isSameDay(day, selectedDate);
                       const today = isToday(day);
@@ -1033,7 +1106,7 @@ export default function Account() {
                     <span
                       className={`badge-status ${selectedDateBookings.length > 0 ? 'confirmed' : 'attended'}`}
                     >
-                      {selectedDateBookings.length} buổi học
+                      {selectedDateActiveBookings.length} buổi học
                     </span>
                   </div>
 
