@@ -293,9 +293,6 @@ export default function StaffWorkshopRoster() {
   };
 
   const selectedDateSessions = getSessionsOnDate(selectedDate);
-  const weekHasSessions = sessions.filter((s) =>
-    weekDays.some((wd) => isSameDay(new Date(s.sessionDate), wd)),
-  );
 
   const handlePrevWeek = () => {
     const prev = new Date(currentWeekMonday);
@@ -655,29 +652,6 @@ export default function StaffWorkshopRoster() {
                 <CalendarDays size={36} />
                 <h3>Không có ca học nào vào ngày này</h3>
                 <p>Xưởng không có lịch tổ chức workshop vào ngày {formatDateLong(selectedDate)}.</p>
-
-                {weekHasSessions.length > 0 && (
-                  <div className="calendar-hint-banner" style={{ marginTop: '20px' }}>
-                    <span>
-                      Tuần này có <strong>{weekHasSessions.length} ca học</strong> vào những ngày khác:
-                    </span>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
-                      {weekHasSessions.map((s) => {
-                        const sDate = new Date(s.sessionDate);
-                        return (
-                          <button
-                            key={s.id}
-                            type="button"
-                            className="staff-btn staff-btn-primary staff-btn-sm"
-                            onClick={() => setSelectedDate(sDate)}
-                          >
-                            {formatDate(s.sessionDate)} ({formatTime(s.startTime)})
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="staff-sessions-grid">

@@ -1049,31 +1049,6 @@ export default function Account() {
                         </div>
                         <h3>Không có lịch workshop vào ngày này</h3>
                         <p>Bạn không có ca học nào được xếp lịch vào ngày {formatDateLong(selectedDate)}.</p>
-
-                        {/* Hint for other days in this week that DO have bookings */}
-                        {weekHasBookings.length > 0 && (
-                          <div className="calendar-hint-banner">
-                            <span>
-                              Tuần này bạn có <strong>{weekHasBookings.length} buổi học</strong> vào ngày khác:
-                            </span>
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                              {weekHasBookings.map((b) => {
-                                const bDate = getBookingDate(b);
-                                return (
-                                  <button
-                                    key={b.id}
-                                    type="button"
-                                    className="account-btn-primary"
-                                    style={{ padding: '6px 12px', fontSize: '12px' }}
-                                    onClick={() => setSelectedDate(bDate)}
-                                  >
-                                    Xem buổi {formatDate(bDate.toISOString())}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}
