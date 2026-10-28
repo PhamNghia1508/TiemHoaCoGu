@@ -19,6 +19,7 @@ import {
   ArrowLeft,
   Calendar,
   Sparkles,
+  CreditCard,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import type { WorkshopBrief, WorkshopSession, RosterBooking } from './types';
@@ -261,6 +262,32 @@ export default function StaffWorkshopRoster() {
     }
   };
 
+  // Record Counter Payment for Pending Booking
+  const handleRecordPayment = async (booking: RosterBooking) => {
+    setActionBusy(booking.id);
+    setError('');
+    setSuccessMsg('');
+    try {
+      await storeRequest(
+        `payments/booking/${booking.id}`,
+        {
+          paymentMethod: 'Cash',
+          transactionCode: `POS-${Date.now().toString().slice(-6)}`,
+          amount: booking.totalAmount,
+        },
+        'POST',
+      );
+      setSuccessMsg(`Đã thu ${formatMoney(booking.totalAmount)} và xác nhận vé ${booking.bookingCode}!`);
+      if (activeSession) {
+        await loadRosterForSession(activeSession);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ghi nhận thanh toán tại xưởng thất bại.');
+    } finally {
+      setActionBusy(null);
+    }
+  };
+
   // Close session action
   const handleCloseSession = async () => {
     if (!activeSession) return;
@@ -486,6 +513,18 @@ export default function StaffWorkshopRoster() {
                           </td>
                           <td style={{ textAlign: 'right' }}>
                             <div style={{ display: 'inline-flex', gap: '8px' }}>
+                              {booking.bookingStatus.toLowerCase() === 'pending' && (
+                                <button
+                                  type="button"
+                                  className="staff-btn staff-btn-primary staff-btn-sm"
+                                  style={{ background: '#059669', borderColor: '#059669' }}
+                                  onClick={() => void handleRecordPayment(booking)}
+                                  disabled={isBusy}
+                                >
+                                  <CreditCard size={14} /> Thu tiền tại quầy
+                                </button>
+                              )}
+
                               {canCheckIn && (
                                 <button
                                   type="button"

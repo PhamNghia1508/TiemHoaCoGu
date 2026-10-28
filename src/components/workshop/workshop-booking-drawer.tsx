@@ -14,6 +14,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Check,
+  CheckCircle2,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import type { Booking, Session, Workshop } from '@/lib/api/client';
@@ -68,22 +69,33 @@ export default function WorkshopBookingDrawer({
   const [customerPhone, setCustomerPhone] = useState<string>('');
   const [customerEmail, setCustomerEmail] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userBookings, setUserBookings] = useState<Booking[]>([]);
   const [authChecked, setAuthChecked] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
   const idempotencyRef = useRef<{ fingerprint: string; key: string } | null>(null);
   const titleId = useId();
 
-  // Load auth user info
+  // Load auth user info and existing bookings
   useEffect(() => {
     let active = true;
     storeRequest<User>('auth/me')
-      .then((me) => {
+      .then(async (me) => {
         if (!active) return;
         setCurrentUser(me);
         if (me.fullName) setCustomerName(me.fullName);
         if (me.phoneNumber) setCustomerPhone(me.phoneNumber);
         if (me.email) setCustomerEmail(me.email);
+
+        // Fetch user's existing bookings to prevent duplicate registration
+        try {
+          const bookings = await storeRequest<Booking[]>('bookings');
+          if (active && bookings) {
+            setUserBookings(bookings);
+          }
+        } catch {
+          // ignore
+        }
       })
       .catch(() => {
         // Guest user, not logged in
@@ -100,42 +112,108 @@ export default function WorkshopBookingDrawer({
   // Filter open upcoming sessions
   const availableSessions = (workshop?.sessions || []).filter((s) => isOpenFutureSession(s));
 
+  // Set of session IDs already booked by this member (active: pending or confirmed)
+  const activeBookedSessionIds = new Set(
+    userBookings
+      .filter((b) => {
+        const st = (b.bookingStatus || '').toLowerCase();
+        return st !== 'cancelled' && st !== 'expired';
+      })
+      .map((b) => b.sessionId),
+  );
+
   // Initialize selected session when drawer opens
   useEffect(() => {
-    if (isOpen && availableSessions.length > 0 && !selectedSessionId) {
-      setSelectedSessionId(availableSessions[0].id);
+    if (isOpen && availableSessions.length > 0) {
+      // Pick first session that is NOT already booked
+      const firstUnbooked = availableSessions.find((s) => !activeBookedSessionIds.has(s.id));
+      if (firstUnbooked && !selectedSessionId) {
+        setSelectedSessionId(firstUnbooked.id);
+      } else if (!selectedSessionId) {
+        setSelectedSessionId(availableSessions[0].id);
+      }
     }
     if (isOpen) {
       setError('');
     }
-  }, [isOpen, availableSessions, selectedSessionId]);
+  }, [isOpen, availableSessions, selectedSessionId, activeBookedSessionIds]);
 
   if (!isOpen || !workshop) return null;
 
   const currentSession = availableSessions.find((s) => s.id === selectedSessionId);
-  const maxSeatsAllowed = currentSession ? Math.min(6, remainingSeats(currentSession)) : 1;
+  const freeSeats = currentSession ? remainingSeats(currentSession) : 0;
+  const maxSeatsAllowed = currentSession ? Math.max(1, Math.min(6, freeSeats)) : 1;
+  const isCurrentSessionAlreadyBooked = currentSession
+    ? activeBookedSessionIds.has(currentSession.id)
+    : false;
   const totalPrice = workshop.basePrice * ticketCount;
 
   async function handleBookWorkshop(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
+
+    // 1. Session validation
     if (!currentSession) {
-      setError('Vui lòng chọn một ca học còn chỗ.');
+      setError('Vui lòng chọn một ca học tại xưởng.');
       return;
     }
+
+    // 2. Duplicate booking check
+    if (activeBookedSessionIds.has(currentSession.id)) {
+      setError('Bạn đã đăng ký tham gia ca học này rồi. Vui lòng kiểm tra trong Lịch học của bạn.');
+      return;
+    }
+
+    // 3. Time validation (Cannot book session in the past)
+    const startsAt = new Date(`${currentSession.sessionDate.slice(0, 10)}T${currentSession.startTime}`);
+    if (startsAt.getTime() <= Date.now()) {
+      setError('Ca học này đã bắt đầu hoặc đã qua giờ mở đăng ký.');
+      return;
+    }
+
+    // 4. Capacity validation (Min/Max seats)
+    if (freeSeats <= 0) {
+      setError('Ca học này hiện đã đủ chỗ, không thể nhận thêm học viên.');
+      return;
+    }
+    if (ticketCount < 1 || ticketCount > maxSeatsAllowed) {
+      setError(`Số lượng vé không hợp lệ (tối thiểu 1 vé, tối đa ${maxSeatsAllowed} vé cho ca này).`);
+      return;
+    }
+
+    // 5. Auth check
     if (!currentUser) {
       setError('Vui lòng đăng nhập tài khoản để xác nhận giữ chỗ.');
       return;
     }
-    if (!customerName.trim() || !customerPhone.trim()) {
-      setError('Vui lòng điền đầy đủ họ tên và số điện thoại.');
+
+    // 6. Name validation
+    const trimmedName = customerName.trim();
+    if (trimmedName.length < 2) {
+      setError('Vui lòng nhập họ và tên học viên (tối thiểu 2 ký tự).');
+      return;
+    }
+
+    // 7. Phone validation (Vietnamese mobile 10 digits)
+    const phoneClean = customerPhone.trim().replace(/[\s.-]/g, '');
+    const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+    if (!phoneRegex.test(phoneClean)) {
+      setError('Số điện thoại không hợp lệ. Vui lòng nhập số di động Việt Nam (10 chữ số, ví dụ 0912345678).');
+      return;
+    }
+
+    // 8. Email validation (if provided)
+    const trimmedEmail = customerEmail.trim();
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError('Định dạng email không hợp lệ (ví dụ: name@example.com).');
       return;
     }
 
     const payload = {
       ticketCount,
-      customerName: customerName.trim(),
-      customerPhone: customerPhone.trim(),
-      customerEmail: customerEmail.trim() || undefined,
+      customerName: trimmedName,
+      customerPhone: phoneClean,
+      customerEmail: trimmedEmail || undefined,
     };
 
     const fingerprint = payloadFingerprint({ sessionId: currentSession.id, ...payload });
@@ -144,7 +222,6 @@ export default function WorkshopBookingDrawer({
     }
 
     setSubmitting(true);
-    setError('');
 
     try {
       const res = await storeRequest<Booking>(
@@ -205,6 +282,23 @@ export default function WorkshopBookingDrawer({
               </div>
             </div>
 
+            {/* Description doc of workshop: ONLY render if exists ("k có thì khỏi") */}
+            {workshop.description?.trim() ? (
+              <div
+                style={{
+                  fontSize: '13.5px',
+                  color: '#475569',
+                  lineHeight: 1.65,
+                  padding: '14px 16px',
+                  background: '#f8fafc',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                }}
+              >
+                {workshop.description.trim()}
+              </div>
+            ) : null}
+
             {/* Step 1: Chọn ca học */}
             <div>
               <div className="ws-drawer-section-title">
@@ -222,14 +316,28 @@ export default function WorkshopBookingDrawer({
                   {availableSessions.map((s) => {
                     const isSelected = s.id === selectedSessionId;
                     const freeSlots = remainingSeats(s);
+                    const alreadyBooked = activeBookedSessionIds.has(s.id);
+
                     return (
                       <div
                         key={s.id}
-                        className={`ws-session-option ${isSelected ? 'selected' : ''}`}
+                        className={`ws-session-option ${isSelected ? 'selected' : ''} ${
+                          alreadyBooked ? 'is-booked' : ''
+                        }`}
+                        style={{
+                          opacity: alreadyBooked || freeSlots === 0 ? 0.75 : 1,
+                          cursor: alreadyBooked ? 'not-allowed' : 'pointer',
+                        }}
                         onClick={() => {
+                          if (alreadyBooked) {
+                            setError('Bạn đã đăng ký ca này rồi. Vui lòng chọn ca khác hoặc xem trong Lịch học.');
+                            return;
+                          }
                           setSelectedSessionId(s.id);
-                          if (ticketCount > Math.min(6, freeSlots)) {
-                            setTicketCount(Math.min(6, freeSlots));
+                          setError('');
+                          const allowed = Math.min(6, freeSlots);
+                          if (ticketCount > allowed) {
+                            setTicketCount(Math.max(1, allowed));
                           }
                         }}
                       >
@@ -241,9 +349,39 @@ export default function WorkshopBookingDrawer({
                             <span className="ws-session-datetime-txt">
                               {formatDate(s.sessionDate)} · {s.startTime.slice(0, 5)} - {s.endTime.slice(0, 5)}
                             </span>
-                            <span className="ws-session-seats-badge">
-                              Còn {freeSlots} chỗ
-                            </span>
+                            {alreadyBooked ? (
+                              <span
+                                style={{
+                                  fontSize: '11px',
+                                  fontWeight: 700,
+                                  padding: '3px 8px',
+                                  borderRadius: '6px',
+                                  background: '#edf1fc',
+                                  color: '#243db5',
+                                  border: '1px solid #cbd5e1',
+                                }}
+                              >
+                                Đã đăng ký
+                              </span>
+                            ) : freeSlots === 0 ? (
+                              <span
+                                style={{
+                                  fontSize: '11px',
+                                  fontWeight: 700,
+                                  padding: '3px 8px',
+                                  borderRadius: '6px',
+                                  background: '#fef2f2',
+                                  color: '#b91c1c',
+                                  border: '1px solid #fecaca',
+                                }}
+                              >
+                                Đã đủ chỗ
+                              </span>
+                            ) : (
+                              <span className="ws-session-seats-badge">
+                                Còn {freeSlots} chỗ
+                              </span>
+                            )}
                           </div>
                           <div className="ws-session-venue">
                             <MapPin size={14} />
@@ -261,6 +399,11 @@ export default function WorkshopBookingDrawer({
             <div>
               <div className="ws-drawer-section-title">
                 <span>2. Số lượng người tham gia</span>
+                {currentSession && (
+                  <span style={{ fontSize: '12px', color: '#64748b' }}>
+                    (Tối đa {maxSeatsAllowed} vé/lần đặt)
+                  </span>
+                )}
               </div>
               <div className="ws-stepper-box">
                 <span style={{ fontSize: '13.5px', color: '#334155', fontWeight: 600 }}>
@@ -271,7 +414,7 @@ export default function WorkshopBookingDrawer({
                     type="button"
                     className="ws-stepper-btn"
                     onClick={() => setTicketCount((prev) => Math.max(1, prev - 1))}
-                    disabled={ticketCount <= 1}
+                    disabled={ticketCount <= 1 || isCurrentSessionAlreadyBooked || freeSeats <= 0}
                   >
                     -
                   </button>
@@ -280,7 +423,11 @@ export default function WorkshopBookingDrawer({
                     type="button"
                     className="ws-stepper-btn"
                     onClick={() => setTicketCount((prev) => Math.min(maxSeatsAllowed, prev + 1))}
-                    disabled={ticketCount >= maxSeatsAllowed}
+                    disabled={
+                      ticketCount >= maxSeatsAllowed ||
+                      isCurrentSessionAlreadyBooked ||
+                      freeSeats <= 0
+                    }
                   >
                     +
                   </button>
@@ -312,9 +459,13 @@ export default function WorkshopBookingDrawer({
                   <input
                     type="text"
                     value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value);
+                      setError('');
+                    }}
                     placeholder="Nguyễn Văn A"
                     required
+                    maxLength={100}
                   />
                 </div>
                 <div className="ws-field">
@@ -322,9 +473,13 @@ export default function WorkshopBookingDrawer({
                   <input
                     type="tel"
                     value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerPhone(e.target.value);
+                      setError('');
+                    }}
                     placeholder="0912 345 678"
                     required
+                    maxLength={15}
                   />
                 </div>
                 <div className="ws-field">
@@ -332,8 +487,12 @@ export default function WorkshopBookingDrawer({
                   <input
                     type="email"
                     value={customerEmail}
-                    onChange={(e) => setCustomerEmail(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerEmail(e.target.value);
+                      setError('');
+                    }}
                     placeholder="email@example.com"
+                    maxLength={100}
                   />
                 </div>
               </div>
@@ -358,9 +517,20 @@ export default function WorkshopBookingDrawer({
                 <button
                   type="submit"
                   className="ws-btn-confirm"
-                  disabled={submitting || availableSessions.length === 0}
+                  disabled={
+                    submitting ||
+                    availableSessions.length === 0 ||
+                    isCurrentSessionAlreadyBooked ||
+                    freeSeats <= 0
+                  }
                 >
-                  {submitting ? 'Đang khởi tạo giữ chỗ...' : (
+                  {submitting ? (
+                    'Đang khởi tạo giữ chỗ...'
+                  ) : isCurrentSessionAlreadyBooked ? (
+                    'Bạn đã đăng ký ca học này'
+                  ) : freeSeats <= 0 ? (
+                    'Ca học đã hết chỗ'
+                  ) : (
                     <>
                       Tiếp tục thanh toán · {formatPrice(totalPrice)} <ArrowRight size={17} />
                     </>

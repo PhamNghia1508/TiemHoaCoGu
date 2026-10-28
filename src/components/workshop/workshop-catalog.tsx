@@ -133,11 +133,9 @@ export default function WorkshopCatalog({ courses }: WorkshopCatalogProps) {
                 {/* Card Content */}
                 <div className="ws-card-body">
                   <h3 className="ws-card-title">{course.name}</h3>
-                  <p className="ws-card-desc">
-                    {course.description ||
-                      course.detail?.leadContent ||
-                      'Học viên được tự tay chọn màu hoa, phối giấy gói nghệ thuật và hoàn thiện trọn vẹn tác phẩm mang về.'}
-                  </p>
+                  {course.description?.trim() ? (
+                    <p className="ws-card-desc">{course.description.trim()}</p>
+                  ) : null}
 
                   <ul className="ws-card-perks">
                     <li>
