@@ -1260,3 +1260,201 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
   margin: 2px 0 0;
   color: #1c2326;
 }
+
+/* ==========================================================================
+   FLORAL CALENDAR POPOVER (CUSTOM THEMED PICKER)
+   ========================================================================== */
+.floral-picker-container {
+  position: relative;
+  display: inline-block;
+}
+
+.floral-picker-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid #dfe2d8;
+  border-radius: 9px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1c2326;
+  cursor: pointer;
+  transition: all 120ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.floral-picker-trigger:hover,
+.floral-picker-trigger.active {
+  background: #fbfbf6;
+  border-color: var(--accent, #243db5);
+  color: var(--accent, #243db5);
+}
+
+.floral-popover-card {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 310px;
+  background: #ffffff;
+  border: 1px solid #dfe2d8;
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 12px 36px rgba(28, 35, 38, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  z-index: 100;
+  animation: popoverFadeIn 140ms ease-out;
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floral-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f2eb;
+}
+
+.floral-popover-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1c2326;
+}
+
+.floral-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #dfe2d8;
+  background: #ffffff;
+  color: #60675f;
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.floral-nav-btn:hover {
+  background: #f4f5ee;
+  color: #1c2326;
+}
+
+.floral-popover-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.floral-popover-weekday {
+  font-size: 11px;
+  font-weight: 800;
+  color: #8c9288;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.floral-popover-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.floral-popover-day {
+  position: relative;
+  height: 34px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1c2326;
+  transition: all 100ms ease;
+}
+
+.floral-popover-day:hover {
+  background: #f4f5ee;
+}
+
+.floral-popover-day.outside {
+  color: #b8bdab;
+}
+
+.floral-popover-day.today {
+  border-color: #cbd3c5;
+  background: #fbfbf6;
+  font-weight: 800;
+}
+
+.floral-popover-day.selected {
+  background: var(--accent, #243db5) !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(36, 61, 181, 0.25);
+}
+
+.floral-day-text {
+  position: relative;
+  z-index: 1;
+}
+
+.floral-session-dot {
+  position: absolute;
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #059669;
+}
+
+.floral-popover-day.selected .floral-session-dot {
+  background: #ffffff;
+}
+
+.floral-popover-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f2eb;
+}
+
+.floral-action-link {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent, #243db5);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: background 100ms ease;
+}
+
+.floral-action-link:hover {
+  background: #f4f5ee;
+}
+
+.floral-action-link.close-link {
+  color: #60675f;
+}

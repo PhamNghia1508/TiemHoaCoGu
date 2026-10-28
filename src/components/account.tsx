@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import { useStore } from '@/components/store-provider';
+import FloralCalendarPopover from './staff/floral-calendar-popover';
 
 type User = { id: string; fullName: string; email: string; phoneNumber: string; role: string };
 type Address = {
@@ -967,16 +968,14 @@ export default function Account() {
                         </button>
 
                         {/* Date Picker Input */}
-                        <label className="calendar-date-picker-wrap" title="Chọn ngày để mở tuần tương ứng">
-                          <Calendar size={14} />
-                          <span>Chọn ngày:</span>
-                          <input
-                            type="date"
-                            value={toISODateInput(selectedDate)}
-                            onChange={handlePickDate}
-                            className="calendar-date-input"
-                          />
-                        </label>
+                        <FloralCalendarPopover
+                          selectedDate={selectedDate}
+                          onSelectDate={(newDate) => {
+                            setSelectedDate(newDate);
+                            setCurrentWeekMonday(getMonday(newDate));
+                          }}
+                          sessionsDates={bookings.map((b) => getBookingDate(b).toISOString())}
+                        />
                       </>
                     )}
                   </div>

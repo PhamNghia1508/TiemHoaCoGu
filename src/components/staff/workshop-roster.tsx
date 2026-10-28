@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import type { WorkshopBrief, WorkshopSession, RosterBooking } from './types';
+import FloralCalendarPopover from './floral-calendar-popover';
 
 export type EnrichedSession = WorkshopSession & {
   workshopName: string;
@@ -571,17 +572,16 @@ export default function StaffWorkshopRoster() {
                   <ChevronRight size={16} />
                 </button>
 
-                {/* Date Picker Input */}
-                <label className="calendar-date-picker-wrap" title="Chọn ngày để mở tuần tương ứng">
-                  <Calendar size={14} />
-                  <span>Chọn ngày:</span>
-                  <input
-                    type="date"
-                    value={toISODateInput(selectedDate)}
-                    onChange={handlePickDate}
-                    className="calendar-date-input"
-                  />
-                </label>
+                {/* Custom Themed Floral Calendar Picker */}
+                <FloralCalendarPopover
+                  selectedDate={selectedDate}
+                  onSelectDate={(newDate) => {
+                    setSelectedDate(newDate);
+                    setCurrentWeekMonday(getMonday(newDate));
+                    setActiveSession(null);
+                  }}
+                  sessionsDates={sessions.map((s) => s.sessionDate)}
+                />
 
                 <button
                   type="button"
