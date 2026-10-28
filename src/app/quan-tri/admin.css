@@ -1698,12 +1698,14 @@ body:has(.admin-dialog[open]) {
 }
 
 /* Admin Logout Buttons */
+:is(.admin-shell, .admin-dialog) button.admin-logout-btn,
 .admin-logout-btn {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+  min-height: unset !important;
   border-radius: 6px;
-  padding: 3px 8px;
+  padding: 3px 8px !important;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -1713,10 +1715,11 @@ body:has(.admin-dialog[open]) {
   margin-top: 4px;
   transition: all 0.15s ease;
 }
+:is(.admin-shell, .admin-dialog) button.admin-logout-btn:hover,
 .admin-logout-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: var(--admin-citrus);
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.7) !important;
+  color: #ffffff !important;
 }
 .admin-topbar-logout {
   background: #ffffff;
