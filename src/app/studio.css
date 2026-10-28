@@ -15,7 +15,7 @@
 .studio-shell h3 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.018em;
 }
 .studio-shell .page-intro h1 {
   max-width: 15ch;
@@ -34,7 +34,7 @@
   max-width: 12ch;
   font-family: 'Be Vietnam Pro', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.055em;
+  letter-spacing: -0.018em;
   line-height: 0.98;
 }
 .studio-hero p {
@@ -96,7 +96,7 @@
 .studio-heading h2 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.018em;
   line-height: 1.02;
 }
 .studio-heading p {
@@ -118,7 +118,7 @@
 .studio-copy h2 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.018em;
   line-height: 1.05;
 }
 .studio-copy p {
@@ -144,7 +144,7 @@
   display: block;
   color: var(--studio-cobalt);
   font-size: 2rem;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.018em;
 }
 .studio-card {
   background: var(--studio-warmwhite);
@@ -168,7 +168,7 @@
 .studio-card h3 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: clamp(1.25rem, 2vw, 1.8rem);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.018em;
 }
 .studio-meta {
   display: flex;
@@ -205,7 +205,7 @@
 .studio-form-aside h2 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.018em;
 }
 .studio-form-aside img {
   width: 100%;
@@ -249,7 +249,7 @@
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 1.2rem;
   line-height: 1.15;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.018em;
 }
 .studio-journal-body p {
   margin: 0;
@@ -804,7 +804,7 @@
 .workshop-sessions h4 {
   margin-bottom: 12px;
   font-size: 16px;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.018em;
   line-height: 1.45;
 }
 .workshop-detail-list {
