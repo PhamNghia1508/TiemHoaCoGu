@@ -269,6 +269,10 @@ export default function Account() {
         router.replace('/quan-tri');
         return;
       }
+      if (me?.role?.toLowerCase() === 'staff') {
+        router.replace('/nhan-vien');
+        return;
+      }
       await loadCustomerData();
     } catch {
       setUser(null);
@@ -506,6 +510,51 @@ export default function Account() {
     setCurrentWeekMonday(getMonday(picked));
   };
 
+  const canCancelOrder = (order: OrderItem) => {
+    const s = (order.orderStatus || '').toLowerCase();
+    const p = (order.paymentStatus || '').toLowerCase();
+    return s !== 'cancelled' && s !== 'expired' && s !== 'delivering' && s !== 'completed' && p === 'unpaid';
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    if (!window.confirm('Bạn có chắc chắn muốn hủy đơn hàng hoa này không?')) return;
+    setBusy(true);
+    setMessage('');
+    try {
+      await storeRequest(`orders/${orderId}/cancel`, {}, 'POST');
+      setMessage('Đã hủy đơn hàng thành công.');
+      setIsError(false);
+      await loadCustomerData();
+    } catch (error) {
+      setIsError(true);
+      setMessage(error instanceof Error ? error.message : 'Không thể hủy đơn hàng.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const canCancelBooking = (booking: Booking) => {
+    const s = (booking.bookingStatus || '').toLowerCase();
+    return s !== 'cancelled' && s !== 'expired' && s !== 'attended' && s !== 'no_show';
+  };
+
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!window.confirm('Bạn có chắc chắn muốn hủy vé tham gia workshop này không?')) return;
+    setBusy(true);
+    setMessage('');
+    try {
+      await storeRequest(`bookings/${bookingId}/cancel`, 'Khách hàng tự hủy trên tài khoản cá nhân', 'POST');
+      setMessage('Đã hủy vé workshop thành công.');
+      setIsError(false);
+      await loadCustomerData();
+    } catch (error) {
+      setIsError(true);
+      setMessage(error instanceof Error ? error.message : 'Không thể hủy vé workshop.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   // 1. Loading Initial State
   if (loadingInitial) {
     return (
@@ -620,6 +669,7 @@ export default function Account() {
 
   // 3. Authenticated Customer Dashboard
   const isAdmin = user.role?.toLowerCase() === 'admin';
+  const isStaff = user.role?.toLowerCase() === 'staff';
 
   // Compute Current Week Days for Calendar
   const weekDays = getWeekDays(currentWeekMonday);
@@ -678,9 +728,21 @@ export default function Account() {
               paddingTop: '14px',
               borderTop: '1px solid var(--portal-line)',
               display: 'flex',
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
+            {canCancelBooking(booking) ? (
+              <button
+                type="button"
+                className="account-btn-secondary"
+                style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                onClick={() => void handleCancelBooking(booking.id)}
+                disabled={busy}
+              >
+                Hủy vé
+              </button>
+            ) : <span />}
             <Link
               href={detailUrl}
               className="account-btn-secondary"
@@ -714,6 +776,19 @@ export default function Account() {
         </div>
       )}
 
+      {/* Staff Notice Banner */}
+      {isStaff && (
+        <div className="account-alert info" style={{ marginBottom: '24px' }}>
+          <Sparkles size={20} />
+          <div style={{ flex: 1 }}>
+            <strong>Tài khoản Nhân viên:</strong> Bạn đang truy cập bằng tài khoản quyền Staff vận hành tiệm.
+          </div>
+          <Link href="/nhan-vien" className="account-btn-primary" style={{ padding: '6px 14px', fontSize: '12.5px' }}>
+            Mở Bàn làm việc Nhân viên <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
+
       {/* Profile Hero Card */}
       <div className="account-profile-hero">
         <div className="account-user-meta">
@@ -730,7 +805,7 @@ export default function Account() {
                 <Phone size={14} /> {user.phoneNumber || 'Chưa cập nhật SĐT'}
               </span>
               <span className={`account-role-badge ${isAdmin ? 'admin' : ''}`}>
-                {isAdmin ? 'Quản trị viên' : 'Khách hàng thân thiết'}
+                {isAdmin ? 'Quản trị viên' : isStaff ? 'Nhân viên tiệm' : 'Khách hàng thân thiết'}
               </span>
             </div>
           </div>
@@ -1056,13 +1131,26 @@ export default function Account() {
                         {formatMoney(order.totalAmount)}
                       </strong>
                     </div>
-                    <Link
-                      href="/tra-cuu"
-                      className="account-btn-secondary"
-                      style={{ padding: '6px 12px', fontSize: '12px' }}
-                    >
-                      Theo dõi <ArrowRight size={14} />
-                    </Link>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      {canCancelOrder(order) && (
+                        <button
+                          type="button"
+                          className="account-btn-secondary"
+                          style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                          onClick={() => void handleCancelOrder(order.id)}
+                          disabled={busy}
+                        >
+                          Hủy đơn
+                        </button>
+                      )}
+                      <Link
+                        href="/tra-cuu"
+                        className="account-btn-secondary"
+                        style={{ padding: '6px 12px', fontSize: '12px' }}
+                      >
+                        Theo dõi <ArrowRight size={14} />
+                      </Link>
+                    </div>
                   </div>
                 </article>
               ))}

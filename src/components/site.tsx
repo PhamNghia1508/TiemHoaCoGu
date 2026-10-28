@@ -64,6 +64,8 @@ export function Footer() {
             <span>CẦN MỘT CHÚT GIÚP ĐỠ?</span>
             <Link href="/tra-cuu">Tra cứu đơn & đặt chỗ</Link>
             <Link href="/tai-khoan">Tài khoản của bạn</Link>
+            <Link href="/nhan-vien">Bàn làm việc Nhân viên</Link>
+            <Link href="/quan-tri">Góc điều hành Admin</Link>
             <Link href="/hoi-dap">Hỏi đáp & chăm hoa</Link>
             <Link href="/chuyen-cua-hoa">Chuyện của hoa</Link>
             <Link href="/chinh-sach">Chính sách & riêng tư</Link>

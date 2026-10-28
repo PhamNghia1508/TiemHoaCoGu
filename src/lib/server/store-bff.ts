@@ -89,6 +89,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: new RegExp(`^orders/${GUID}/deliveries/${GUID}/status$`), methods: ['POST'] },
     { pattern: new RegExp(`^orders/staff/${GUID}/deliveries$`), methods: ['GET'] },
     { pattern: new RegExp(`^bookings/${GUID}/(check-in|no-show)$`), methods: ['POST'] },
+    { pattern: new RegExp(`^payments/(booking|order)/${GUID}$`), methods: ['POST'] },
   ];
   for (const candidate of operational) {
     if (candidate.pattern.test(p) && candidate.methods.includes(m))
