@@ -51,7 +51,8 @@ export type WorkshopSession = {
   sessionDate: string;
   startTime: string;
   endTime: string;
-  maxSlots: number;
+  capacity?: number;
+  maxSlots?: number;
   bookedSlots: number;
   sessionStatus: 'Scheduled' | 'Closed' | 'Cancelled' | string;
   location: string;

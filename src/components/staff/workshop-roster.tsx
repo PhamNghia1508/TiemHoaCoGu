@@ -386,7 +386,7 @@ export default function StaffWorkshopRoster() {
                     <MapPin size={15} /> {activeSession.location || 'Xưởng Tiệm Hoa Có Gu'}
                   </span>
                   <span>
-                    <Users size={15} /> Sĩ số: <strong>{activeSession.bookedSlots}/{activeSession.maxSlots} học viên</strong>
+                    <Users size={15} /> Sĩ số: <strong>{activeSession.bookedSlots} / {activeSession.capacity ?? activeSession.maxSlots ?? 10} học viên</strong>
                   </span>
                   <span className={`staff-badge badge-${activeSession.sessionStatus.toLowerCase()}`}>
                     Trạng thái: {activeSession.sessionStatus}
@@ -681,7 +681,7 @@ export default function StaffWorkshopRoster() {
                       <div className="staff-session-info-row">
                         <Users size={16} />
                         <span>
-                          Học viên: <strong>{session.bookedSlots} / {session.maxSlots} chỗ đã đặt</strong>
+                          Học viên: <strong>{session.bookedSlots} / {session.capacity ?? session.maxSlots ?? 10} chỗ đã đặt</strong>
                         </span>
                       </div>
                     </div>
