@@ -83,7 +83,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
               if (matched) {
                 if (active) {
                   setSession(matched);
-                  const wsDetail = await storeRequest<Workshop>(`workshops/${w.id}`).catch(() => null);
+                  const wsDetail = await storeRequest<Workshop>(`workshops/${w.id}`).catch(
+                    () => null,
+                  );
                   if (active && wsDetail) setWorkshop(wsDetail);
                 }
                 break;
@@ -97,7 +99,8 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
         }
       })
       .catch((err) => {
-        if (active) setError(err instanceof Error ? err.message : 'Không tìm thấy thông tin vé giữ chỗ.');
+        if (active)
+          setError(err instanceof Error ? err.message : 'Không tìm thấy thông tin vé giữ chỗ.');
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -137,7 +140,12 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
         `payments/booking/${booking.id}`,
         {
           transactionCode: `PAY-${Date.now()}`,
-          paymentMethod: paymentMethod === 'vietqr' ? 'BankTransfer' : paymentMethod === 'momo' ? 'MoMo' : 'Cash',
+          paymentMethod:
+            paymentMethod === 'vietqr'
+              ? 'BankTransfer'
+              : paymentMethod === 'momo'
+                ? 'MoMo'
+                : 'Cash',
           amount: booking.totalAmount,
         },
         'POST',
@@ -163,9 +171,15 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
     return (
       <div className="ws-checkout-container" style={{ textAlign: 'center', padding: '80px 20px' }}>
         <AlertCircle size={40} style={{ color: '#ef4444', margin: '0 auto 16px' }} />
-        <h2 style={{ fontSize: '20px', color: '#1c2326', marginBottom: '8px' }}>Không thể tải vé giữ chỗ</h2>
+        <h2 style={{ fontSize: '20px', color: '#1c2326', marginBottom: '8px' }}>
+          Không thể tải vé giữ chỗ
+        </h2>
         <p style={{ color: '#64748b', marginBottom: '24px' }}>{error}</p>
-        <Link href="/workshop" className="ws-btn-confirm" style={{ display: 'inline-flex', width: 'auto', padding: '10px 24px' }}>
+        <Link
+          href="/workshop"
+          className="ws-btn-confirm"
+          style={{ display: 'inline-flex', width: 'auto', padding: '10px 24px' }}
+        >
           Quay lại danh sách Workshop
         </Link>
       </div>
@@ -176,7 +190,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
   const totalAmount = booking?.totalAmount || 360000;
   const workshopName = workshop?.name || 'Workshop Cắm Hoa Sáp';
   const sessionDate = session ? formatDate(session.sessionDate) : 'Thứ Bảy, 31 tháng 10, 2026';
-  const sessionTime = session ? `${session.startTime.slice(0, 5)} - ${session.endTime.slice(0, 5)}` : '09:00 - 11:00';
+  const sessionTime = session
+    ? `${session.startTime.slice(0, 5)} - ${session.endTime.slice(0, 5)}`
+    : '09:00 - 11:00';
   const sessionVenue = session?.location || 'NVH Sinh Viên (Xưởng Sáp)';
 
   // VietQR URL
@@ -189,12 +205,16 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
       {/* Checkout Progress Steps */}
       <div className="ws-checkout-steps">
         <div className="ws-step-item done">
-          <span className="ws-step-num"><Check size={14} /></span>
+          <span className="ws-step-num">
+            <Check size={14} />
+          </span>
           <span>1. Chọn ca học</span>
         </div>
         <div style={{ width: '32px', height: '1px', background: '#cbd5e1' }} />
         <div className="ws-step-item done">
-          <span className="ws-step-num"><Check size={14} /></span>
+          <span className="ws-step-num">
+            <Check size={14} />
+          </span>
           <span>2. Giữ chỗ</span>
         </div>
         <div style={{ width: '32px', height: '1px', background: '#cbd5e1' }} />
@@ -217,7 +237,8 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
           </div>
           <h2 className="ws-paid-title">Thanh toán vé thành công!</h2>
           <p className="ws-paid-msg">
-            Vé của bạn đã được xác nhận chính thức trên hệ thống Tiệm Hoa Có Gu.<br />
+            Vé của bạn đã được xác nhận chính thức trên hệ thống Tiệm Hoa Có Gu.
+            <br />
             Bạn có thể xem chi tiết và kiểm tra lịch học bất cứ lúc nào trong tài khoản.
           </p>
 
@@ -234,7 +255,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
               <span style={{ color: '#64748b', fontSize: '13px' }}>Mã vé tham dự:</span>
-              <strong style={{ color: '#243db5', fontFamily: 'monospace', fontSize: '16px' }}>{bookingCode}</strong>
+              <strong style={{ color: '#243db5', fontFamily: 'monospace', fontSize: '16px' }}>
+                {bookingCode}
+              </strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
               <span style={{ color: '#64748b', fontSize: '13px' }}>Workshop:</span>
@@ -242,11 +265,15 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
               <span style={{ color: '#64748b', fontSize: '13px' }}>Thời gian:</span>
-              <span style={{ color: '#1c2326', fontSize: '13px', fontWeight: 600 }}>{sessionDate} ({sessionTime})</span>
+              <span style={{ color: '#1c2326', fontSize: '13px', fontWeight: 600 }}>
+                {sessionDate} ({sessionTime})
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: '#64748b', fontSize: '13px' }}>Địa điểm:</span>
-              <span style={{ color: '#1c2326', fontSize: '13px', fontWeight: 600 }}>{sessionVenue}</span>
+              <span style={{ color: '#1c2326', fontSize: '13px', fontWeight: 600 }}>
+                {sessionVenue}
+              </span>
             </div>
           </div>
 
@@ -321,7 +348,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
                 <CreditCard size={24} style={{ color: '#059669' }} />
                 <div className="ws-pay-opt-text">
                   <span className="ws-pay-opt-title">Thanh toán tại quầy xưởng</span>
-                  <span className="ws-pay-opt-sub">Thanh toán tiền mặt hoặc quẹt thẻ khi tới tham gia</span>
+                  <span className="ws-pay-opt-sub">
+                    Thanh toán tiền mặt hoặc quẹt thẻ khi tới tham gia
+                  </span>
                 </div>
               </div>
             </div>
@@ -354,7 +383,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
                     <tr>
                       <td>Số tài khoản:</td>
                       <td>
-                        <span style={{ fontFamily: 'monospace', fontSize: '14px' }}>0971201001</span>
+                        <span style={{ fontFamily: 'monospace', fontSize: '14px' }}>
+                          0971201001
+                        </span>
                         <button
                           type="button"
                           className="ws-copy-btn"
@@ -376,7 +407,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
                     <tr>
                       <td>Nội dung CK:</td>
                       <td>
-                        <span style={{ fontFamily: 'monospace', color: '#243db5', fontWeight: 800 }}>
+                        <span
+                          style={{ fontFamily: 'monospace', color: '#243db5', fontWeight: 800 }}
+                        >
                           {bookingCode}
                         </span>
                         <button
@@ -400,20 +433,26 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
                   Thông tin ví MoMo Tiệm Hoa Có Gu
                 </p>
                 <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>
-                  Chuyển tiền MoMo tới số: <strong>0971 201 001</strong> (TIEM HOA CO GU)<br />
+                  Chuyển tiền MoMo tới số: <strong>0971 201 001</strong> (TIEM HOA CO GU)
+                  <br />
                   với nội dung: <strong style={{ color: '#243db5' }}>{bookingCode}</strong>
                 </p>
               </div>
             )}
 
             {paymentMethod === 'cash' && (
-              <div className="ws-vietqr-box" style={{ textAlign: 'left', alignItems: 'flex-start' }}>
-                <p style={{ fontSize: '14px', color: '#1e293b', fontWeight: 700, margin: '0 0 6px' }}>
+              <div
+                className="ws-vietqr-box"
+                style={{ textAlign: 'left', alignItems: 'flex-start' }}
+              >
+                <p
+                  style={{ fontSize: '14px', color: '#1e293b', fontWeight: 700, margin: '0 0 6px' }}
+                >
                   Giữ chỗ thanh toán tại quầy
                 </p>
                 <p style={{ fontSize: '13px', color: '#64748b', margin: 0, lineHeight: 1.6 }}>
-                  Ghế của bạn sẽ được giữ cho tới trước giờ học 15 phút. Bạn có thể thanh toán bằng tiền mặt
-                  hoặc quẹt thẻ trực tiếp tại bàn lễ tân khi có mặt tại xưởng.
+                  Ghế của bạn sẽ được giữ cho tới trước giờ học 15 phút. Bạn có thể thanh toán bằng
+                  tiền mặt hoặc quẹt thẻ trực tiếp tại bàn lễ tân khi có mặt tại xưởng.
                 </p>
               </div>
             )}
@@ -435,10 +474,17 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
               {isProcessing
                 ? 'Đang xác thực giao dịch…'
                 : paymentMethod === 'cash'
-                ? 'Xác nhận giữ chỗ tại quầy'
-                : `Xác nhận đã thanh toán · ${formatPrice(totalAmount)}`}
+                  ? 'Xác nhận giữ chỗ tại quầy'
+                  : `Xác nhận đã thanh toán · ${formatPrice(totalAmount)}`}
             </button>
-            <p style={{ fontSize: '12px', color: '#94a3b8', textAlign: 'center', margin: '12px 0 0' }}>
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#94a3b8',
+                textAlign: 'center',
+                margin: '12px 0 0',
+              }}
+            >
               Sau khi xác nhận, vé sẽ được kích hoạt ngay và chuyển vào Lịch học của bạn.
             </p>
           </div>

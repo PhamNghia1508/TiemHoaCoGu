@@ -62,7 +62,9 @@ export default function StaffOrderManager() {
   const [orders, setOrders] = useState<StaffOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [filter, setFilter] = useState<'all' | 'confirmed' | 'processing' | 'delivering' | 'completed'>('all');
+  const [filter, setFilter] = useState<
+    'all' | 'confirmed' | 'processing' | 'delivering' | 'completed'
+  >('all');
   const [actionBusy, setActionBusy] = useState<string | null>(null);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
@@ -478,14 +480,18 @@ export default function StaffOrderManager() {
                       {loadingDeliveries === order.id ? (
                         <p className="staff-muted">Đang tải thông tin chuyến giao…</p>
                       ) : deliveries.length === 0 ? (
-                        <p className="staff-muted">Chưa có chuyến giao hàng nào được tạo cho đơn này.</p>
+                        <p className="staff-muted">
+                          Chưa có chuyến giao hàng nào được tạo cho đơn này.
+                        </p>
                       ) : (
                         <div className="staff-delivery-cards-grid">
                           {deliveries.map((d) => (
                             <div key={d.id} className="staff-delivery-card">
                               <div className="staff-delivery-card-top">
                                 <strong>{d.deliveryCode}</strong>
-                                <span className={`staff-badge badge-${d.deliveryStatus.toLowerCase()}`}>
+                                <span
+                                  className={`staff-badge badge-${d.deliveryStatus.toLowerCase()}`}
+                                >
                                   {d.deliveryStatus}
                                 </span>
                               </div>

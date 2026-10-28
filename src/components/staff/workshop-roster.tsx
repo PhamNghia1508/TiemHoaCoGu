@@ -277,7 +277,9 @@ export default function StaffWorkshopRoster() {
         },
         'POST',
       );
-      setSuccessMsg(`Đã thu ${formatMoney(booking.totalAmount)} và xác nhận vé ${booking.bookingCode}!`);
+      setSuccessMsg(
+        `Đã thu ${formatMoney(booking.totalAmount)} và xác nhận vé ${booking.bookingCode}!`,
+      );
       if (activeSession) {
         await loadRosterForSession(activeSession);
       }
@@ -291,7 +293,12 @@ export default function StaffWorkshopRoster() {
   // Close session action
   const handleCloseSession = async () => {
     if (!activeSession) return;
-    if (!window.confirm('Bạn có chắc chắn muốn đóng ca học này? Ca học đã đóng sẽ hoàn tất nghiệp vụ.')) return;
+    if (
+      !window.confirm(
+        'Bạn có chắc chắn muốn đóng ca học này? Ca học đã đóng sẽ hoàn tất nghiệp vụ.',
+      )
+    )
+      return;
     setActionBusy('close-session');
     setError('');
     setSuccessMsg('');
@@ -381,8 +388,13 @@ export default function StaffWorkshopRoster() {
         <div className="staff-roster-view-container">
           {/* Back button & Session Header Card */}
           <div className="staff-roster-back-bar">
-            <button type="button" className="staff-btn staff-btn-secondary" onClick={closeRosterView}>
-              <ArrowLeft size={16} /> Quay lại lịch ca học ngày {formatDate(activeSession.sessionDate)}
+            <button
+              type="button"
+              className="staff-btn staff-btn-secondary"
+              onClick={closeRosterView}
+            >
+              <ArrowLeft size={16} /> Quay lại lịch ca học ngày{' '}
+              {formatDate(activeSession.sessionDate)}
             </button>
             <button
               type="button"
@@ -401,7 +413,8 @@ export default function StaffWorkshopRoster() {
                 <h2>{activeSession.workshopName}</h2>
                 <div className="staff-session-meta-items" style={{ marginTop: '8px' }}>
                   <span>
-                    <CalendarDays size={15} /> <strong>{formatDate(activeSession.sessionDate)}</strong>
+                    <CalendarDays size={15} />{' '}
+                    <strong>{formatDate(activeSession.sessionDate)}</strong>
                   </span>
                   <span>
                     <Clock size={15} />{' '}
@@ -413,24 +426,31 @@ export default function StaffWorkshopRoster() {
                     <MapPin size={15} /> {activeSession.location || 'Xưởng Tiệm Hoa Có Gu'}
                   </span>
                   <span>
-                    <Users size={15} /> Sĩ số: <strong>{activeSession.bookedSlots} / {activeSession.capacity ?? activeSession.maxSlots ?? 10} học viên</strong>
+                    <Users size={15} /> Sĩ số:{' '}
+                    <strong>
+                      {activeSession.bookedSlots} /{' '}
+                      {activeSession.capacity ?? activeSession.maxSlots ?? 10} học viên
+                    </strong>
                   </span>
-                  <span className={`staff-badge badge-${activeSession.sessionStatus.toLowerCase()}`}>
+                  <span
+                    className={`staff-badge badge-${activeSession.sessionStatus.toLowerCase()}`}
+                  >
                     Trạng thái: {activeSession.sessionStatus}
                   </span>
                 </div>
               </div>
 
-              {activeSession.sessionStatus !== 'Closed' && activeSession.sessionStatus !== 'Cancelled' && (
-                <button
-                  type="button"
-                  className="staff-btn staff-btn-secondary"
-                  onClick={() => void handleCloseSession()}
-                  disabled={actionBusy === 'close-session'}
-                >
-                  <Lock size={15} /> Đóng ca học
-                </button>
-              )}
+              {activeSession.sessionStatus !== 'Closed' &&
+                activeSession.sessionStatus !== 'Cancelled' && (
+                  <button
+                    type="button"
+                    className="staff-btn staff-btn-secondary"
+                    onClick={() => void handleCloseSession()}
+                    disabled={actionBusy === 'close-session'}
+                  >
+                    <Lock size={15} /> Đóng ca học
+                  </button>
+                )}
             </div>
           </div>
 
@@ -440,7 +460,15 @@ export default function StaffWorkshopRoster() {
               <div>
                 <h3>Danh sách học viên điểm danh</h3>
                 <p className="staff-muted">
-                  Tổng đăng ký: <strong>{roster.reduce((sum, b) => sum + (b.bookingStatus !== 'cancelled' ? b.ticketCount : 0), 0)} chỗ</strong> · Đã điểm danh:{' '}
+                  Tổng đăng ký:{' '}
+                  <strong>
+                    {roster.reduce(
+                      (sum, b) => sum + (b.bookingStatus !== 'cancelled' ? b.ticketCount : 0),
+                      0,
+                    )}{' '}
+                    chỗ
+                  </strong>{' '}
+                  · Đã điểm danh:{' '}
                   <strong style={{ color: '#059669' }}>
                     {roster.filter((b) => b.bookingStatus === 'attended').length} học viên
                   </strong>
@@ -571,7 +599,8 @@ export default function StaffWorkshopRoster() {
             <div className="calendar-toolbar">
               <div className="calendar-week-title">
                 <h3>
-                  Lịch Workshop: {formatDate(weekDays[0].toISOString())} — {formatDate(weekDays[6].toISOString())}
+                  Lịch Workshop: {formatDate(weekDays[0].toISOString())} —{' '}
+                  {formatDate(weekDays[6].toISOString())}
                 </h3>
                 <span>
                   Tháng {currentWeekMonday.getMonth() + 1}, {currentWeekMonday.getFullYear()}
@@ -710,17 +739,26 @@ export default function StaffWorkshopRoster() {
                       <div className="staff-session-info-row">
                         <Clock size={16} />
                         <span>
-                          Khung giờ: <strong>{formatTime(session.startTime)} - {formatTime(session.endTime)}</strong>
+                          Khung giờ:{' '}
+                          <strong>
+                            {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                          </strong>
                         </span>
                       </div>
                       <div className="staff-session-info-row">
                         <MapPin size={16} />
-                        <span>Địa điểm: <strong>{session.location || 'Xưởng Tiệm Hoa Có Gu'}</strong></span>
+                        <span>
+                          Địa điểm: <strong>{session.location || 'Xưởng Tiệm Hoa Có Gu'}</strong>
+                        </span>
                       </div>
                       <div className="staff-session-info-row">
                         <Users size={16} />
                         <span>
-                          Học viên: <strong>{session.bookedSlots} / {session.capacity ?? session.maxSlots ?? 10} chỗ đã đặt</strong>
+                          Học viên:{' '}
+                          <strong>
+                            {session.bookedSlots} / {session.capacity ?? session.maxSlots ?? 10} chỗ
+                            đã đặt
+                          </strong>
                         </span>
                       </div>
                     </div>
@@ -732,7 +770,8 @@ export default function StaffWorkshopRoster() {
                         style={{ width: '100%', height: '40px' }}
                         onClick={() => openSessionRoster(session)}
                       >
-                        <UserCheck size={16} /> Xem danh sách & Điểm danh ({session.bookedSlots}) <ArrowRight size={15} />
+                        <UserCheck size={16} /> Xem danh sách & Điểm danh ({session.bookedSlots}){' '}
+                        <ArrowRight size={15} />
                       </button>
                     </div>
                   </article>

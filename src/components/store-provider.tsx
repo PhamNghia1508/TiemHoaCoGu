@@ -11,7 +11,17 @@ import {
 } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight, X, Minus, Plus, ShoppingBag, Search, Heart, Trash2, User } from 'lucide-react';
+import {
+  ArrowUpRight,
+  X,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Search,
+  Heart,
+  Trash2,
+  User,
+} from 'lucide-react';
 import { money, type Product } from '@/lib/catalog';
 import type { StorefrontMode } from '@/lib/storefront';
 
@@ -329,7 +339,9 @@ export function HeaderActions() {
   const { count, openCart, openSearch } = useStore();
   return (
     <div className="header-actions">
-      <Link href="/tai-khoan" className="icon-button" aria-label="Tài khoản" title="Tài khoản"><User size={20} strokeWidth={1.5} /></Link>
+      <Link href="/tai-khoan" className="icon-button" aria-label="Tài khoản" title="Tài khoản">
+        <User size={20} strokeWidth={1.5} />
+      </Link>
       <button className="icon-button" aria-label="Tìm kiếm sản phẩm" onClick={openSearch}>
         <Search size={20} strokeWidth={1.5} />
       </button>

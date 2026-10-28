@@ -116,9 +116,7 @@ export default function WorkshopCatalog({ courses }: WorkshopCatalogProps) {
                     sizes="(max-width: 768px) 100vw, 420px"
                   />
                   <div className="ws-card-badges">
-                    <span className="ws-badge-cat">
-                      {course.category || 'Workshop Sáp'}
-                    </span>
+                    <span className="ws-badge-cat">{course.category || 'Workshop Sáp'}</span>
                     {openSessions.length > 0 ? (
                       <span className="ws-badge-open">
                         <span className="ws-badge-dot" />
@@ -148,16 +146,16 @@ export default function WorkshopCatalog({ courses }: WorkshopCatalogProps) {
                     </li>
                     <li>
                       <CheckCircle size={15} />
-                      <span>Thời lượng: {durationText} · Tối đa {course.maxCapacity || 12} người/ca</span>
+                      <span>
+                        Thời lượng: {durationText} · Tối đa {course.maxCapacity || 12} người/ca
+                      </span>
                     </li>
                   </ul>
 
                   {/* Card Footer */}
                   <div className="ws-card-footer">
                     <div className="ws-card-price">
-                      <span className="ws-price-val">
-                        {formatPrice(course.basePrice)}
-                      </span>
+                      <span className="ws-price-val">{formatPrice(course.basePrice)}</span>
                       <span className="ws-price-unit">/ học viên (trọn gói)</span>
                     </div>
 

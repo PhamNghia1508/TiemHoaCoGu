@@ -72,9 +72,9 @@ export default async function WorkshopPage() {
             Chỉ cần có mặt.
           </h2>
           <p>
-            Tại xưởng, tụi mình chuẩn bị sẵn toàn bộ hoa sáp cao cấp, giấy bọc, phụ liệu và nước uống.
-            Người hướng dẫn sẽ đồng hành cùng bạn từng thao tác nhỏ nhất cho tới khi bạn tự hào cầm trên tay
-            tác phẩm hoàn chỉnh mang về.
+            Tại xưởng, tụi mình chuẩn bị sẵn toàn bộ hoa sáp cao cấp, giấy bọc, phụ liệu và nước
+            uống. Người hướng dẫn sẽ đồng hành cùng bạn từng thao tác nhỏ nhất cho tới khi bạn tự
+            hào cầm trên tay tác phẩm hoàn chỉnh mang về.
           </p>
           <div className="workshop-hero-facts">
             <span>
@@ -127,11 +127,14 @@ export default async function WorkshopPage() {
               <Sparkles size={22} />
             </div>
             <div>
-              <h4 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}>
+              <h4
+                style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}
+              >
                 Vật liệu trọn gói cao cấp
               </h4>
               <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: '#64748b' }}>
-                Toàn bộ hoa sáp hương dịu, giấy bọc phong cách Hàn Quốc, kéo, ruy băng và túi đựng mang về.
+                Toàn bộ hoa sáp hương dịu, giấy bọc phong cách Hàn Quốc, kéo, ruy băng và túi đựng
+                mang về.
               </p>
             </div>
           </div>
@@ -153,11 +156,14 @@ export default async function WorkshopPage() {
               <HeartHandshake size={22} />
             </div>
             <div>
-              <h4 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}>
+              <h4
+                style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}
+              >
                 Hướng dẫn tận tình 1:1
               </h4>
               <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: '#64748b' }}>
-                Xưởng giới hạn sĩ số từ 8 – 12 người mỗi ca để đảm bảo bạn luôn được hỗ trợ chu đáo nhất.
+                Xưởng giới hạn sĩ số từ 8 – 12 người mỗi ca để đảm bảo bạn luôn được hỗ trợ chu đáo
+                nhất.
               </p>
             </div>
           </div>
@@ -179,11 +185,14 @@ export default async function WorkshopPage() {
               <ShieldCheck size={22} />
             </div>
             <div>
-              <h4 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}>
+              <h4
+                style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 700, color: '#1c2326' }}
+              >
                 Quản lý vé & linh hoạt đổi ca
               </h4>
               <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: '#64748b' }}>
-                Vé lưu trực tiếp trong tài khoản cá nhân. Hỗ trợ hủy giữ chỗ hoặc đổi ca trước giờ học 24 tiếng.
+                Vé lưu trực tiếp trong tài khoản cá nhân. Hỗ trợ hủy giữ chỗ hoặc đổi ca trước giờ
+                học 24 tiếng.
               </p>
             </div>
           </div>

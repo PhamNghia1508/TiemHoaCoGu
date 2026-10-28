@@ -305,7 +305,15 @@ function Workspace({ connected, writesEnabled }: { connected: boolean; writesEna
             <div>
               <strong>{me.fullName || 'Quản trị viên'}</strong>
               <span>
-                Admin · <button type="button" onClick={handleLogout} className="admin-logout-btn" title="Đăng xuất"><LogOut size={11} /> Đăng xuất</button>
+                Admin ·{' '}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="admin-logout-btn"
+                  title="Đăng xuất"
+                >
+                  <LogOut size={11} /> Đăng xuất
+                </button>
               </span>
             </div>
           </div>

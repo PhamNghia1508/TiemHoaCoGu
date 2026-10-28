@@ -76,7 +76,8 @@ export type RosterBooking = {
   totalAmount: number;
   depositAmount: number;
   remainingAmount: number;
-  bookingStatus: 'pending' | 'confirmed' | 'attended' | 'no_show' | 'cancelled' | 'expired' | string;
+  bookingStatus:
+    'pending' | 'confirmed' | 'attended' | 'no_show' | 'cancelled' | 'expired' | string;
   holdExpiresAt: string;
   checkedInAt?: string;
   createdAt: string;
@@ -88,7 +89,15 @@ export type CustomOrderItem = {
   description?: string;
   desiredBudget?: number;
   referenceImageUrl?: string;
-  status: 'Draft' | 'Submitted' | 'Quoted' | 'Approved' | 'InProduction' | 'Completed' | 'Cancelled' | string;
+  status:
+    | 'Draft'
+    | 'Submitted'
+    | 'Quoted'
+    | 'Approved'
+    | 'InProduction'
+    | 'Completed'
+    | 'Cancelled'
+    | string;
   createdAt: string;
   productionStartedAt?: string;
   completedAt?: string;

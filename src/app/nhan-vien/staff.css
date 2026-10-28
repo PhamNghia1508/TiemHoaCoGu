@@ -238,10 +238,22 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
   justify-content: center;
 }
 
-.bg-amber { background: #fef3c7; color: #b45309; }
-.bg-blue { background: #dbeafe; color: #1d4ed8; }
-.bg-purple { background: #ede9fe; color: #6d28d9; }
-.bg-emerald { background: #d1fae5; color: #047857; }
+.bg-amber {
+  background: #fef3c7;
+  color: #b45309;
+}
+.bg-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.bg-purple {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+.bg-emerald {
+  background: #d1fae5;
+  color: #047857;
+}
 
 .staff-metric-label {
   display: block;
@@ -663,13 +675,34 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
   font-weight: 700;
 }
 
-.badge-confirmed { background: #dbeafe; color: #1e40af; }
-.badge-processing { background: #ede9fe; color: #5b21b6; }
-.badge-delivering { background: #ffedd5; color: #9a3412; }
-.badge-completed { background: #d1fae5; color: #065f46; }
-.badge-cancelled { background: #fee2e2; color: #991b1b; }
-.badge-amber { background: #fef3c7; color: #92400e; }
-.badge-default { background: #f3f4f6; color: #374151; }
+.badge-confirmed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.badge-processing {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+.badge-delivering {
+  background: #ffedd5;
+  color: #9a3412;
+}
+.badge-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+.badge-cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.badge-amber {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-default {
+  background: #f3f4f6;
+  color: #374151;
+}
 
 /* Buttons & Inputs */
 .staff-btn {
@@ -938,8 +971,12 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
 }
 
 @keyframes staff-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 900px) {
@@ -1303,7 +1340,9 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
   border: 1px solid #dfe2d8;
   border-radius: 14px;
   padding: 16px 18px;
-  box-shadow: 0 12px 36px rgba(28, 35, 38, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 12px 36px rgba(28, 35, 38, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.04);
   z-index: 100;
   animation: popoverFadeIn 140ms ease-out;
 }

@@ -29,7 +29,9 @@ import StaffCounterPos from './counter-pos';
 export default function StaffWorkspace() {
   const router = useRouter();
   const [user, setUser] = useState<StaffUser | null>(null);
-  const [authStatus, setAuthStatus] = useState<'loading' | 'unauthenticated' | 'forbidden' | 'authorized'>('loading');
+  const [authStatus, setAuthStatus] = useState<
+    'loading' | 'unauthenticated' | 'forbidden' | 'authorized'
+  >('loading');
   const [activeTab, setActiveTab] = useState<'orders' | 'workshops' | 'custom' | 'pos'>('orders');
 
   // Staff Login Form states
@@ -113,7 +115,8 @@ export default function StaffWorkspace() {
             <span className="staff-eyebrow">TIỆM HOA CÓ GU</span>
             <h2>Bàn làm việc Nhân viên</h2>
             <p className="staff-muted">
-              Đăng nhập tài khoản nhân viên (Staff) hoặc Quản trị viên (Admin) để thực hiện giao nhận hoa và điểm danh workshop.
+              Đăng nhập tài khoản nhân viên (Staff) hoặc Quản trị viên (Admin) để thực hiện giao
+              nhận hoa và điểm danh workshop.
             </p>
           </div>
 
@@ -151,7 +154,12 @@ export default function StaffWorkspace() {
               />
             </label>
 
-            <button type="submit" className="staff-btn staff-btn-primary" style={{ width: '100%', height: '42px' }} disabled={loginBusy}>
+            <button
+              type="submit"
+              className="staff-btn staff-btn-primary"
+              style={{ width: '100%', height: '42px' }}
+              disabled={loginBusy}
+            >
               {loginBusy ? 'Đang xác thực…' : 'Đăng nhập vào ca làm việc'} <ArrowRight size={16} />
             </button>
           </form>
@@ -174,13 +182,18 @@ export default function StaffWorkspace() {
           <ShieldAlert size={36} style={{ color: '#dc2626', margin: '0 auto 12px' }} />
           <h2>Không có quyền nhân viên</h2>
           <p className="staff-muted">
-            Tài khoản hiện tại của bạn ({user?.email}) mang vai trò <strong>Khách hàng</strong>, không thể truy cập không gian điều phối của nhân viên.
+            Tài khoản hiện tại của bạn ({user?.email}) mang vai trò <strong>Khách hàng</strong>,
+            không thể truy cập không gian điều phối của nhân viên.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '18px' }}>
             <Link href="/tai-khoan" className="staff-btn staff-btn-primary">
               Về trang cá nhân & lịch workshop <ArrowRight size={16} />
             </Link>
-            <button type="button" onClick={() => void handleLogout()} className="staff-btn staff-btn-secondary">
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="staff-btn staff-btn-secondary"
+            >
               Đăng xuất để đổi tài khoản
             </button>
           </div>

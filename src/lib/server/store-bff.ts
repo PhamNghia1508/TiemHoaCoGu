@@ -172,7 +172,7 @@ export function sameOrigin(request: Request): boolean {
   if (origin === requestOrigin || origin === configuredPreviewOrigin()) return true;
 
   const host = request.headers.get('host');
-  if (host && (origin === "http://" + host || origin === "https://" + host)) return true;
+  if (host && (origin === 'http://' + host || origin === 'https://' + host)) return true;
 
   const siteUrl = process.env.SITE_URL?.trim();
   if (siteUrl) {
@@ -181,7 +181,8 @@ export function sameOrigin(request: Request): boolean {
     } catch {}
   }
 
-  const normalize = (val: string) => val.replace('127.0.0.1', 'localhost').replace('0.0.0.0', 'localhost');
+  const normalize = (val: string) =>
+    val.replace('127.0.0.1', 'localhost').replace('0.0.0.0', 'localhost');
   return normalize(origin) === normalize(requestOrigin);
 }
 

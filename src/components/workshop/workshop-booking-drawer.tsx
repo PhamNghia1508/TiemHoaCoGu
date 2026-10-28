@@ -165,7 +165,9 @@ export default function WorkshopBookingDrawer({
     }
 
     // 3. Time validation (Cannot book session in the past)
-    const startsAt = new Date(`${currentSession.sessionDate.slice(0, 10)}T${currentSession.startTime}`);
+    const startsAt = new Date(
+      `${currentSession.sessionDate.slice(0, 10)}T${currentSession.startTime}`,
+    );
     if (startsAt.getTime() <= Date.now()) {
       setError('Ca học này đã bắt đầu hoặc đã qua giờ mở đăng ký.');
       return;
@@ -177,7 +179,9 @@ export default function WorkshopBookingDrawer({
       return;
     }
     if (ticketCount < 1 || ticketCount > maxSeatsAllowed) {
-      setError(`Số lượng vé không hợp lệ (tối thiểu 1 vé, tối đa ${maxSeatsAllowed} vé cho ca này).`);
+      setError(
+        `Số lượng vé không hợp lệ (tối thiểu 1 vé, tối đa ${maxSeatsAllowed} vé cho ca này).`,
+      );
       return;
     }
 
@@ -198,7 +202,9 @@ export default function WorkshopBookingDrawer({
     const phoneClean = customerPhone.trim().replace(/[\s.-]/g, '');
     const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
     if (!phoneRegex.test(phoneClean)) {
-      setError('Số điện thoại không hợp lệ. Vui lòng nhập số di động Việt Nam (10 chữ số, ví dụ 0912345678).');
+      setError(
+        'Số điện thoại không hợp lệ. Vui lòng nhập số di động Việt Nam (10 chữ số, ví dụ 0912345678).',
+      );
       return;
     }
 
@@ -238,22 +244,23 @@ export default function WorkshopBookingDrawer({
   }
 
   return (
-    <div className="ws-drawer-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby={titleId}>
+    <div
+      className="ws-drawer-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+    >
       <div className="ws-drawer" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="ws-drawer-header">
           <div className="ws-drawer-header-info">
-            <span className="ws-drawer-header-cat">
-              {workshop.category || 'WORKSHOP HOA SÁP'}
-            </span>
-            <h2 id={titleId} className="ws-drawer-header-title">{workshop.name}</h2>
+            <span className="ws-drawer-header-cat">{workshop.category || 'WORKSHOP HOA SÁP'}</span>
+            <h2 id={titleId} className="ws-drawer-header-title">
+              {workshop.name}
+            </h2>
           </div>
-          <button
-            type="button"
-            className="ws-drawer-close"
-            onClick={onClose}
-            aria-label="Đóng"
-          >
+          <button type="button" className="ws-drawer-close" onClick={onClose} aria-label="Đóng">
             <X size={20} />
           </button>
         </div>
@@ -273,7 +280,9 @@ export default function WorkshopBookingDrawer({
                 </div>
                 <div className="ws-drawer-meta-row">
                   <Sparkles size={15} />
-                  <span>Học phí: <strong>{formatPrice(workshop.basePrice)}</strong> / người</span>
+                  <span>
+                    Học phí: <strong>{formatPrice(workshop.basePrice)}</strong> / người
+                  </span>
                 </div>
                 <div className="ws-drawer-meta-row">
                   <ShieldCheck size={15} />
@@ -307,7 +316,10 @@ export default function WorkshopBookingDrawer({
               </div>
 
               {availableSessions.length === 0 ? (
-                <div className="ws-error-alert" style={{ background: '#f8fafc', borderColor: '#e2e8f0', color: '#64748b' }}>
+                <div
+                  className="ws-error-alert"
+                  style={{ background: '#f8fafc', borderColor: '#e2e8f0', color: '#64748b' }}
+                >
                   <AlertCircle size={18} />
                   <span>Hiện chưa có ca mở sắp tới cho workshop này. Tiệm sẽ mở thêm ca sớm!</span>
                 </div>
@@ -330,7 +342,9 @@ export default function WorkshopBookingDrawer({
                         }}
                         onClick={() => {
                           if (alreadyBooked) {
-                            setError('Bạn đã đăng ký ca này rồi. Vui lòng chọn ca khác hoặc xem trong Lịch học.');
+                            setError(
+                              'Bạn đã đăng ký ca này rồi. Vui lòng chọn ca khác hoặc xem trong Lịch học.',
+                            );
                             return;
                           }
                           setSelectedSessionId(s.id);
@@ -347,7 +361,8 @@ export default function WorkshopBookingDrawer({
                         <div className="ws-session-details">
                           <div className="ws-session-date-time">
                             <span className="ws-session-datetime-txt">
-                              {formatDate(s.sessionDate)} · {s.startTime.slice(0, 5)} - {s.endTime.slice(0, 5)}
+                              {formatDate(s.sessionDate)} · {s.startTime.slice(0, 5)} -{' '}
+                              {s.endTime.slice(0, 5)}
                             </span>
                             {alreadyBooked ? (
                               <span
@@ -378,9 +393,7 @@ export default function WorkshopBookingDrawer({
                                 Đã đủ chỗ
                               </span>
                             ) : (
-                              <span className="ws-session-seats-badge">
-                                Còn {freeSlots} chỗ
-                              </span>
+                              <span className="ws-session-seats-badge">Còn {freeSlots} chỗ</span>
                             )}
                           </div>
                           <div className="ws-session-venue">

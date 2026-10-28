@@ -87,7 +87,11 @@ export default function StaffCustomOrders() {
       setSuccessMsg('Đã ghi nhận bắt đầu bó hoa đặt riêng!');
       await loadRequests();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Chưa thể bắt đầu (kiểm tra tiền cọc hoặc trạng thái duyệt).');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Chưa thể bắt đầu (kiểm tra tiền cọc hoặc trạng thái duyệt).',
+      );
     } finally {
       setActionBusy(null);
     }
@@ -158,7 +162,9 @@ export default function StaffCustomOrders() {
         <div className="staff-empty-box">
           <Sparkles size={36} />
           <h3>Chưa có yêu cầu làm hoa riêng nào</h3>
-          <p>Khi khách hàng gửi mẫu hoa riêng qua form đặt trước, thông tin sẽ được hiển thị ở đây.</p>
+          <p>
+            Khi khách hàng gửi mẫu hoa riêng qua form đặt trước, thông tin sẽ được hiển thị ở đây.
+          </p>
         </div>
       ) : (
         <div className="staff-custom-grid">
@@ -193,7 +199,12 @@ export default function StaffCustomOrders() {
                   {item.referenceImageUrl && (
                     <div className="staff-custom-img-preview">
                       <ImageIcon size={14} />
-                      <a href={item.referenceImageUrl} target="_blank" rel="noreferrer" className="text-link">
+                      <a
+                        href={item.referenceImageUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-link"
+                      >
                         Xem ảnh mẫu khách gửi
                       </a>
                     </div>
@@ -225,7 +236,9 @@ export default function StaffCustomOrders() {
 
                   {!canStart && !canComplete && (
                     <span className="staff-muted" style={{ fontSize: '13px' }}>
-                      {item.status.toLowerCase() === 'completed' ? '✓ Đã xong bó hoa' : 'Chờ khách chốt cọc'}
+                      {item.status.toLowerCase() === 'completed'
+                        ? '✓ Đã xong bó hoa'
+                        : 'Chờ khách chốt cọc'}
                     </span>
                   )}
                 </div>

@@ -9,7 +9,9 @@ export default function StaffCounterPos() {
   const [targetId, setTargetId] = useState('');
   const [amount, setAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'Cash' | 'BankTransfer'>('Cash');
-  const [transactionCode, setTransactionCode] = useState(() => `POS-${Date.now().toString().slice(-6)}`);
+  const [transactionCode, setTransactionCode] = useState(
+    () => `POS-${Date.now().toString().slice(-6)}`,
+  );
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -34,7 +36,8 @@ export default function StaffCounterPos() {
     setSuccess('');
 
     try {
-      const endpoint = targetType === 'order' ? `payments/order/${cleanId}` : `payments/booking/${cleanId}`;
+      const endpoint =
+        targetType === 'order' ? `payments/order/${cleanId}` : `payments/booking/${cleanId}`;
       await storeRequest(
         endpoint,
         {
@@ -45,7 +48,9 @@ export default function StaffCounterPos() {
         'POST',
       );
 
-      setSuccess(`Ghi nhận thanh toán ${paymentMethod === 'Cash' ? 'tiền mặt' : 'chuyển khoản'} thành công!`);
+      setSuccess(
+        `Ghi nhận thanh toán ${paymentMethod === 'Cash' ? 'tiền mặt' : 'chuyển khoản'} thành công!`,
+      );
       setTargetId('');
       setAmount('');
       setTransactionCode(`POS-${Date.now().toString().slice(-6)}`);
@@ -63,7 +68,8 @@ export default function StaffCounterPos() {
           <div>
             <h3>Thu ngân & Thanh toán tại quầy (POS)</h3>
             <p className="staff-muted">
-              Ghi nhận tiền mặt hoặc chuyển khoản trực tiếp từ khách hàng đến nhận hoa hoặc học viên tại xưởng.
+              Ghi nhận tiền mặt hoặc chuyển khoản trực tiếp từ khách hàng đến nhận hoa hoặc học viên
+              tại xưởng.
             </p>
           </div>
         </div>
@@ -111,12 +117,20 @@ export default function StaffCounterPos() {
           </div>
 
           <label className="staff-field">
-            <span>{targetType === 'order' ? 'ID Đơn hàng (Order ID / GUID)' : 'ID Vé học (Booking ID / GUID)'}</span>
+            <span>
+              {targetType === 'order'
+                ? 'ID Đơn hàng (Order ID / GUID)'
+                : 'ID Vé học (Booking ID / GUID)'}
+            </span>
             <input
               type="text"
               value={targetId}
               onChange={(e) => setTargetId(e.target.value)}
-              placeholder={targetType === 'order' ? 'Ví dụ: 3fa85f64-5717-4562-b3fc-2c963f66afa6' : 'Ví dụ: 2ca91f22-1234-4562-b3fc-1d963f66afa1'}
+              placeholder={
+                targetType === 'order'
+                  ? 'Ví dụ: 3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                  : 'Ví dụ: 2ca91f22-1234-4562-b3fc-1d963f66afa1'
+              }
               className="staff-input"
               required
             />
@@ -167,7 +181,12 @@ export default function StaffCounterPos() {
             />
           </label>
 
-          <button type="submit" className="staff-btn staff-btn-primary" style={{ height: '44px', marginTop: '12px' }} disabled={busy}>
+          <button
+            type="submit"
+            className="staff-btn staff-btn-primary"
+            style={{ height: '44px', marginTop: '12px' }}
+            disabled={busy}
+          >
             <Send size={16} /> {busy ? 'Đang ghi nhận…' : 'Xác nhận thu tiền tại quầy'}
           </button>
         </form>

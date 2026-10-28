@@ -229,11 +229,15 @@ export default function Account() {
 
   const [user, setUser] = useState<User | null>(null);
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [activeTab, setActiveTab] = useState<'workshops' | 'orders' | 'custom' | 'settings'>('workshops');
+  const [activeTab, setActiveTab] = useState<'workshops' | 'orders' | 'custom' | 'settings'>(
+    'workshops',
+  );
 
   // Customer Data
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [sessionsMap, setSessionsMap] = useState<Record<string, { workshopName: string; session: SessionItem }>>({});
+  const [sessionsMap, setSessionsMap] = useState<
+    Record<string, { workshopName: string; session: SessionItem }>
+  >({});
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [customOrders, setCustomOrders] = useState<CustomRequestItem[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -245,7 +249,9 @@ export default function Account() {
   const [currentWeekMonday, setCurrentWeekMonday] = useState<Date>(() => getMonday(new Date()));
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [calendarViewMode, setCalendarViewMode] = useState<'weekly' | 'all' | 'history'>('weekly');
-  const [historyStatusFilter, setHistoryStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'attended' | 'cancelled' | 'expired'>('all');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<
+    'all' | 'pending' | 'confirmed' | 'attended' | 'cancelled' | 'expired'
+  >('all');
 
   // UI state
   const [loadingInitial, setLoadingInitial] = useState(true);
@@ -319,7 +325,7 @@ export default function Account() {
             } catch {
               // ignore session load failure
             }
-          })
+          }),
         );
         setSessionsMap(mapping);
 
@@ -335,7 +341,9 @@ export default function Account() {
 
         if (bookingInThisWeek) {
           const s = mapping[bookingInThisWeek.sessionId]?.session;
-          const targetDate = s?.sessionDate ? new Date(s.sessionDate) : new Date(bookingInThisWeek.createdAt);
+          const targetDate = s?.sessionDate
+            ? new Date(s.sessionDate)
+            : new Date(bookingInThisWeek.createdAt);
           setSelectedDate(targetDate);
         }
       } catch {
@@ -405,7 +413,7 @@ export default function Account() {
       await storeRequest(
         editingId ? `addresses/${editingId}` : 'addresses',
         addressForm,
-        editingId ? 'PUT' : 'POST'
+        editingId ? 'PUT' : 'POST',
       );
       setEditingId(null);
       setAddressForm(emptyAddress);
@@ -516,7 +524,13 @@ export default function Account() {
   const canCancelOrder = (order: OrderItem) => {
     const s = (order.orderStatus || '').toLowerCase();
     const p = (order.paymentStatus || '').toLowerCase();
-    return s !== 'cancelled' && s !== 'expired' && s !== 'delivering' && s !== 'completed' && p === 'unpaid';
+    return (
+      s !== 'cancelled' &&
+      s !== 'expired' &&
+      s !== 'delivering' &&
+      s !== 'completed' &&
+      p === 'unpaid'
+    );
   };
 
   const handleCancelOrder = async (orderId: string) => {
@@ -546,7 +560,11 @@ export default function Account() {
     setBusy(true);
     setMessage('');
     try {
-      await storeRequest(`bookings/${bookingId}/cancel`, 'Khách hàng tự hủy trên tài khoản cá nhân', 'POST');
+      await storeRequest(
+        `bookings/${bookingId}/cancel`,
+        'Khách hàng tự hủy trên tài khoản cá nhân',
+        'POST',
+      );
       setMessage('Đã hủy vé workshop thành công.');
       setIsError(false);
       await loadCustomerData();
@@ -647,7 +665,12 @@ export default function Account() {
               </p>
             )}
 
-            <button className="account-btn-primary" type="submit" disabled={busy} style={{ marginTop: '8px' }}>
+            <button
+              className="account-btn-primary"
+              type="submit"
+              disabled={busy}
+              style={{ marginTop: '8px' }}
+            >
               {busy ? 'Đang xử lý…' : mode === 'login' ? 'Đăng nhập' : 'Tạo tài khoản'}
             </button>
           </form>
@@ -682,10 +705,12 @@ export default function Account() {
 
   // Compute Current Week Days for Calendar
   const weekDays = getWeekDays(currentWeekMonday);
-  const selectedDateActiveBookings = activeBookings.filter((b) => isSameDay(getBookingDate(b), selectedDate));
+  const selectedDateActiveBookings = activeBookings.filter((b) =>
+    isSameDay(getBookingDate(b), selectedDate),
+  );
   const selectedDateBookings = selectedDateActiveBookings;
   const weekHasBookings = activeBookings.filter((b) =>
-    weekDays.some((wd) => isSameDay(getBookingDate(b), wd))
+    weekDays.some((wd) => isSameDay(getBookingDate(b), wd)),
   );
 
   // Render Workshop Ticket Card
@@ -715,9 +740,25 @@ export default function Account() {
     return (
       <article key={booking.id} className="workshop-ticket-card">
         <div className="ticket-body" style={{ padding: '22px 24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: '10px',
+              marginBottom: '10px',
+            }}
+          >
             <div>
-              <span style={{ fontSize: '11px', fontWeight: 800, color: '#64748b', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  color: '#64748b',
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                }}
+              >
                 MÃ VÉ: {booking.bookingCode || booking.id.slice(0, 8)}
               </span>
               <h2 className="ticket-title" style={{ fontSize: '18px', margin: '4px 0 0' }}>
@@ -726,27 +767,42 @@ export default function Account() {
             </div>
             <div>
               {isConfirmed && (
-                <span className="badge-status confirmed" style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}>
+                <span
+                  className="badge-status confirmed"
+                  style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}
+                >
                   ✅ Đã thanh toán
                 </span>
               )}
               {isPending && (
-                <span className="badge-status" style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
+                <span
+                  className="badge-status"
+                  style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}
+                >
                   ⏳ Chờ thanh toán
                 </span>
               )}
               {isAttended && (
-                <span className="badge-status attended" style={{ background: '#edf1fc', color: '#243db5', border: '1px solid #cbd5e1' }}>
+                <span
+                  className="badge-status attended"
+                  style={{ background: '#edf1fc', color: '#243db5', border: '1px solid #cbd5e1' }}
+                >
                   ✨ Đã tham gia
                 </span>
               )}
               {isCancelled && (
-                <span className="badge-status" style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca' }}>
+                <span
+                  className="badge-status"
+                  style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca' }}
+                >
                   ❌ Đã hủy
                 </span>
               )}
               {isExpired && (
-                <span className="badge-status" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' }}>
+                <span
+                  className="badge-status"
+                  style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' }}
+                >
                   ⚠️ Hết hạn
                 </span>
               )}
@@ -808,7 +864,12 @@ export default function Account() {
                 <button
                   type="button"
                   className="account-btn-secondary"
-                  style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    color: '#dc2626',
+                    borderColor: '#fca5a5',
+                  }}
                   onClick={() => void handleCancelBooking(booking.id)}
                   disabled={busy}
                 >
@@ -816,7 +877,6 @@ export default function Account() {
                 </button>
               ) : null}
             </div>
-
           </div>
         </div>
       </article>
@@ -832,7 +892,11 @@ export default function Account() {
           <div style={{ flex: 1 }}>
             <strong>Tài khoản Quản trị viên:</strong> Bạn đang truy cập bằng tài khoản quyền Admin.
           </div>
-          <Link href="/quan-tri" className="account-btn-primary" style={{ padding: '6px 14px', fontSize: '12.5px' }}>
+          <Link
+            href="/quan-tri"
+            className="account-btn-primary"
+            style={{ padding: '6px 14px', fontSize: '12.5px' }}
+          >
             Mở Bàn điều hành <ArrowRight size={14} />
           </Link>
         </div>
@@ -843,9 +907,14 @@ export default function Account() {
         <div className="account-alert info" style={{ marginBottom: '24px' }}>
           <Sparkles size={20} />
           <div style={{ flex: 1 }}>
-            <strong>Tài khoản Nhân viên:</strong> Bạn đang truy cập bằng tài khoản quyền Staff vận hành tiệm.
+            <strong>Tài khoản Nhân viên:</strong> Bạn đang truy cập bằng tài khoản quyền Staff vận
+            hành tiệm.
           </div>
-          <Link href="/nhan-vien" className="account-btn-primary" style={{ padding: '6px 14px', fontSize: '12.5px' }}>
+          <Link
+            href="/nhan-vien"
+            className="account-btn-primary"
+            style={{ padding: '6px 14px', fontSize: '12.5px' }}
+          >
             Mở Bàn làm việc Nhân viên <ArrowRight size={14} />
           </Link>
         </div>
@@ -908,7 +977,9 @@ export default function Account() {
         >
           <CalendarDays size={18} />
           <span>Lịch Workshop của tôi</span>
-          {activeBookings.length > 0 && <span className="account-tab-badge">{activeBookings.length}</span>}
+          {activeBookings.length > 0 && (
+            <span className="account-tab-badge">{activeBookings.length}</span>
+          )}
         </button>
 
         <button
@@ -928,7 +999,9 @@ export default function Account() {
         >
           <Sparkles size={18} />
           <span>Hoa đặt riêng</span>
-          {customOrders.length > 0 && <span className="account-tab-badge">{customOrders.length}</span>}
+          {customOrders.length > 0 && (
+            <span className="account-tab-badge">{customOrders.length}</span>
+          )}
         </button>
 
         <button
@@ -971,7 +1044,8 @@ export default function Account() {
                 <div className="calendar-toolbar">
                   <div className="calendar-week-title">
                     <h3>
-                      Tuần {formatDate(weekDays[0].toISOString())} — {formatDate(weekDays[6].toISOString())}
+                      Tuần {formatDate(weekDays[0].toISOString())} —{' '}
+                      {formatDate(weekDays[6].toISOString())}
                     </h3>
                     <span>
                       Tháng {currentWeekMonday.getMonth() + 1}, {currentWeekMonday.getFullYear()}
@@ -1054,7 +1128,9 @@ export default function Account() {
                 {calendarViewMode === 'weekly' && (
                   <div className="calendar-week-grid" role="grid" aria-label="Lịch theo tuần">
                     {weekDays.map((day, idx) => {
-                      const dayBookings = activeBookings.filter((b) => isSameDay(getBookingDate(b), day));
+                      const dayBookings = activeBookings.filter((b) =>
+                        isSameDay(getBookingDate(b), day),
+                      );
                       const hasEvents = dayBookings.length > 0;
                       const isSelected = isSameDay(day, selectedDate);
                       const today = isToday(day);
@@ -1080,7 +1156,10 @@ export default function Account() {
                           <div className="day-event-dot-wrap">
                             {hasEvents && (
                               <>
-                                <span className="event-dot" title={`${dayBookings.length} buổi học`} />
+                                <span
+                                  className="event-dot"
+                                  title={`${dayBookings.length} buổi học`}
+                                />
                                 <span className="event-count-pill">{dayBookings.length} lớp</span>
                               </>
                             )}
@@ -1112,12 +1191,18 @@ export default function Account() {
                     </div>
                   ) : (
                     <div>
-                      <div className="account-empty-box" style={{ padding: '36px 20px', margin: '0 0 16px' }}>
+                      <div
+                        className="account-empty-box"
+                        style={{ padding: '36px 20px', margin: '0 0 16px' }}
+                      >
                         <div className="account-empty-icon" style={{ marginBottom: '12px' }}>
                           <CalendarDays size={24} />
                         </div>
                         <h3>Không có lịch workshop vào ngày này</h3>
-                        <p>Bạn không có ca học nào được xếp lịch vào ngày {formatDateLong(selectedDate)}.</p>
+                        <p>
+                          Bạn không có ca học nào được xếp lịch vào ngày{' '}
+                          {formatDateLong(selectedDate)}.
+                        </p>
                       </div>
                     </div>
                   )}
@@ -1131,7 +1216,14 @@ export default function Account() {
                 /* TICKET STATUS AUDIT LOG & HISTORY VIEW */
                 <div className="account-history-view">
                   <div style={{ marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 6px', color: '#1c2326' }}>
+                    <h3
+                      style={{
+                        fontSize: '18px',
+                        fontWeight: 800,
+                        margin: '0 0 6px',
+                        color: '#1c2326',
+                      }}
+                    >
                       Nhật ký trạng thái & Lịch sử vé
                     </h3>
                     <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
@@ -1140,7 +1232,9 @@ export default function Account() {
                   </div>
 
                   {/* Filter Pills */}
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '22px' }}>
+                  <div
+                    style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '22px' }}
+                  >
                     <button
                       type="button"
                       style={{
@@ -1171,7 +1265,12 @@ export default function Account() {
                       }}
                       onClick={() => setHistoryStatusFilter('pending')}
                     >
-                      Chờ thanh toán ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'pending').length})
+                      Chờ thanh toán (
+                      {
+                        bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'pending')
+                          .length
+                      }
+                      )
                     </button>
                     <button
                       type="button"
@@ -1187,7 +1286,13 @@ export default function Account() {
                       }}
                       onClick={() => setHistoryStatusFilter('confirmed')}
                     >
-                      Đã thanh toán ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'confirmed').length})
+                      Đã thanh toán (
+                      {
+                        bookings.filter(
+                          (b) => (b.bookingStatus || '').toLowerCase() === 'confirmed',
+                        ).length
+                      }
+                      )
                     </button>
                     <button
                       type="button"
@@ -1203,7 +1308,12 @@ export default function Account() {
                       }}
                       onClick={() => setHistoryStatusFilter('attended')}
                     >
-                      Đã tham gia ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'attended').length})
+                      Đã tham gia (
+                      {
+                        bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'attended')
+                          .length
+                      }
+                      )
                     </button>
                     <button
                       type="button"
@@ -1219,7 +1329,13 @@ export default function Account() {
                       }}
                       onClick={() => setHistoryStatusFilter('cancelled')}
                     >
-                      Đã hủy ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'cancelled').length})
+                      Đã hủy (
+                      {
+                        bookings.filter(
+                          (b) => (b.bookingStatus || '').toLowerCase() === 'cancelled',
+                        ).length
+                      }
+                      )
                     </button>
                     <button
                       type="button"
@@ -1235,12 +1351,21 @@ export default function Account() {
                       }}
                       onClick={() => setHistoryStatusFilter('expired')}
                     >
-                      Hết hạn ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'expired').length})
+                      Hết hạn (
+                      {
+                        bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'expired')
+                          .length
+                      }
+                      )
                     </button>
                   </div>
 
                   {/* History Log List */}
-                  {bookings.filter((b) => historyStatusFilter === 'all' || (b.bookingStatus || '').toLowerCase() === historyStatusFilter).length === 0 ? (
+                  {bookings.filter(
+                    (b) =>
+                      historyStatusFilter === 'all' ||
+                      (b.bookingStatus || '').toLowerCase() === historyStatusFilter,
+                  ).length === 0 ? (
                     <div className="account-empty-box" style={{ padding: '36px 20px' }}>
                       <ScrollText size={28} style={{ color: '#94a3b8', margin: '0 auto 12px' }} />
                       <h3>Không có nhật ký nào phù hợp</h3>
@@ -1249,7 +1374,11 @@ export default function Account() {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                       {bookings
-                        .filter((b) => historyStatusFilter === 'all' || (b.bookingStatus || '').toLowerCase() === historyStatusFilter)
+                        .filter(
+                          (b) =>
+                            historyStatusFilter === 'all' ||
+                            (b.bookingStatus || '').toLowerCase() === historyStatusFilter,
+                        )
                         .map((b) => {
                           const sessionMeta = sessionsMap[b.sessionId];
                           const workshopTitle = sessionMeta?.workshopName || 'Workshop Cắm Hoa Sáp';
@@ -1281,47 +1410,114 @@ export default function Account() {
                                 boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                               }}
                             >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  flexWrap: 'wrap',
+                                  gap: '10px',
+                                }}
+                              >
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#243db5', fontSize: '14.5px' }}>
+                                  <span
+                                    style={{
+                                      fontFamily: 'monospace',
+                                      fontWeight: 800,
+                                      color: '#243db5',
+                                      fontSize: '14.5px',
+                                    }}
+                                  >
                                     {b.bookingCode || b.id.slice(0, 8)}
                                   </span>
                                   <span style={{ color: '#cbd5e1' }}>·</span>
-                                  <strong style={{ fontSize: '15.5px', color: '#1c2326' }}>{workshopTitle}</strong>
+                                  <strong style={{ fontSize: '15.5px', color: '#1c2326' }}>
+                                    {workshopTitle}
+                                  </strong>
                                 </div>
                                 <div>
                                   {isConfirmed && (
-                                    <span className="badge-status confirmed" style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}>
+                                    <span
+                                      className="badge-status confirmed"
+                                      style={{
+                                        background: '#ecfdf5',
+                                        color: '#047857',
+                                        border: '1px solid #a7f3d0',
+                                      }}
+                                    >
                                       ✅ Đã thanh toán
                                     </span>
                                   )}
                                   {isPending && (
-                                    <span className="badge-status" style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
+                                    <span
+                                      className="badge-status"
+                                      style={{
+                                        background: '#fffbeb',
+                                        color: '#b45309',
+                                        border: '1px solid #fde68a',
+                                      }}
+                                    >
                                       ⏳ Chờ thanh toán
                                     </span>
                                   )}
                                   {isAttended && (
-                                    <span className="badge-status attended" style={{ background: '#edf1fc', color: '#243db5', border: '1px solid #cbd5e1' }}>
+                                    <span
+                                      className="badge-status attended"
+                                      style={{
+                                        background: '#edf1fc',
+                                        color: '#243db5',
+                                        border: '1px solid #cbd5e1',
+                                      }}
+                                    >
                                       ✨ Đã tham gia
                                     </span>
                                   )}
                                   {isCancelled && (
-                                    <span className="badge-status" style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca' }}>
+                                    <span
+                                      className="badge-status"
+                                      style={{
+                                        background: '#fef2f2',
+                                        color: '#b91c1c',
+                                        border: '1px solid #fecaca',
+                                      }}
+                                    >
                                       ❌ Đã hủy
                                     </span>
                                   )}
                                   {isExpired && (
-                                    <span className="badge-status" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' }}>
+                                    <span
+                                      className="badge-status"
+                                      style={{
+                                        background: '#f1f5f9',
+                                        color: '#64748b',
+                                        border: '1px solid #e2e8f0',
+                                      }}
+                                    >
                                       ⚠️ Hết hạn
                                     </span>
                                   )}
                                 </div>
                               </div>
 
-                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', fontSize: '13px', color: '#475569' }}>
-                                <div><strong>Ca học:</strong> {sessionDate} ({sessionTime})</div>
-                                <div><strong>Địa điểm:</strong> {location}</div>
-                                <div><strong>Số lượng & Phí:</strong> {b.ticketCount} vé · {formatMoney(b.totalAmount)}</div>
+                              <div
+                                style={{
+                                  display: 'grid',
+                                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                                  gap: '10px',
+                                  fontSize: '13px',
+                                  color: '#475569',
+                                }}
+                              >
+                                <div>
+                                  <strong>Ca học:</strong> {sessionDate} ({sessionTime})
+                                </div>
+                                <div>
+                                  <strong>Địa điểm:</strong> {location}
+                                </div>
+                                <div>
+                                  <strong>Số lượng & Phí:</strong> {b.ticketCount} vé ·{' '}
+                                  {formatMoney(b.totalAmount)}
+                                </div>
                               </div>
 
                               {/* Timeline log */}
@@ -1338,16 +1534,47 @@ export default function Account() {
                                   lineHeight: 1.5,
                                 }}
                               >
-                                <div>🕒 <strong>Khởi tạo yêu cầu giữ chỗ:</strong> {formatDate(b.createdAt)}</div>
-                                {isConfirmed && <div>💳 <strong>Thanh toán:</strong> Đã ghi nhận thanh toán · Đủ điều kiện vào lớp</div>}
-                                {b.checkedInAt && <div>✨ <strong>Điểm danh:</strong> Học viên đã check-in vào lớp lúc {formatDate(b.checkedInAt)}</div>}
-                                {isCancelled && <div>❌ <strong>Trạng thái hủy:</strong> Khách hàng đã hủy giữ chỗ (Ca học được giải phóng cho học viên khác)</div>}
-                                {isExpired && <div>⚠️ <strong>Trạng thái hết hạn:</strong> Quá hạn thanh toán 10 phút, hệ thống tự động hoàn lại chỗ trống</div>}
+                                <div>
+                                  🕒 <strong>Khởi tạo yêu cầu giữ chỗ:</strong>{' '}
+                                  {formatDate(b.createdAt)}
+                                </div>
+                                {isConfirmed && (
+                                  <div>
+                                    💳 <strong>Thanh toán:</strong> Đã ghi nhận thanh toán · Đủ điều
+                                    kiện vào lớp
+                                  </div>
+                                )}
+                                {b.checkedInAt && (
+                                  <div>
+                                    ✨ <strong>Điểm danh:</strong> Học viên đã check-in vào lớp lúc{' '}
+                                    {formatDate(b.checkedInAt)}
+                                  </div>
+                                )}
+                                {isCancelled && (
+                                  <div>
+                                    ❌ <strong>Trạng thái hủy:</strong> Khách hàng đã hủy giữ chỗ
+                                    (Ca học được giải phóng cho học viên khác)
+                                  </div>
+                                )}
+                                {isExpired && (
+                                  <div>
+                                    ⚠️ <strong>Trạng thái hết hạn:</strong> Quá hạn thanh toán 10
+                                    phút, hệ thống tự động hoàn lại chỗ trống
+                                  </div>
+                                )}
                               </div>
 
                               {/* Actions if pending */}
                               {isPending && (
-                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', paddingTop: '6px', borderTop: '1px solid #f1f5f9' }}>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    gap: '10px',
+                                    justifyContent: 'flex-end',
+                                    paddingTop: '6px',
+                                    borderTop: '1px solid #f1f5f9',
+                                  }}
+                                >
                                   <Link
                                     href={`/thanh-toan?bookingId=${b.id}`}
                                     className="account-btn-primary"
@@ -1369,7 +1596,12 @@ export default function Account() {
                                   <button
                                     type="button"
                                     className="account-btn-secondary"
-                                    style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                                    style={{
+                                      padding: '6px 12px',
+                                      fontSize: '12px',
+                                      color: '#dc2626',
+                                      borderColor: '#fca5a5',
+                                    }}
                                     onClick={() => void handleCancelBooking(b.id)}
                                     disabled={busy}
                                   >
@@ -1420,12 +1652,16 @@ export default function Account() {
                   </div>
 
                   <div className="order-items-preview">
-                    <span>Thanh toán: <strong>{statusLabel(order.paymentStatus)}</strong></span>
+                    <span>
+                      Thanh toán: <strong>{statusLabel(order.paymentStatus)}</strong>
+                    </span>
                   </div>
 
                   <div className="order-card-footer">
                     <div>
-                      <span style={{ fontSize: '12px', color: 'var(--portal-muted)' }}>Tổng thanh toán: </span>
+                      <span style={{ fontSize: '12px', color: 'var(--portal-muted)' }}>
+                        Tổng thanh toán:{' '}
+                      </span>
                       <strong style={{ color: 'var(--portal-accent)', fontSize: '16px' }}>
                         {formatMoney(order.totalAmount)}
                       </strong>
@@ -1435,7 +1671,12 @@ export default function Account() {
                         <button
                           type="button"
                           className="account-btn-secondary"
-                          style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: '12px',
+                            color: '#dc2626',
+                            borderColor: '#fca5a5',
+                          }}
                           onClick={() => void handleCancelOrder(order.id)}
                           disabled={busy}
                         >
@@ -1492,7 +1733,9 @@ export default function Account() {
 
                   <div className="order-card-footer">
                     <span style={{ fontSize: '13px', color: 'var(--portal-muted)' }}>
-                      {req.quoteAmount ? `Báo giá: ${formatMoney(req.quoteAmount)}` : 'Đang chờ tiệm báo giá'}
+                      {req.quoteAmount
+                        ? `Báo giá: ${formatMoney(req.quoteAmount)}`
+                        : 'Đang chờ tiệm báo giá'}
                     </span>
                     <Link
                       href="/tra-cuu"
@@ -1538,7 +1781,9 @@ export default function Account() {
                         )}
                       </div>
                       <div style={{ color: 'var(--portal-muted)', marginTop: '4px' }}>
-                        {addr.detailAddress}, {addr.ward ? `${addr.ward}, ` : ''}{addr.district ? `${addr.district}, ` : ''}{addr.province}
+                        {addr.detailAddress}, {addr.ward ? `${addr.ward}, ` : ''}
+                        {addr.district ? `${addr.district}, ` : ''}
+                        {addr.province}
                       </div>
                     </div>
 
@@ -1578,7 +1823,11 @@ export default function Account() {
             </div>
 
             {/* Address Form */}
-            <form onSubmit={saveAddress} className="account-form-grid" style={{ borderTop: '1px solid var(--portal-line)', paddingTop: '20px' }}>
+            <form
+              onSubmit={saveAddress}
+              className="account-form-grid"
+              style={{ borderTop: '1px solid var(--portal-line)', paddingTop: '20px' }}
+            >
               <h3 style={{ fontSize: '15px', margin: 0 }}>
                 {editingId ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ nhận hoa mới'}
               </h3>
@@ -1588,7 +1837,9 @@ export default function Account() {
                   <span>Người nhận</span>
                   <input
                     value={addressForm.receiverName}
-                    onChange={(e) => setAddressForm({ ...addressForm, receiverName: e.target.value })}
+                    onChange={(e) =>
+                      setAddressForm({ ...addressForm, receiverName: e.target.value })
+                    }
                     className="account-input"
                     placeholder="Họ tên người nhận"
                     required
@@ -1598,7 +1849,9 @@ export default function Account() {
                   <span>Số điện thoại</span>
                   <input
                     value={addressForm.receiverPhone}
-                    onChange={(e) => setAddressForm({ ...addressForm, receiverPhone: e.target.value })}
+                    onChange={(e) =>
+                      setAddressForm({ ...addressForm, receiverPhone: e.target.value })
+                    }
                     className="account-input"
                     placeholder="090..."
                     required
@@ -1610,7 +1863,9 @@ export default function Account() {
                 <span>Địa chỉ chi tiết (Số nhà, tên đường)</span>
                 <input
                   value={addressForm.detailAddress}
-                  onChange={(e) => setAddressForm({ ...addressForm, detailAddress: e.target.value })}
+                  onChange={(e) =>
+                    setAddressForm({ ...addressForm, detailAddress: e.target.value })
+                  }
                   className="account-input"
                   placeholder="Ví dụ: 123 Đường Nguyễn Huệ"
                   required
@@ -1711,9 +1966,12 @@ export default function Account() {
               <p className="box-desc">
                 Lưu giỏ hàng hiện tại vào tài khoản để mở lại trên các thiết bị khác.
               </p>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <span style={{ fontSize: '13.5px', color: 'var(--portal-muted)' }}>
-                  Túi trên máy: <strong>{store.cart.length} món</strong> · Đã lưu: <strong>{serverCart.length} món</strong>
+                  Túi trên máy: <strong>{store.cart.length} món</strong> · Đã lưu:{' '}
+                  <strong>{serverCart.length} món</strong>
                 </span>
                 <button
                   type="button"
