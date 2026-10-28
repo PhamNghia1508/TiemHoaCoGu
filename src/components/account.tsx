@@ -680,11 +680,8 @@ export default function Account() {
 
   // Compute Current Week Days for Calendar
   const weekDays = getWeekDays(currentWeekMonday);
-  const selectedDateBookings = bookings.filter((b) => isSameDay(getBookingDate(b), selectedDate));
-  const selectedDateActiveBookings = selectedDateBookings.filter((b) => {
-    const s = (b.bookingStatus || '').toLowerCase();
-    return s !== 'cancelled' && s !== 'expired';
-  });
+  const selectedDateActiveBookings = activeBookings.filter((b) => isSameDay(getBookingDate(b), selectedDate));
+  const selectedDateBookings = selectedDateActiveBookings;
   const weekHasBookings = activeBookings.filter((b) =>
     weekDays.some((wd) => isSameDay(getBookingDate(b), wd))
   );
@@ -920,7 +917,7 @@ export default function Account() {
         >
           <CalendarDays size={18} />
           <span>Lịch Workshop của tôi</span>
-          {bookings.length > 0 && <span className="account-tab-badge">{bookings.length}</span>}
+          {activeBookings.length > 0 && <span className="account-tab-badge">{activeBookings.length}</span>}
         </button>
 
         <button
@@ -961,7 +958,7 @@ export default function Account() {
               <div className="skeleton-card" />
               <div className="skeleton-card" />
             </div>
-          ) : bookings.length === 0 ? (
+          ) : activeBookings.length === 0 ? (
             <div className="account-empty-box">
               <div className="account-empty-icon">
                 <CalendarDays size={28} />
@@ -1005,7 +1002,7 @@ export default function Account() {
                         className={calendarViewMode === 'all' ? 'is-active' : ''}
                         onClick={() => setCalendarViewMode('all')}
                       >
-                        Tất cả các buổi ({bookings.length})
+                        Tất cả các buổi ({activeBookings.length})
                       </button>
                     </div>
 
@@ -1129,7 +1126,7 @@ export default function Account() {
               ) : (
                 /* ALL ENROLLED WORKSHOPS LIST */
                 <div className="account-cards-grid">
-                  {bookings.map((booking) => renderWorkshopCard(booking))}
+                  {activeBookings.map((booking) => renderWorkshopCard(booking))}
                 </div>
               )}
             </div>
