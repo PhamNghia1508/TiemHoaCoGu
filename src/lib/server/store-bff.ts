@@ -166,9 +166,22 @@ function configuredPreviewOrigin(): string | undefined {
 
 export function sameOrigin(request: Request): boolean {
   const origin = request.headers.get('origin');
-  return Boolean(
-    origin && (origin === new URL(request.url).origin || origin === configuredPreviewOrigin()),
-  );
+  if (!origin) return false;
+  const requestOrigin = new URL(request.url).origin;
+  if (origin === requestOrigin || origin === configuredPreviewOrigin()) return true;
+
+  const host = request.headers.get('host');
+  if (host && (origin === "http://" + host || origin === "https://" + host)) return true;
+
+  const siteUrl = process.env.SITE_URL?.trim();
+  if (siteUrl) {
+    try {
+      if (origin === new URL(siteUrl).origin) return true;
+    } catch {}
+  }
+
+  const normalize = (val: string) => val.replace('127.0.0.1', 'localhost').replace('0.0.0.0', 'localhost');
+  return normalize(origin) === normalize(requestOrigin);
 }
 
 function apiBase(): string {

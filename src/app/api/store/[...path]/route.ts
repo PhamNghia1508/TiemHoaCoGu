@@ -78,7 +78,10 @@ async function handler(request: Request, ctx: Ctx): Promise<NextResponse> {
   try {
     const result = await forward(upstreamRequest, route.upstream, token);
     if (!result.response.ok) {
-      const errorResponse = jsonError(publicError(result.response.status), result.response.status);
+      const detail = result.data && typeof result.data === 'object' && ('message' in result.data || 'error' in result.data || 'title' in result.data)
+        ? String((result.data as any).message || (result.data as any).error || (result.data as any).title)
+        : publicError(result.response.status);
+      const errorResponse = jsonError(detail, result.response.status);
       if (endpoint === 'auth/logout') clearAuthCookies(errorResponse);
       return errorResponse;
     }

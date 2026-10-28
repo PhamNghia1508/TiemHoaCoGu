@@ -1696,3 +1696,43 @@ body:has(.admin-dialog[open]) {
   line-height: 1.5;
   font-size: 11px;
 }
+
+/* Admin Logout Buttons */
+.admin-logout-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  transition: all 0.15s ease;
+}
+.admin-logout-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--admin-citrus);
+}
+.admin-topbar-logout {
+  background: #ffffff;
+  border: 1px solid var(--admin-line);
+  color: #be123c;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.admin-topbar-logout:hover {
+  background: #fff1f2;
+  border-color: #fecdd3;
+}

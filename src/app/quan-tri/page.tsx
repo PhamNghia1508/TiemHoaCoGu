@@ -1,6 +1,6 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import AdminWorkspace from '@/components/admin/workspace';
+import ClientOnly from '@/components/client-only';
 import './admin.css';
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AdminPage() {
   return (
-    <Suspense
+    <ClientOnly
       fallback={
         <div className="admin-shell admin-guard">
           <p role="status">Đang mở góc điều hành…</p>
@@ -21,6 +21,6 @@ export default function AdminPage() {
         connected={Boolean(process.env.API_BASE_URL)}
         writesEnabled={process.env.STOREFRONT_WRITES_ENABLED === 'true'}
       />
-    </Suspense>
+    </ClientOnly>
   );
 }

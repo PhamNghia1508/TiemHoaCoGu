@@ -1,9 +1,22 @@
+import type { Metadata } from 'next';
 import Account from '@/components/account';
-export const metadata = { title: 'Tài khoản' };
+import ClientOnly from '@/components/client-only';
+import './account.css';
+
+export const metadata: Metadata = { title: 'Tài khoản · Tiệm Hoa Có Gu' };
+
 export default function AccountPage() {
   return (
     <div className="page-shell">
-      <Account />
+      <ClientOnly
+        fallback={
+          <div className="account-portal">
+            <div className="skeleton-card" />
+          </div>
+        }
+      >
+        <Account />
+      </ClientOnly>
     </div>
   );
 }

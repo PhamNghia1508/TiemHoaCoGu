@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import {
+  LogOut,
   ArrowDownLeft,
   ArrowRight,
   ArrowUpRight,
@@ -170,6 +171,19 @@ function Workspace({ connected, writesEnabled }: { connected: boolean; writesEna
   const [auth, setAuth] = useState<'loading' | 'ready' | 'login' | 'error'>('loading');
   const [error, setError] = useState('');
   const readOnly = !writesEnabled;
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/store/auth/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+      });
+    } catch {
+      // ignore
+    }
+    router.replace('/tai-khoan');
+    router.refresh();
+  };
   const check = useCallback(async () => {
     setAuth('loading');
     setError('');
@@ -228,8 +242,8 @@ function Workspace({ connected, writesEnabled }: { connected: boolean; writesEna
           <LockKeyhole size={30} aria-hidden="true" />
           <h1>Không có quyền truy cập</h1>
           <p>Khu vực này chỉ dành cho tài khoản Admin. Quyền cũng được kiểm tra ở backend.</p>
-          <Link className="button button-outline" href="/tai-khoan">
-            Xem tài khoản đang đăng nhập
+          <Link className="button" href="/tai-khoan">
+            Về trang cá nhân & xem lịch workshop <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </>
       );
@@ -291,7 +305,7 @@ function Workspace({ connected, writesEnabled }: { connected: boolean; writesEna
             <div>
               <strong>{me.fullName || 'Quản trị viên'}</strong>
               <span>
-                Admin · <Link href="/tai-khoan">Tài khoản</Link>
+                Admin · <button type="button" onClick={handleLogout} className="admin-logout-btn" title="Đăng xuất"><LogOut size={11} /> Đăng xuất</button>
               </span>
             </div>
           </div>
@@ -308,10 +322,21 @@ function Workspace({ connected, writesEnabled }: { connected: boolean; writesEna
           <span className="admin-topbar-crumb">
             TIỆM HOA CÓ GU <span>/</span> GÓC ĐIỀU HÀNH
           </span>
-          <span className={`admin-mode${readOnly ? ' is-readonly' : ''}`}>
-            <span aria-hidden="true" />
-            {readOnly ? 'Bản xem trước · Chỉ đọc' : 'Quyền quản trị'}
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className={`admin-mode${readOnly ? ' is-readonly' : ''}`}>
+              <span aria-hidden="true" />
+              {readOnly ? 'Bản xem trước · Chỉ đọc' : 'Quyền quản trị'}
+            </span>
+            <button
+              type="button"
+              className="admin-topbar-logout"
+              onClick={handleLogout}
+              title="Đăng xuất khỏi Bàn điều hành"
+            >
+              <LogOut size={14} aria-hidden="true" />
+              <span>Đăng xuất</span>
+            </button>
+          </div>
         </div>
         <div className="admin-mobile-switch">
           <label htmlFor="admin-view-select">Khu vực làm việc</label>

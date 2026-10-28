@@ -23,3 +23,13 @@ Next.js App Router + TypeScript + React. Frontend repository tách biệt backen
 Botanical Play: cobalt `#243db5`, citrus `#ebf28b`, warmwhite `#fffdf8`, lilac `#ece7f5`, nearblack `#1c2326`. Be Vietnam Pro 800 chủ đạo, Cormorant italic chỉ accent nhỏ. `globals.css` là design system chung, `commerce.css` và `studio.css` là các layer scoped được import sau. Không quay lại hướng editorial serif/ngà–mận cũ. Tránh UI kit, gradient loang, glassmorphism và số liệu/review hư cấu. Responsive 320px+, reduced motion, focus rõ, accessible labels và keyboard navigation. Xem `docs/DESIGN-RETHINK.md` trước khi sửa bố cục.
 
 Ảnh từ repository gốc nằm trong `public/images/`. Tài liệu prototype cũ trong `docs/yeu-cau-prototype.md` chỉ là tham chiếu lịch sử, không phải trạng thái đã triển khai.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

@@ -48,8 +48,8 @@ export const dynamic = 'force-dynamic';
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const storefront = await getStorefront();
   return (
-    <html lang="vi" data-scroll-behavior="smooth">
-      <body>
+    <html lang="vi" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <StoreProvider
           initialProducts={storefront.products}
           initialCategories={storefront.categories}
