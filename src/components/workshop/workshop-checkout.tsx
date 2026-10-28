@@ -133,7 +133,6 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
     setError('');
 
     try {
-      // Try to record manual payment or confirm
       await storeRequest(
         `payments/booking/${booking.id}`,
         {
@@ -142,9 +141,7 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
           amount: booking.totalAmount,
         },
         'POST',
-      ).catch(() => {
-        // If regular customer role doesn't have direct access, proceed with client confirmation
-      });
+      );
 
       setIsPaidSuccess(true);
     } catch (err) {
