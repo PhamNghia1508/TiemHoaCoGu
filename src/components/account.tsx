@@ -754,7 +754,7 @@ export default function Account() {
                 color: 'var(--portal-accent)',
               }}
             >
-              Chi tiết lớp <ExternalLink size={14} />
+              Xem xưởng workshop <ExternalLink size={14} />
             </Link>
           </div>
         </div>
