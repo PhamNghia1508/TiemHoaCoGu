@@ -28,6 +28,7 @@ import {
   AlertCircle,
   ExternalLink,
   ListFilter,
+  ScrollText,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import { useStore } from '@/components/store-provider';
@@ -243,7 +244,8 @@ export default function Account() {
   // Weekly Calendar Navigation State
   const [currentWeekMonday, setCurrentWeekMonday] = useState<Date>(() => getMonday(new Date()));
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
-  const [calendarViewMode, setCalendarViewMode] = useState<'weekly' | 'all'>('weekly');
+  const [calendarViewMode, setCalendarViewMode] = useState<'weekly' | 'all' | 'history'>('weekly');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'attended' | 'cancelled' | 'expired'>('all');
 
   // UI state
   const [loadingInitial, setLoadingInitial] = useState(true);
@@ -814,18 +816,7 @@ export default function Account() {
                 </button>
               ) : null}
             </div>
-            <Link
-              href={detailUrl}
-              className="account-btn-secondary"
-              style={{
-                padding: '8px 16px',
-                fontSize: '13px',
-                fontWeight: 700,
-                color: 'var(--portal-accent)',
-              }}
-            >
-              Xem xưởng workshop <ExternalLink size={14} />
-            </Link>
+
           </div>
         </div>
       </article>
@@ -1002,7 +993,15 @@ export default function Account() {
                         className={calendarViewMode === 'all' ? 'is-active' : ''}
                         onClick={() => setCalendarViewMode('all')}
                       >
-                        Tất cả các buổi ({activeBookings.length})
+                        Lớp đang học ({activeBookings.length})
+                      </button>
+                      <button
+                        type="button"
+                        className={calendarViewMode === 'history' ? 'is-active' : ''}
+                        onClick={() => setCalendarViewMode('history')}
+                        style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+                      >
+                        <ScrollText size={13} /> Nhật ký vé ({bookings.length})
                       </button>
                     </div>
 
@@ -1123,10 +1122,266 @@ export default function Account() {
                     </div>
                   )}
                 </div>
-              ) : (
+              ) : calendarViewMode === 'all' ? (
                 /* ALL ENROLLED WORKSHOPS LIST */
                 <div className="account-cards-grid">
                   {activeBookings.map((booking) => renderWorkshopCard(booking))}
+                </div>
+              ) : (
+                /* TICKET STATUS AUDIT LOG & HISTORY VIEW */
+                <div className="account-history-view">
+                  <div style={{ marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 800, margin: '0 0 6px', color: '#1c2326' }}>
+                      Nhật ký trạng thái & Lịch sử vé
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>
+                      Toàn bộ lịch sử giữ chỗ, thanh toán, hủy vé và tham gia workshop của bạn.
+                    </p>
+                  </div>
+
+                  {/* Filter Pills */}
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '22px' }}>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'all' ? '#1c2326' : '#ffffff',
+                        color: historyStatusFilter === 'all' ? '#ffffff' : '#334155',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #cbd5e1',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('all')}
+                    >
+                      Tất cả ({bookings.length})
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'pending' ? '#b45309' : '#ffffff',
+                        color: historyStatusFilter === 'pending' ? '#ffffff' : '#b45309',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #fde68a',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('pending')}
+                    >
+                      Chờ thanh toán ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'pending').length})
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'confirmed' ? '#047857' : '#ffffff',
+                        color: historyStatusFilter === 'confirmed' ? '#ffffff' : '#047857',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #a7f3d0',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('confirmed')}
+                    >
+                      Đã thanh toán ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'confirmed').length})
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'attended' ? '#243db5' : '#ffffff',
+                        color: historyStatusFilter === 'attended' ? '#ffffff' : '#243db5',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #cbd5e1',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('attended')}
+                    >
+                      Đã tham gia ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'attended').length})
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'cancelled' ? '#b91c1c' : '#ffffff',
+                        color: historyStatusFilter === 'cancelled' ? '#ffffff' : '#b91c1c',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #fecaca',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('cancelled')}
+                    >
+                      Đã hủy ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'cancelled').length})
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        background: historyStatusFilter === 'expired' ? '#475569' : '#ffffff',
+                        color: historyStatusFilter === 'expired' ? '#ffffff' : '#475569',
+                        borderRadius: '9999px',
+                        padding: '6px 14px',
+                        fontSize: '12.5px',
+                        fontWeight: 700,
+                        border: '1px solid #e2e8f0',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setHistoryStatusFilter('expired')}
+                    >
+                      Hết hạn ({bookings.filter((b) => (b.bookingStatus || '').toLowerCase() === 'expired').length})
+                    </button>
+                  </div>
+
+                  {/* History Log List */}
+                  {bookings.filter((b) => historyStatusFilter === 'all' || (b.bookingStatus || '').toLowerCase() === historyStatusFilter).length === 0 ? (
+                    <div className="account-empty-box" style={{ padding: '36px 20px' }}>
+                      <ScrollText size={28} style={{ color: '#94a3b8', margin: '0 auto 12px' }} />
+                      <h3>Không có nhật ký nào phù hợp</h3>
+                      <p>Không có vé nào thuộc bộ lọc trạng thái bạn đã chọn.</p>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      {bookings
+                        .filter((b) => historyStatusFilter === 'all' || (b.bookingStatus || '').toLowerCase() === historyStatusFilter)
+                        .map((b) => {
+                          const sessionMeta = sessionsMap[b.sessionId];
+                          const workshopTitle = sessionMeta?.workshopName || 'Workshop Cắm Hoa Sáp';
+                          const sessionDate = sessionMeta?.session
+                            ? formatDate(sessionMeta.session.sessionDate)
+                            : formatDate(b.createdAt);
+                          const sessionTime = sessionMeta?.session
+                            ? `${formatTime(sessionMeta.session.startTime)} - ${formatTime(sessionMeta.session.endTime)}`
+                            : 'Thời gian đã hẹn';
+                          const location = sessionMeta?.session?.location || 'Xưởng Tiệm Hoa Có Gu';
+                          const st = (b.bookingStatus || '').toLowerCase();
+                          const isPending = st === 'pending';
+                          const isConfirmed = st === 'confirmed';
+                          const isAttended = st === 'attended';
+                          const isCancelled = st === 'cancelled';
+                          const isExpired = st === 'expired';
+
+                          return (
+                            <div
+                              key={b.id}
+                              style={{
+                                background: '#ffffff',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '16px',
+                                padding: '18px 22px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '12px',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#243db5', fontSize: '14.5px' }}>
+                                    {b.bookingCode || b.id.slice(0, 8)}
+                                  </span>
+                                  <span style={{ color: '#cbd5e1' }}>·</span>
+                                  <strong style={{ fontSize: '15.5px', color: '#1c2326' }}>{workshopTitle}</strong>
+                                </div>
+                                <div>
+                                  {isConfirmed && (
+                                    <span className="badge-status confirmed" style={{ background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}>
+                                      ✅ Đã thanh toán
+                                    </span>
+                                  )}
+                                  {isPending && (
+                                    <span className="badge-status" style={{ background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a' }}>
+                                      ⏳ Chờ thanh toán
+                                    </span>
+                                  )}
+                                  {isAttended && (
+                                    <span className="badge-status attended" style={{ background: '#edf1fc', color: '#243db5', border: '1px solid #cbd5e1' }}>
+                                      ✨ Đã tham gia
+                                    </span>
+                                  )}
+                                  {isCancelled && (
+                                    <span className="badge-status" style={{ background: '#fef2f2', color: '#b91c1c', border: '1px solid #fecaca' }}>
+                                      ❌ Đã hủy
+                                    </span>
+                                  )}
+                                  {isExpired && (
+                                    <span className="badge-status" style={{ background: '#f1f5f9', color: '#64748b', border: '1px solid #e2e8f0' }}>
+                                      ⚠️ Hết hạn
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', fontSize: '13px', color: '#475569' }}>
+                                <div><strong>Ca học:</strong> {sessionDate} ({sessionTime})</div>
+                                <div><strong>Địa điểm:</strong> {location}</div>
+                                <div><strong>Số lượng & Phí:</strong> {b.ticketCount} vé · {formatMoney(b.totalAmount)}</div>
+                              </div>
+
+                              {/* Timeline log */}
+                              <div
+                                style={{
+                                  background: '#f8fafc',
+                                  borderRadius: '10px',
+                                  padding: '10px 14px',
+                                  fontSize: '12px',
+                                  color: '#64748b',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '4px',
+                                  lineHeight: 1.5,
+                                }}
+                              >
+                                <div>🕒 <strong>Khởi tạo yêu cầu giữ chỗ:</strong> {formatDate(b.createdAt)}</div>
+                                {isConfirmed && <div>💳 <strong>Thanh toán:</strong> Đã ghi nhận thanh toán · Đủ điều kiện vào lớp</div>}
+                                {b.checkedInAt && <div>✨ <strong>Điểm danh:</strong> Học viên đã check-in vào lớp lúc {formatDate(b.checkedInAt)}</div>}
+                                {isCancelled && <div>❌ <strong>Trạng thái hủy:</strong> Khách hàng đã hủy giữ chỗ (Ca học được giải phóng cho học viên khác)</div>}
+                                {isExpired && <div>⚠️ <strong>Trạng thái hết hạn:</strong> Quá hạn thanh toán 10 phút, hệ thống tự động hoàn lại chỗ trống</div>}
+                              </div>
+
+                              {/* Actions if pending */}
+                              {isPending && (
+                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', paddingTop: '6px', borderTop: '1px solid #f1f5f9' }}>
+                                  <Link
+                                    href={`/thanh-toan?bookingId=${b.id}`}
+                                    className="account-btn-primary"
+                                    style={{
+                                      padding: '6px 14px',
+                                      fontSize: '12px',
+                                      fontWeight: 700,
+                                      background: '#243db5',
+                                      color: '#ffffff',
+                                      borderRadius: '8px',
+                                      textDecoration: 'none',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                    }}
+                                  >
+                                    Thanh toán ngay →
+                                  </Link>
+                                  <button
+                                    type="button"
+                                    className="account-btn-secondary"
+                                    style={{ padding: '6px 12px', fontSize: '12px', color: '#dc2626', borderColor: '#fca5a5' }}
+                                    onClick={() => void handleCancelBooking(b.id)}
+                                    disabled={busy}
+                                  >
+                                    Hủy giữ chỗ
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
