@@ -46,8 +46,8 @@ h1,
 h2,
 h3 {
   font-weight: 800;
-  line-height:  1.2;
-  letter-spacing: -0.018em;
+  line-height: 1.25;
+  letter-spacing: 0.015em;
 }
 h1 em,
 h2 em {
@@ -441,10 +441,10 @@ main {
   border-radius: 50%;
 }
 .campaign-copy h1 {
-  font-size: clamp(56px, 7.2vw, 112px);
+  font-size: clamp(52px, 6.8vw, 104px);
   font-weight: 800;
-  line-height:  1.18;
-  letter-spacing: -0.018em;
+  line-height: 1.32;
+  letter-spacing: 0.05em;
   color: var(--accent);
   white-space: nowrap;
 }
@@ -2203,9 +2203,9 @@ main {
   }
   .campaign-copy h1 {
     grid-row: 2;
-    font-size: clamp(56px, 7.2vw, 112px);
-    line-height:  1.18;
-    letter-spacing: -0.018em;
+    font-size: clamp(48px, 11vw, 76px);
+    line-height: 1.28;
+    letter-spacing: 0.04em;
   }
   .campaign-copy h1 svg {
     width: 0.69em;
