@@ -33,3 +33,9 @@ artifacts/
 # Local dev credentials
 *credentials*.md
 docs/*credentials*.md
+
+# Python & Temporary Scratch Files
+*.py
+*.pyc
+__pycache__/
+scratch*

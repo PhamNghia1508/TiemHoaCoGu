@@ -3,7 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Checkout from './checkout';
-import WorkshopCheckout from './workshop-checkout';
+import WorkshopCheckout from './workshop/workshop-checkout';
 import { PageIntro } from './site';
 
 function CheckoutContent() {
