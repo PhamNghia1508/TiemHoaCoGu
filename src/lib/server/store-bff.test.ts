@@ -7,6 +7,15 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['orders', 'checkout'], 'POST')).not.toBeNull();
     expect(resolveStoreRoute(['admin', 'users'], 'GET')).toBeNull();
     expect(resolveStoreRoute(['orders'], 'POST')).toBeNull();
+    const orderId = '00000000-0000-4000-8000-000000000001';
+    const deliveryId = '00000000-0000-4000-8000-000000000002';
+    expect(
+      resolveStoreRoute(['orders', orderId, 'deliveries', deliveryId, 'tracking'], 'GET'),
+    ).toEqual({
+      upstream: `/api/orders/${orderId}/deliveries/${deliveryId}/tracking`,
+      protected: true,
+      write: false,
+    });
     expect(resolveStoreRoute(['shipping', 'locations', 'provinces'], 'GET')).toEqual({
       upstream: '/api/shipping/locations/provinces',
       protected: true,

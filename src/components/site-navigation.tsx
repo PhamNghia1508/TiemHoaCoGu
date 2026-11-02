@@ -5,6 +5,7 @@ const links = [
   ['/cua-tiem', 'Cửa tiệm'],
   ['/dat-rieng', 'Hoa theo ý bạn'],
   ['/workshop', 'Workshop'],
+  ['/tra-cuu', 'Tra cứu'],
   ['/cau-chuyen', 'Về Có Gu'],
 ];
 export default function SiteNavigation() {

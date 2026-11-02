@@ -62,6 +62,11 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
       methods: ['GET', 'POST'],
       protected: true,
     },
+    {
+      pattern: new RegExp(`^orders/${GUID}/deliveries/${GUID}/tracking$`),
+      methods: ['GET'],
+      protected: true,
+    },
     { pattern: new RegExp(`^orders/${GUID}/cancel$`), methods: ['POST'], protected: true },
     { pattern: new RegExp(`^workshops/${GUID}$`), methods: ['GET'], protected: false },
     { pattern: new RegExp(`^workshops/${GUID}/sessions$`), methods: ['GET'], protected: false },
