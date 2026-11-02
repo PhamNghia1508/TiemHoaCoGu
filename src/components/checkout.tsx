@@ -422,7 +422,11 @@ export default function Checkout() {
                 <div className="field full form-status" role="alert">
                   <p>{locationError}</p>
                   {locationError.includes('đăng nhập') && (
-                    <Link href="/tai-khoan" className="text-link" style={{ marginTop: 4, display: 'inline-block' }}>
+                    <Link
+                      href="/tai-khoan"
+                      className="text-link"
+                      style={{ marginTop: 4, display: 'inline-block' }}
+                    >
                       Đăng nhập lại tại đây &rarr;
                     </Link>
                   )}
@@ -603,7 +607,8 @@ export default function Checkout() {
           </div>
         </div>
         <p className="fine-print">
-          Giá và phí vận chuyển được hệ thống xác thực tự động khi tạo đơn. Báo phí giao hàng chưa giữ hàng trong kho.
+          Giá và phí vận chuyển được hệ thống xác thực tự động khi tạo đơn. Báo phí giao hàng chưa
+          giữ hàng trong kho.
         </p>
         <Link href="/cua-tiem" className="text-link">
           Chọn thêm một chút <ArrowUpRight size={16} />
