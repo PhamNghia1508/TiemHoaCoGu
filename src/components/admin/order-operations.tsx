@@ -89,6 +89,10 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [trackingInfo, setTrackingInfo] = useState<
+    Record<string, { statusDescription: string; status: string; updatedAt?: string }>
+  >({});
+  const [trackingBusy, setTrackingBusy] = useState<Record<string, boolean>>({});
   const selectionRequest = useRef(0);
 
   const request = useCallback(
@@ -189,6 +193,21 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
     }
   };
 
+  const fetchAdminTracking = async (deliveryId: string) => {
+    if (!selected) return;
+    setTrackingBusy((prev) => ({ ...prev, [deliveryId]: true }));
+    try {
+      const res = await request<{ statusDescription: string; status: string; updatedAt?: string }>(
+        `orders/${selected.id}/deliveries/${deliveryId}/tracking`,
+      );
+      setTrackingInfo((prev) => ({ ...prev, [deliveryId]: res }));
+    } catch (e) {
+      setError(errText(e));
+    } finally {
+      setTrackingBusy((prev) => ({ ...prev, [deliveryId]: false }));
+    }
+  };
+
   const createDelivery = async () => {
     if (!selected || readOnly || busy || detailLoading) return;
     const items: DeliveryLine[] = [];
@@ -210,12 +229,22 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
     setBusy(true);
     setError('');
     try {
-      await request<Delivery>(
+      const created = await request<Delivery>(
         `orders/${selected.id}/deliveries`,
-        { shipperUnit: shipper, trackingNumber: tracking, items },
+        {
+          shipperUnit: shipper.trim() || undefined,
+          trackingNumber: tracking.trim() || undefined,
+          items,
+        },
         'POST',
       );
-      setNotice('Đã tạo phiếu giao nội bộ; chưa đặt vận chuyển với nhà cung cấp.');
+      if (created?.trackingNumber) {
+        setNotice(
+          `Đã tạo phiếu giao ${created.deliveryCode} với mã vận đơn GHN Sandbox: ${created.trackingNumber}`,
+        );
+      } else {
+        setNotice('Đã tạo phiếu giao nội bộ.');
+      }
       await refreshSelected(selected.id);
     } catch (e) {
       setError(errText(e));
@@ -587,7 +616,7 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
                 </div>
                 <div className="admin-form-grid">
                   <label className="admin-field">
-                    <span>Đơn vị giao (ghi nhận)</span>
+                    <span>Đơn vị giao (để trống để chọn GHN)</span>
                     <input
                       value={shipper}
                       disabled={busy || readOnly}
@@ -595,7 +624,7 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
                     />
                   </label>
                   <label className="admin-field">
-                    <span>Mã tracking (nếu có)</span>
+                    <span>Mã tracking (để trống để GHN tự sinh mã)</span>
                     <input
                       value={tracking}
                       disabled={busy || readOnly}
@@ -633,8 +662,31 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
                             {delivery.shipperUnit || 'Nội bộ'}
                             {delivery.trackingNumber ? ` · ${delivery.trackingNumber}` : ''}
                           </small>
+                          {trackingInfo[delivery.id] && (
+                            <div style={{ fontSize: 12, color: '#047857', marginTop: 3 }}>
+                              GHN Sandbox:{' '}
+                              <strong>
+                                {trackingInfo[delivery.id].statusDescription ||
+                                  trackingInfo[delivery.id].status}
+                              </strong>
+                              {trackingInfo[delivery.id].updatedAt
+                                ? ` (${dateTime(trackingInfo[delivery.id].updatedAt!)})`
+                                : ''}
+                            </div>
+                          )}
                         </span>
                         <span className="admin-actions">
+                          {delivery.trackingNumber && !trackingInfo[delivery.id] && (
+                            <button
+                              className="button button-outline"
+                              type="button"
+                              style={{ padding: '4px 8px', fontSize: 12 }}
+                              disabled={busy || trackingBusy[delivery.id]}
+                              onClick={() => void fetchAdminTracking(delivery.id)}
+                            >
+                              {trackingBusy[delivery.id] ? 'Đang tra…' : 'Tra cứu GHN'}
+                            </button>
+                          )}
                           {delivery.deliveryStatus === 'Preparing' && (
                             <>
                               <button

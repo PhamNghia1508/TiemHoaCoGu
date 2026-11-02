@@ -14,6 +14,13 @@ import type {
   Booking,
 } from '@/lib/api/client';
 
+type CarrierTracking = {
+  accepted: boolean;
+  trackingNumber: string;
+  status: string;
+  statusDescription: string;
+  updatedAt?: string;
+};
 type Kind = 'orders' | 'bookings' | 'custom';
 type PreviewResult = { code: string; phone: string };
 const money = (n?: number) => (n === undefined ? '—' : `${Number(n).toLocaleString('vi-VN')} ₫`);
@@ -26,6 +33,8 @@ export default function Lookup() {
   const [items, setItems] = useState<(Order | Booking | CustomRequest)[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+  const [trackingMap, setTrackingMap] = useState<Record<string, CarrierTracking>>({});
+  const [trackingLoading, setTrackingLoading] = useState<Record<string, boolean>>({});
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [selected, setSelected] = useState<CustomRequest | null>(null);
   const [quote, setQuote] = useState<CustomQuote | null>(null);
@@ -45,6 +54,8 @@ export default function Lookup() {
   const clearDetails = () => {
     setSelectedOrder(null);
     setDeliveries([]);
+    setTrackingMap({});
+    setTrackingLoading({});
     setSelectedBooking(null);
     setSelected(null);
     setQuote(null);
@@ -107,6 +118,22 @@ export default function Lookup() {
       setPending(false);
     }
   }
+  async function trackDelivery(deliveryId: string) {
+    if (!selectedOrder) return;
+    setTrackingLoading((prev) => ({ ...prev, [deliveryId]: true }));
+    setError('');
+    try {
+      const res = await storeRequest<CarrierTracking>(
+        `orders/${selectedOrder.id}/deliveries/${deliveryId}/tracking`,
+      );
+      setTrackingMap((prev) => ({ ...prev, [deliveryId]: res }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không thể lấy thông tin tracking GHN.');
+    } finally {
+      setTrackingLoading((prev) => ({ ...prev, [deliveryId]: false }));
+    }
+  }
+
   async function chooseBooking(booking: Booking) {
     setPending(true);
     setError('');
@@ -388,17 +415,66 @@ export default function Lookup() {
             <br />
             Tạo lúc: {date(selectedOrder.createdAt)} · Thanh toán: {selectedOrder.paymentStatus}
           </p>
-          <p>
-            Giao hàng:{' '}
-            {deliveries.length
-              ? deliveries
-                  .map(
-                    (d) =>
-                      `${d.deliveryCode}: ${d.deliveryStatus}${d.trackingNumber ? ` (${d.trackingNumber})` : ''}`,
-                  )
-                  .join(' · ')
-              : 'Chưa có dữ liệu giao hàng.'}
-          </p>
+          <div style={{ margin: '12px 0' }}>
+            <strong>Giao hàng:</strong>
+            {deliveries.length === 0 ? (
+              <p style={{ margin: '4px 0', color: 'var(--text-muted)' }}>
+                Chưa có dữ liệu giao hàng.
+              </p>
+            ) : (
+              <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0' }}>
+                {deliveries.map((d) => (
+                  <li
+                    key={d.id}
+                    style={{
+                      margin: '8px 0',
+                      padding: '8px',
+                      background: 'rgba(0,0,0,0.02)',
+                      borderRadius: 6,
+                      border: '1px solid rgba(0,0,0,0.06)',
+                    }}
+                  >
+                    <div>
+                      <strong>{d.deliveryCode}</strong>: <span>{d.deliveryStatus}</span>
+                      {d.trackingNumber ? (
+                        <span>
+                          {' '}
+                          · Mã vận đơn GHN: <code>{d.trackingNumber}</code>
+                        </span>
+                      ) : null}
+                    </div>
+                    {d.trackingNumber && (
+                      <div style={{ marginTop: 6 }}>
+                        {trackingMap[d.id] ? (
+                          <div style={{ fontSize: 13, color: '#047857' }}>
+                            Hành trình GHN Sandbox:{' '}
+                            <strong>
+                              {trackingMap[d.id].statusDescription || trackingMap[d.id].status}
+                            </strong>
+                            {trackingMap[d.id].updatedAt
+                              ? ` (Cập nhật: ${date(trackingMap[d.id].updatedAt)})`
+                              : ''}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="text-link"
+                            style={{ fontSize: 13, cursor: 'pointer' }}
+                            disabled={trackingLoading[d.id]}
+                            onClick={() => void trackDelivery(d.id)}
+                          >
+                            {trackingLoading[d.id]
+                              ? 'Đang tra cứu GHN…'
+                              : 'Tra cứu hành trình GHN Sandbox'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button
             type="button"
             className="button"

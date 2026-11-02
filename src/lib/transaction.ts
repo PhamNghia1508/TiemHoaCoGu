@@ -5,6 +5,8 @@ export type ShippingQuote = {
   amount?: number;
   shippingFee?: number;
   expiresAt?: string;
+  weight?: number;
+  destination?: string;
 };
 
 export type CustomQuoteState = CustomQuote & {

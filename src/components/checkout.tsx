@@ -24,9 +24,11 @@ type GatewayCharge = {
   redirectUrl?: string | null;
 };
 
-const GHN_FEE_MAPPING_SUPPORTED = false;
+const GHN_FEE_MAPPING_SUPPORTED = true;
 const SHIPPING_NOT_READY =
-  'Chưa thể báo phí: chưa có mapping phí GHN chính thức cho danh mục địa chỉ hiện tại. Chưa tạo đơn hoặc thu tiền.';
+  'Chưa thể báo phí: danh mục địa chỉ GHN chưa sẵn sàng hoặc thông tin chưa đầy đủ.';
+const SHIPPING_DEFAULT_NOTICE =
+  'Vui lòng nhập địa chỉ và chọn Tỉnh/Phường để nhận báo giá vận chuyển tự động từ GHN Sandbox theo quy cách đóng gói thực tế.';
 
 export default function Checkout() {
   const { cart, total, openCart, products, mode } = useStore();
@@ -42,11 +44,59 @@ export default function Checkout() {
   const [wardsLoading, setWardsLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
   const attempt = useRef<{ fingerprint: string; payload: CheckoutPayload } | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    streetAddress: '',
+    note: '',
+  });
+
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('tiemhoa_checkout_draft');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          setFormData((prev) => ({
+            ...prev,
+            name: parsed.name || '',
+            phone: parsed.phone || '',
+            email: parsed.email || '',
+            streetAddress: parsed.streetAddress || '',
+            note: parsed.note || '',
+          }));
+          if (parsed.provinceId) setProvinceId(String(parsed.provinceId));
+          if (parsed.wardId) setWardId(String(parsed.wardId));
+        }
+      }
+    } catch {}
+  }, []);
+
+  const saveDraft = (field: string, value: string) => {
+    setFormData((prev) => {
+      const next = { ...prev, [field]: value };
+      try {
+        sessionStorage.setItem(
+          'tiemhoa_checkout_draft',
+          JSON.stringify({ ...next, provinceId, wardId }),
+        );
+      } catch {}
+      return next;
+    });
+  };
   const lines = cart
     .map((line) => ({ line, product: products.find((p) => p.id === line.id) }))
     .filter((x): x is { line: (typeof cart)[number]; product: NonNullable<typeof x.product> } =>
       Boolean(x.product),
     );
+
+  useEffect(() => {
+    if (!result) {
+      setQuote(null);
+      attempt.current = null;
+    }
+  }, [cart, result]);
 
   const selectedProvince = provinces.find((area) => String(area.id) === provinceId);
   const selectedWard = wards.find((area) => String(area.id) === wardId);
@@ -60,8 +110,15 @@ export default function Checkout() {
         setProvinces(areas);
         if (!areas.length) setLocationError('Danh mục tỉnh GHN staging hiện chưa sẵn sàng.');
       })
-      .catch(() => {
-        if (active) setLocationError('Không tải được danh mục tỉnh GHN staging.');
+      .catch((err) => {
+        if (active) {
+          const msg = err instanceof Error ? err.message : '';
+          setLocationError(
+            msg.includes('đăng nhập')
+              ? 'Phiên đăng nhập đã hết hạn (sau 15 phút). Vui lòng đăng nhập lại.'
+              : 'Không tải được danh mục tỉnh GHN staging.',
+          );
+        }
       });
     return () => {
       active = false;
@@ -78,8 +135,15 @@ export default function Checkout() {
         setWards(areas);
         if (!areas.length) setLocationError('GHN không trả danh mục phường cho tỉnh đã chọn.');
       })
-      .catch(() => {
-        if (active) setLocationError('Không tải được danh mục phường GHN staging.');
+      .catch((err) => {
+        if (active) {
+          const msg = err instanceof Error ? err.message : '';
+          setLocationError(
+            msg.includes('đăng nhập')
+              ? 'Phiên đăng nhập đã hết hạn (sau 15 phút). Vui lòng đăng nhập lại.'
+              : 'Không tải được danh mục phường GHN staging.',
+          );
+        }
       })
       .finally(() => {
         if (active) setWardsLoading(false);
@@ -239,6 +303,8 @@ export default function Checkout() {
             Tên người nhận *
             <input
               name="name"
+              value={formData.name}
+              onChange={(e) => saveDraft('name', e.target.value)}
               autoComplete="shipping name"
               required
               maxLength={100}
@@ -249,6 +315,8 @@ export default function Checkout() {
             Số điện thoại *
             <input
               name="phone"
+              value={formData.phone}
+              onChange={(e) => saveDraft('phone', e.target.value)}
               type="tel"
               autoComplete="shipping tel"
               pattern="[+0-9 ()\-]{9,20}"
@@ -262,6 +330,8 @@ export default function Checkout() {
             <input
               type="email"
               name="email"
+              value={formData.email}
+              onChange={(e) => saveDraft('email', e.target.value)}
               autoComplete="email"
               maxLength={150}
               placeholder="Để nhận thông tin đơn"
@@ -273,6 +343,8 @@ export default function Checkout() {
                 Số nhà, tên đường *
                 <textarea
                   name="streetAddress"
+                  value={formData.streetAddress}
+                  onChange={(e) => saveDraft('streetAddress', e.target.value)}
                   autoComplete="shipping street-address"
                   required
                   maxLength={500}
@@ -294,6 +366,14 @@ export default function Checkout() {
                     setWards([]);
                     setWardsLoading(Boolean(selected));
                     setLocationError('');
+                    setQuote(null);
+                    attempt.current = null;
+                    try {
+                      sessionStorage.setItem(
+                        'tiemhoa_checkout_draft',
+                        JSON.stringify({ ...formData, provinceId: selected, wardId: '' }),
+                      );
+                    } catch {}
                   }}
                 >
                   <option value="">
@@ -317,7 +397,18 @@ export default function Checkout() {
                   value={wardId}
                   required
                   disabled={!provinceId || wardsLoading || wards.length === 0}
-                  onChange={(event) => setWardId(event.currentTarget.value)}
+                  onChange={(event) => {
+                    const selectedWId = event.currentTarget.value;
+                    setWardId(selectedWId);
+                    setQuote(null);
+                    attempt.current = null;
+                    try {
+                      sessionStorage.setItem(
+                        'tiemhoa_checkout_draft',
+                        JSON.stringify({ ...formData, provinceId, wardId: selectedWId }),
+                      );
+                    } catch {}
+                  }}
                 >
                   <option value="">{wardsLoading ? 'Đang tải phường…' : 'Chọn phường/xã'}</option>
                   {wards.map((area) => (
@@ -328,9 +419,14 @@ export default function Checkout() {
                 </select>
               </label>
               {locationError && (
-                <p className="field full form-status" role="alert">
-                  {locationError}
-                </p>
+                <div className="field full form-status" role="alert">
+                  <p>{locationError}</p>
+                  {locationError.includes('đăng nhập') && (
+                    <Link href="/tai-khoan" className="text-link" style={{ marginTop: 4, display: 'inline-block' }}>
+                      Đăng nhập lại tại đây &rarr;
+                    </Link>
+                  )}
+                </div>
               )}
             </>
           ) : (
@@ -350,6 +446,8 @@ export default function Checkout() {
             Một lời nhắn gửi cùng hoa
             <textarea
               name="note"
+              value={formData.note}
+              onChange={(e) => saveDraft('note', e.target.value)}
               maxLength={500}
               placeholder="Có những điều, bạn vẫn muốn tự mình viết…"
             />
@@ -365,8 +463,8 @@ export default function Checkout() {
         ) : (
           <div className="form-notice">
             {quote
-              ? `Phí giao được báo từ hệ thống: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.expiresAt ? ` · hết hạn ${quote.expiresAt}` : ''}. Bước tiếp theo chỉ dùng MoMo sandbox; không chuyển sang cổng thanh toán thật.`
-              : SHIPPING_NOT_READY}
+              ? `Phí giao GHN Sandbox: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.weight ? ` (${quote.weight} kg)` : ''}${quote.destination ? ` · ${quote.destination}` : ''}${quote.expiresAt ? ` · Hết hạn: ${new Date(quote.expiresAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}` : ''}. Bước tiếp theo chuyển sang thanh toán MoMo Sandbox.`
+              : SHIPPING_DEFAULT_NOTICE}
           </div>
         )}
         {mode === 'preview' && (
@@ -415,7 +513,7 @@ export default function Checkout() {
             Bắt đầu báo phí mới
           </button>
         )}
-        {mode === 'connected' && (
+        {mode === 'connected' && !quote && !result && (
           <p className="fine-print">
             Chưa đăng nhập? <Link href="/tai-khoan">Đăng nhập để tiếp tục</Link>
           </p>
@@ -505,7 +603,7 @@ export default function Checkout() {
           </div>
         </div>
         <p className="fine-print">
-          Giá và tổng cuối được backend kiểm tra lại khi tạo đơn. Báo phí giao hàng không giữ hàng.
+          Giá và phí vận chuyển được hệ thống xác thực tự động khi tạo đơn. Báo phí giao hàng chưa giữ hàng trong kho.
         </p>
         <Link href="/cua-tiem" className="text-link">
           Chọn thêm một chút <ArrowUpRight size={16} />

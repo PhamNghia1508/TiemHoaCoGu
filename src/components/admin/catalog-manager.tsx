@@ -668,7 +668,17 @@ function ProductTable({
                 <div className="admin-product-state">
                   <StatusBadge status={product.isActive ? 'Active' : 'Inactive'} />
                   <small className="admin-muted">
-                    Đóng gói: {product.packagingSpecsConfirmed ? 'đã xác minh' : 'chưa xác minh'}
+                    Đóng gói:{' '}
+                    {product.packagingSpecsConfirmed ? (
+                      <span style={{ color: '#059669', fontWeight: 600 }}>
+                        đã xác minh ({product.shippingWeightGrams ?? 0}g)
+                      </span>
+                    ) : (
+                      <span style={{ color: '#d97706' }}>
+                        chưa xác minh
+                        {product.shippingWeightGrams ? ` (${product.shippingWeightGrams}g)` : ''}
+                      </span>
+                    )}
                   </small>
                 </div>
               </td>
