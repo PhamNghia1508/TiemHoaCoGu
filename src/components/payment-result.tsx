@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, XCircle, Clock, ArrowRight, RotateCcw, ShoppingBag, ShieldCheck } from 'lucide-react';
 import { money } from '@/lib/catalog';
 import { storeRequest } from '@/lib/browser-api';
-import VnPaySandboxModal from '@/components/vnpay-sandbox-modal';
 
 type PaymentBalance = {
   orderId: string;
@@ -29,7 +28,32 @@ export default function PaymentResult() {
   const [error, setError] = useState('');
   const [pending, setPending] = useState(true);
   const [refreshCount, setRefreshCount] = useState(0);
-  const [showRetryModal, setShowRetryModal] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+
+  async function handleRetryPay() {
+    if (!balance) return;
+    setRetrying(true);
+    setError('');
+    try {
+      const returnUrl = new URL('/thanh-toan/ket-qua', window.location.origin);
+      returnUrl.searchParams.set('orderId', balance.orderId);
+      const charge = await storeRequest<{ redirectUrl?: string }>(
+        `gateway/orders/${balance.orderId}/charge`,
+        {
+          amount: balance.remainingAmount || balance.totalAmount,
+          returnUrl: returnUrl.toString(),
+          idempotencyKey: crypto.randomUUID(),
+        },
+        'POST',
+      );
+      if (charge.redirectUrl) {
+        window.location.assign(charge.redirectUrl);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không thể chuyển sang cổng thanh toán.');
+      setRetrying(false);
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -189,9 +213,10 @@ export default function PaymentResult() {
                 alignItems: 'center',
                 gap: '8px',
               }}
-              onClick={() => setShowRetryModal(true)}
+              disabled={retrying}
+              onClick={() => void handleRetryPay()}
             >
-              <RotateCcw size={16} /> Thử thanh toán lại ngay
+              <RotateCcw size={16} /> {retrying ? 'Đang chuyển sang VNPAY…' : 'Thử thanh toán lại ngay'}
             </button>
           )}
 
@@ -217,17 +242,6 @@ export default function PaymentResult() {
           </Link>
         </div>
       </div>
-
-      {showRetryModal && balance && (
-        <VnPaySandboxModal
-          orderId={balance.orderId}
-          totalAmount={balance.remainingAmount || balance.totalAmount}
-          onClose={() => {
-            setShowRetryModal(false);
-            setRefreshCount((n) => n + 1);
-          }}
-        />
-      )}
     </section>
   );
 }
