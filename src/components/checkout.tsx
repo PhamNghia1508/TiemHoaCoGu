@@ -7,6 +7,7 @@ import { useStore } from './store-provider';
 import { money } from '@/lib/catalog';
 import { storeRequest } from '@/lib/browser-api';
 import { payloadFingerprint, type CheckoutPayload, type ShippingQuote } from '@/lib/transaction';
+import VnPaySandboxModal from '@/components/vnpay-sandbox-modal';
 
 type OrderResult = {
   id?: string;
@@ -43,6 +44,12 @@ export default function Checkout() {
   const [wardId, setWardId] = useState('');
   const [wardsLoading, setWardsLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [sandboxModal, setSandboxModal] = useState<{
+    orderId: string;
+    orderCode?: string;
+    totalAmount: number;
+    redirectUrl?: string;
+  } | null>(null);
   const attempt = useRef<{ fingerprint: string; payload: CheckoutPayload } | null>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -248,7 +255,7 @@ export default function Checkout() {
         throw new Error(
           'Đơn đã tạo nhưng tổng tiền ngoài giới hạn cổng thanh toán sandbox (1.000–50.000.000 ₫); chưa chuyển sang thanh toán.',
         );
-      await payOrder(order.id, order.totalAmount);
+      await payOrder(order.id, order.totalAmount, order.orderCode);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Không thể tạo đơn. Bạn có thể thử lại cùng báo giá.',
@@ -258,7 +265,7 @@ export default function Checkout() {
     }
   }
 
-  async function payOrder(orderId: string, totalAmount: number) {
+  async function payOrder(orderId: string, totalAmount: number, orderCode?: string) {
     setPending(true);
     setError('');
     try {
@@ -273,16 +280,12 @@ export default function Checkout() {
         },
         'POST',
       );
-      const redirect = charge.redirectUrl ? new URL(charge.redirectUrl) : null;
-      if (
-        !redirect ||
-        redirect.protocol !== 'https:' ||
-        (redirect.hostname !== 'test-payment.momo.vn' && redirect.hostname !== 'sandbox.vnpayment.vn')
-      )
-        throw new Error(
-          'Cổng thanh toán sandbox chưa trả về đường dẫn kiểm thử hợp lệ. Đừng gửi lại đơn; hãy kiểm tra trạng thái đơn.',
-        );
-      window.location.assign(redirect.toString());
+      setSandboxModal({
+        orderId,
+        orderCode,
+        totalAmount,
+        redirectUrl: charge.redirectUrl || undefined,
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Không thể kết nối cổng thanh toán. Hãy thử lại.',
@@ -582,7 +585,7 @@ export default function Checkout() {
                   type="button"
                   className="button"
                   disabled={pending}
-                  onClick={() => void payOrder(result.id!, result.totalAmount!)}
+                  onClick={() => void payOrder(result.id!, result.totalAmount!, result.orderCode)}
                 >
                   {pending ? 'Đang chuyển sang cổng thanh toán…' : 'Thanh toán ngay bằng VNPay'}{' '}
                   <ArrowUpRight size={18} />
@@ -647,6 +650,15 @@ export default function Checkout() {
           Chọn thêm một chút <ArrowUpRight size={16} />
         </Link>
       </aside>
+      {sandboxModal && (
+        <VnPaySandboxModal
+          orderId={sandboxModal.orderId}
+          orderCode={sandboxModal.orderCode}
+          totalAmount={sandboxModal.totalAmount}
+          redirectUrl={sandboxModal.redirectUrl}
+          onClose={() => setSandboxModal(null)}
+        />
+      )}
     </div>
   );
 }

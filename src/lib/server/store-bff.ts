@@ -52,6 +52,11 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: new RegExp(`^gateway/orders/${GUID}/charge$`), methods: ['POST'], protected: true },
     { pattern: new RegExp(`^gateway/orders/${GUID}/balance$`), methods: ['GET'], protected: true },
     {
+      pattern: new RegExp(`^gateway/orders/${GUID}/simulate-sandbox$`),
+      methods: ['POST'],
+      protected: true,
+    },
+    {
       pattern: new RegExp(`^gateway/reconciliation/${GUID}/query$`),
       methods: ['POST'],
       protected: true,
