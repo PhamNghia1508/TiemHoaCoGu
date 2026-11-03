@@ -36,7 +36,7 @@ const money = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 const errorText = (error: unknown) =>
-  error instanceof Error ? error.message : 'Không thể đối soát MoMo sandbox.';
+  error instanceof Error ? error.message : 'Không thể đối soát cổng thanh toán sandbox.';
 const queue = () => storeRequest<ReconciliationItem[]>(adminPaths.gatewayReconciliation);
 const query = (id: string) =>
   storeRequest<QueryResult>(`${adminPaths.gatewayReconciliation}/${id}/query`, {}, 'POST');
@@ -82,7 +82,7 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
     try {
       const result = await query(item.id);
       setResults((old) => ({ ...old, [item.id]: result }));
-      setNotice(`MoMo sandbox trả mã ${result.resultCode}: ${result.outcome}.`);
+      setNotice(`Cổng sandbox trả mã ${result.resultCode}: ${result.outcome}.`);
     } catch (reason) {
       setError(errorText(reason));
     } finally {
@@ -95,14 +95,14 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
     const result = results[item.id];
     if (!result || !['paid', 'not-charged'].includes(result.outcome)) return;
     if (result.outcome === 'paid' && !/^\d+$/.test(result.transactionCode)) {
-      setError('MoMo không trả transId hợp lệ; không ghi sổ.');
+      setError('Cổng không trả mã giao dịch hợp lệ; không ghi sổ.');
       return;
     }
     const choice =
       result.outcome === 'paid' ? 'ghi nhận khoản đã thu' : 'đánh dấu không bị thu tiền';
     const confirmed = await confirm({
       title: 'Xác nhận ghi sổ thanh toán sandbox',
-      description: `Xác nhận ${choice}? Backend sẽ truy vấn MoMo sandbox lại ngay trước khi ghi sổ; kết quả mới phải khớp lựa chọn này. Nếu đơn đã hủy/hết hạn, cần tiếp tục xử lý hoàn tiền riêng.`,
+      description: `Xác nhận ${choice}? Backend sẽ truy vấn cổng sandbox lại ngay trước khi ghi sổ; kết quả mới phải khớp lựa chọn này. Nếu đơn đã hủy/hết hạn, cần tiếp tục xử lý hoàn tiền riêng.`,
       confirmLabel: result.outcome === 'paid' ? 'Ghi nhận đã thu' : 'Ghi nhận chưa thu',
     });
     if (!confirmed || readOnly || busyId) return;
@@ -117,8 +117,8 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
       );
       setNotice(
         result.outcome === 'paid'
-          ? 'Đã ghi nhận khoản thu sau khi backend xác minh lại với MoMo sandbox.'
-          : 'Đã ghi nhận chưa thu tiền sau khi backend xác minh lại với MoMo sandbox; đơn có thể nhận một lần thanh toán mới nếu trạng thái đơn cho phép.',
+          ? 'Đã ghi nhận khoản thu sau khi backend xác minh lại với cổng sandbox.'
+          : 'Đã ghi nhận chưa thu tiền sau khi backend xác minh lại với cổng sandbox; đơn có thể nhận một lần thanh toán mới nếu trạng thái đơn cho phép.',
       );
       setResults((old) => {
         const next = { ...old };
@@ -138,10 +138,10 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
     <section className="admin-card" aria-labelledby="payment-reconciliation-heading">
       <div className="admin-section-heading">
         <div>
-          <h2 id="payment-reconciliation-heading">Thanh toán MoMo sandbox cần đối soát</h2>
+          <h2 id="payment-reconciliation-heading">Thanh toán cổng sandbox cần đối soát</h2>
           <p className="admin-muted">
             Chỉ truy vấn giao dịch đã lưu; không gửi lại yêu cầu thu tiền. Khi Admin xác nhận,
-            backend truy vấn MoMo sandbox lần nữa và chỉ ghi sổ nếu kết quả mới khớp.
+            backend truy vấn cổng sandbox lần nữa và chỉ ghi sổ nếu kết quả mới khớp.
           </p>
         </div>
         <button
@@ -156,7 +156,7 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
       {readOnly && (
         <p className="admin-notice" role="note">
           Chế độ chỉ đọc: có thể xem hàng đợi và chi tiết, nhưng không thực hiện POST/PATCH, kể cả
-          truy vấn MoMo sandbox, và không ghi sổ.
+          truy vấn cổng sandbox, và không ghi sổ.
         </p>
       )}
       <p className="admin-notice" role="note">
@@ -222,7 +222,7 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
         onClose={() => {
           if (!busyId) setSelected(null);
         }}
-        title="Chi tiết thanh toán MoMo sandbox"
+        title="Chi tiết thanh toán cổng sandbox"
         description="Không có thao tác charge/retry; các kết quả chưa cuối cùng không được ghi sổ."
         wide
       >
@@ -269,7 +269,7 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
                       <p>
                         <StatusBadge status={result.outcome} /> · mã {result.resultCode}
                       </p>
-                      <p className="admin-muted">MoMo order: {result.providerOrderId}</p>
+                      <p className="admin-muted">Mã đơn đối tác: {result.providerOrderId}</p>
                       <p className="admin-muted">
                         {result.transactionCode
                           ? `transId: ${result.transactionCode}`
@@ -297,7 +297,7 @@ export default function PaymentReconciliation({ readOnly = false }: { readOnly?:
                       onClick={() => void queryPayment(selected)}
                       disabled={Boolean(busyId)}
                     >
-                      {busyId === selected.id ? 'Đang truy vấn…' : 'Truy vấn MoMo sandbox'}
+                      {busyId === selected.id ? 'Đang truy vấn…' : 'Truy vấn cổng sandbox'}
                     </button>
                   </div>
                 )}

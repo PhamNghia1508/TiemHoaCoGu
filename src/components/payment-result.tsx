@@ -68,7 +68,7 @@ export default function PaymentResult() {
   return (
     <section className="form-layout">
       <div className="form-status" role={confirmed ? 'status' : 'alert'}>
-        <span className="eyebrow">MOMO SANDBOX · TRẠNG THÁI TỪ BACKEND</span>
+        <span className="eyebrow">CỔNG THANH TOÁN SANDBOX · TRẠNG THÁI TỪ BACKEND</span>
         {pending ? (
           <p>Đang đọc trạng thái giao dịch từ hệ thống…</p>
         ) : error ? (
@@ -90,7 +90,7 @@ export default function PaymentResult() {
                 : ''}
             </p>
             <p>
-              Nếu vừa hoàn tất ở MoMo, hãy cập nhật trạng thái sau ít phút. Đừng tạo đơn mới hoặc
+              Nếu vừa hoàn tất ở cổng thanh toán, hãy cập nhật trạng thái sau ít phút. Đừng tạo đơn mới hoặc
               thanh toán lại khi chưa đối chiếu.
             </p>
           </>
