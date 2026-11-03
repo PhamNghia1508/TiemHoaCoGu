@@ -248,12 +248,26 @@ export default function Checkout() {
         throw new Error(
           'Đơn đã tạo nhưng tổng tiền ngoài giới hạn cổng thanh toán sandbox (1.000–50.000.000 ₫); chưa chuyển sang thanh toán.',
         );
+      await payOrder(order.id, order.totalAmount);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Không thể tạo đơn. Bạn có thể thử lại cùng báo giá.',
+      );
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function payOrder(orderId: string, totalAmount: number) {
+    setPending(true);
+    setError('');
+    try {
       const returnUrl = new URL('/thanh-toan/ket-qua', window.location.origin);
-      returnUrl.searchParams.set('orderId', order.id);
+      returnUrl.searchParams.set('orderId', orderId);
       const charge = await storeRequest<GatewayCharge>(
-        `gateway/orders/${order.id}/charge`,
+        `gateway/orders/${orderId}/charge`,
         {
-          amount: order.totalAmount,
+          amount: totalAmount,
           returnUrl: returnUrl.toString(),
           idempotencyKey: crypto.randomUUID(),
         },
@@ -271,7 +285,7 @@ export default function Checkout() {
       window.location.assign(redirect.toString());
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Không thể tạo đơn. Bạn có thể thử lại cùng báo giá.',
+        err instanceof Error ? err.message : 'Không thể kết nối cổng thanh toán. Hãy thử lại.',
       );
     } finally {
       setPending(false);
@@ -561,6 +575,19 @@ export default function Checkout() {
                   Kiểm tra trạng thái thanh toán
                 </Link>
               </p>
+            )}
+            {result.paymentStatus === 'Unpaid' && result.id && result.totalAmount !== undefined && (
+              <div style={{ marginTop: 14 }}>
+                <button
+                  type="button"
+                  className="button"
+                  disabled={pending}
+                  onClick={() => void payOrder(result.id!, result.totalAmount!)}
+                >
+                  {pending ? 'Đang chuyển sang cổng thanh toán…' : 'Thanh toán ngay bằng VNPay'}{' '}
+                  <ArrowUpRight size={18} />
+                </button>
+              </div>
             )}
           </div>
         )}
