@@ -257,10 +257,10 @@ export default function Checkout() {
       if (
         !redirect ||
         redirect.protocol !== 'https:' ||
-        redirect.hostname !== 'test-payment.momo.vn'
+        (redirect.hostname !== 'test-payment.momo.vn' && redirect.hostname !== 'sandbox.vnpayment.vn')
       )
         throw new Error(
-          'MoMo sandbox chưa trả về đường dẫn kiểm thử hợp lệ. Đừng gửi lại đơn; hãy kiểm tra trạng thái đơn.',
+          'Cổng thanh toán sandbox chưa trả về đường dẫn kiểm thử hợp lệ. Đừng gửi lại đơn; hãy kiểm tra trạng thái đơn.',
         );
       window.location.assign(redirect.toString());
     } catch (err) {
