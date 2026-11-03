@@ -210,8 +210,14 @@ export default function Checkout() {
         return;
       }
       const availability = await storeRequest<GatewayAvailability>('gateway/availability');
-      if (!availability.ready || availability.provider !== 'MomoSandbox' || !availability.sandbox)
-        throw new Error('MoMo sandbox chưa được cấu hình. Chưa tạo đơn hoặc gửi yêu cầu thu tiền.');
+      if (
+        !availability.ready ||
+        (availability.provider !== 'MomoSandbox' && availability.provider !== 'VnPaySandbox') ||
+        !availability.sandbox
+      )
+        throw new Error(
+          'Cổng thanh toán sandbox chưa được cấu hình. Chưa tạo đơn hoặc gửi yêu cầu thu tiền.',
+        );
       if (!attempt.current && quote.expiresAt && new Date(quote.expiresAt).getTime() <= Date.now())
         throw new Error(
           'Báo phí đã hết hạn. Hãy kiểm tra lịch sử nếu đã gửi đơn, rồi bắt đầu báo phí mới.',
@@ -240,7 +246,7 @@ export default function Checkout() {
         order.totalAmount > 50_000_000
       )
         throw new Error(
-          'Đơn đã tạo nhưng tổng tiền ngoài giới hạn MoMo sandbox (1.000–50.000.000 ₫); chưa chuyển sang thanh toán.',
+          'Đơn đã tạo nhưng tổng tiền ngoài giới hạn cổng thanh toán sandbox (1.000–50.000.000 ₫); chưa chuyển sang thanh toán.',
         );
       const returnUrl = new URL('/thanh-toan/ket-qua', window.location.origin);
       returnUrl.searchParams.set('orderId', order.id);
@@ -467,7 +473,7 @@ export default function Checkout() {
         ) : (
           <div className="form-notice">
             {quote
-              ? `Phí giao GHN Sandbox: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.weight ? ` (${quote.weight} kg)` : ''}${quote.destination ? ` · ${quote.destination}` : ''}${quote.expiresAt ? ` · Hết hạn: ${new Date(quote.expiresAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}` : ''}. Bước tiếp theo chuyển sang thanh toán MoMo Sandbox.`
+              ? `Phí giao GHN Sandbox: ${shippingAmount === undefined ? 'đang cập nhật' : money(shippingAmount)}${quote.weight ? ` (${quote.weight} kg)` : ''}${quote.destination ? ` · ${quote.destination}` : ''}${quote.expiresAt ? ` · Hết hạn: ${new Date(quote.expiresAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}` : ''}. Bước tiếp theo chuyển sang thanh toán sandbox.`
               : SHIPPING_DEFAULT_NOTICE}
           </div>
         )}
@@ -496,7 +502,7 @@ export default function Checkout() {
             ? 'Đang xử lý…'
             : mode === 'connected'
               ? quote
-                ? 'Tạo đơn & mở MoMo sandbox'
+                ? 'Tạo đơn & mở thanh toán sandbox'
                 : 'Báo phí giao hàng'
               : 'Kiểm tra thông tin'}{' '}
           <ArrowUpRight size={18} />
@@ -532,7 +538,7 @@ export default function Checkout() {
             <span className="eyebrow">ĐƠN ĐÃ TẠO</span>
             <p>
               Mã đơn: <strong>{result.orderCode || result.id}</strong>. Trạng thái thanh toán chỉ
-              được xác nhận từ backend sau IPN, không dựa vào trang chuyển hướng MoMo.
+              được xác nhận từ backend sau IPN, không dựa vào trang chuyển hướng cổng thanh toán.
             </p>
             <p>
               Trạng thái: {result.orderStatus || 'Đang cập nhật'} · Thanh toán:{' '}
