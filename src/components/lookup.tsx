@@ -1,9 +1,11 @@
 'use client';
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { useStore } from './store-provider';
 import { storeRequest } from '@/lib/browser-api';
+import WorkshopTicketView from '@/components/workshop/workshop-ticket';
 import type {
   CustomQuote,
   CustomRequest,
@@ -29,7 +31,9 @@ const lower = (s?: string) => (s ?? '').toLowerCase();
 
 export default function Lookup() {
   const { mode } = useStore();
-  const [kind, setKind] = useState<Kind>('orders');
+  const searchParams = useSearchParams();
+  const deepLinkVe = searchParams.get('ve');
+  const [kind, setKind] = useState<Kind>(deepLinkVe ? 'bookings' : 'orders');
   const [items, setItems] = useState<(Order | Booking | CustomRequest)[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -50,8 +54,9 @@ export default function Lookup() {
   });
   const [now] = useState(() => Date.now());
   const checkoutAttempt = useRef<{ fingerprint: string; key: string } | null>(null);
+  const handledDeepLink = useRef<string | null>(null);
 
-  const clearDetails = () => {
+  function clearDetails() {
     setSelectedOrder(null);
     setDeliveries([]);
     setTrackingMap({});
@@ -60,7 +65,27 @@ export default function Lookup() {
     setSelected(null);
     setQuote(null);
     setCheckout(null);
-  };
+  }
+
+  useEffect(() => {
+    if (!deepLinkVe || handledDeepLink.current === deepLinkVe) return;
+    if (mode !== 'connected') return;
+    handledDeepLink.current = deepLinkVe;
+    setKind('bookings');
+    clearDetails();
+    setError('');
+    setPending(true);
+    void (async () => {
+      try {
+        const booking = await storeRequest<Booking>(`bookings/${deepLinkVe}`);
+        setSelectedBooking(booking);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Không thể tải đặt chỗ từ liên kết vé.');
+      } finally {
+        setPending(false);
+      }
+    })();
+  }, [deepLinkVe, mode]);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (mode === 'preview') {
@@ -348,13 +373,19 @@ export default function Lookup() {
           </p>
         </div>
       )}
-      {items.length === 0 && mode === 'connected' && !pending && !preview && (
-        <div className="form-status" role="status">
-          Chưa có lịch sử{' '}
-          {kind === 'orders' ? 'đơn hoa' : kind === 'bookings' ? 'đặt chỗ' : 'yêu cầu đặt riêng'} để
-          hiển thị.
-        </div>
-      )}
+      {items.length === 0 &&
+        mode === 'connected' &&
+        !pending &&
+        !preview &&
+        !selectedBooking &&
+        !selectedOrder &&
+        !selected && (
+          <div className="form-status" role="status">
+            Chưa có lịch sử{' '}
+            {kind === 'orders' ? 'đơn hoa' : kind === 'bookings' ? 'đặt chỗ' : 'yêu cầu đặt riêng'}{' '}
+            để hiển thị.
+          </div>
+        )}
       {items.length > 0 && (
         <div className="form-status" role="status">
           <span className="eyebrow">{items.length} KẾT QUẢ</span>
@@ -502,6 +533,9 @@ export default function Lookup() {
             {money(selectedBooking.depositAmount)} · Còn lại:{' '}
             {money(selectedBooking.remainingAmount)}
           </p>
+          <div style={{ margin: '12px 0' }}>
+            <WorkshopTicketView bookingId={selectedBooking.id} />
+          </div>
           <button
             type="button"
             className="button"
