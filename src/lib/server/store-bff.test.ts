@@ -29,7 +29,7 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['shipping', 'locations', 'wards'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['shipping', 'locations', 'custom'], 'GET')).toBeNull();
   });
-  it('allows only public payment readiness and authenticated order-scoped MoMo sandbox routes', () => {
+  it('allows only public payment readiness and authenticated order-scoped sandbox gateway routes', () => {
     const id = '00000000-0000-4000-8000-000000000001';
     expect(resolveStoreRoute(['gateway', 'availability'], 'GET')).toEqual({
       upstream: '/api/gateway/availability',
@@ -81,6 +81,20 @@ describe('store BFF security', () => {
     expect(
       resolveStoreRoute(['management', 'notifications', 'anything', 'reconcile'], 'POST'),
     ).toBeNull();
+  });
+  it('allows only the protected custom-order actions and rejects unknown subpaths', () => {
+    const id = '00000000-0000-4000-8000-000000000001';
+    for (const action of ['quote', 'approve', 'checkout', 'cancel']) {
+      expect(resolveStoreRoute(['custom-orders', id, action], 'POST')).toEqual({
+        upstream: `/api/custom-orders/${id}/${action}`,
+        protected: true,
+        write: true,
+      });
+    }
+    expect(resolveStoreRoute(['custom-orders', id, 'cancel'], 'GET')).toBeNull();
+    expect(resolveStoreRoute(['custom-orders', id, 'refund'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['custom-orders', 'not-a-guid', 'cancel'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['custom-orders', id], 'DELETE')).toBeNull();
   });
   it('requires exact request URL origin', () => {
     expect(

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { PageIntro } from '@/components/site';
 import Lookup from '@/components/lookup';
 export const metadata: Metadata = {
@@ -23,7 +24,15 @@ export default function LookupPage() {
             : 'Một nơi để kiểm tra đơn hoa hoặc buổi hẹn ở xưởng. Chức năng tra cứu thật sẽ mở sau khi backend và tài khoản khách hàng được kết nối.'
         }
       />
-      <Lookup />
+      <Suspense
+        fallback={
+          <div className="lookup-card" role="status">
+            Đang tải lịch sử tài khoản…
+          </div>
+        }
+      >
+        <Lookup />
+      </Suspense>
     </>
   );
 }

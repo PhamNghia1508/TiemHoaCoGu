@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storeRequest } from '@/lib/browser-api';
+import { customStatusLabel, safeHttpUrl } from '@/lib/custom-order-status';
 import {
   AdminDialog,
   AdminEmpty,
@@ -55,6 +56,14 @@ type CustomRequest = {
   requestedCompletionDate?: string | null;
   status: string;
   createdAt: string;
+  productName: string;
+  updatedAt: string;
+  quoteVersion: number;
+  orderId?: string | null;
+  orderCode?: string | null;
+  depositReady: boolean;
+  fullyPaid: boolean;
+  deliveryComplete: boolean;
 };
 type Quote = {
   id: string;
@@ -146,6 +155,33 @@ const money = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value || 0);
 const dateTimeInput = (value?: string | null) => (value ? value.slice(0, 16) : '');
+const customTerminal = (status?: string) =>
+  ['completed', 'cancelled', 'expired'].includes((status ?? '').toLowerCase());
+const customCanStart = (item: CustomRequest | null) =>
+  Boolean(item && item.status.toLowerCase() === 'checkedout' && item.depositReady);
+const customCanComplete = (item: CustomRequest | null) =>
+  Boolean(
+    item &&
+      item.status.toLowerCase() === 'production' &&
+      item.fullyPaid &&
+      item.deliveryComplete,
+  );
+const customCanCancel = (item: CustomRequest | null) =>
+  Boolean(
+    item && !item.orderId && ['requested', 'quoted', 'approved'].includes(item.status.toLowerCase()),
+  );
+const customBlockReason = (item: CustomRequest) => {
+  const status = item.status.toLowerCase();
+  if (status === 'completed') return 'Đã hoàn tất đơn.';
+  if (status === 'cancelled') return 'Yêu cầu đã hủy.';
+  if (status === 'expired') return 'Đơn đã hết hạn thanh toán.';
+  if (status === 'checkedout' && !item.depositReady) return 'Chờ khách thanh toán cọc.';
+  if (status === 'production' && !item.fullyPaid) return 'Chờ khách thanh toán đủ.';
+  if (status === 'production' && item.fullyPaid && !item.deliveryComplete)
+    return 'Chờ giao hàng hoàn tất.';
+  if (['requested', 'quoted', 'approved'].includes(status)) return 'Chờ khách duyệt và tạo đơn.';
+  return 'Chưa đủ điều kiện chuyển bước.';
+};
 const Feedback = ({ error, notice }: { error: string; notice: string }) => (
   <>
     {error && (
@@ -438,28 +474,37 @@ export default function AdminOperations(
       if (detailId === requestDetailId.current) setDetailLoading(false);
     }
   };
+  const reloadRequest = async (id: string) => {
+    const list = await request<CustomRequest[]>('custom-orders');
+    setRequests(list);
+    const fresh = list.find((item) => item.id === id);
+    if (fresh) await selectRequest(fresh);
+  };
   const submitQuote = async (event: FormEvent) => {
     event.preventDefault();
     if (!selectedRequest || readOnly || busy) return;
+    if (selectedRequest.orderId || customTerminal(selectedRequest.status)) {
+      setError('Đơn đã tạo hoặc yêu cầu đã kết thúc; không thể phát hành báo giá mới.');
+      return;
+    }
     setBusy(true);
     setError('');
     try {
-      setQuote(
-        await request<Quote>(
-          `custom-orders/${selectedRequest.id}/quote`,
-          {
-            unitPrice: Number(quoteForm.unitPrice),
-            depositPercent: Number(quoteForm.depositPercent),
-            completionDate: new Date(quoteForm.completionDate).toISOString(),
-            adminNote: quoteForm.adminNote,
-            ...(quoteForm.expiresAt
-              ? { expiresAt: new Date(quoteForm.expiresAt).toISOString() }
-              : {}),
-          },
-          'POST',
-        ),
+      await request<Quote>(
+        `custom-orders/${selectedRequest.id}/quote`,
+        {
+          unitPrice: Number(quoteForm.unitPrice),
+          depositPercent: Number(quoteForm.depositPercent),
+          completionDate: new Date(quoteForm.completionDate).toISOString(),
+          adminNote: quoteForm.adminNote,
+          ...(quoteForm.expiresAt
+            ? { expiresAt: new Date(quoteForm.expiresAt).toISOString() }
+            : {}),
+        },
+        'POST',
       );
       setNotice('Đã phát hành phiên báo giá mới.');
+      await reloadRequest(selectedRequest.id);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -468,7 +513,15 @@ export default function AdminOperations(
   };
   const lifecycleAction = async (action: 'production/start' | 'complete') => {
     if (!selectedRequest || readOnly || busy) return;
-    const label = action === 'complete' ? 'hoàn tất sản xuất' : 'bắt đầu sản xuất';
+    if (action === 'production/start' && !customCanStart(selectedRequest)) {
+      setError('Chỉ bắt đầu sản xuất khi đơn đã tạo và tiền cọc đã được ghi nhận.');
+      return;
+    }
+    if (action === 'complete' && !customCanComplete(selectedRequest)) {
+      setError('Chỉ hoàn tất đơn khi đã thanh toán đủ và giao hàng hoàn tất.');
+      return;
+    }
+    const label = action === 'complete' ? 'hoàn tất đơn' : 'bắt đầu sản xuất';
     if (
       !(await confirm({
         title: `Xác nhận ${label}?`,
@@ -485,6 +538,34 @@ export default function AdminOperations(
         await request<Lifecycle>(`custom-orders/${selectedRequest.id}/${action}`, {}, 'POST'),
       );
       setNotice(`Đã ${label}.`);
+      await reloadRequest(selectedRequest.id);
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const cancelRequest = async () => {
+    if (!selectedRequest || readOnly || busy) return;
+    if (!customCanCancel(selectedRequest)) {
+      setError('Chỉ hủy yêu cầu trước khi tạo đơn.');
+      return;
+    }
+    if (
+      !(await confirm({
+        title: 'Hủy yêu cầu này?',
+        description: 'Báo giá hiện tại cũng sẽ bị hủy và thao tác không thể hoàn tác.',
+        confirmLabel: 'Hủy yêu cầu',
+        destructive: true,
+      }))
+    )
+      return;
+    setBusy(true);
+    setError('');
+    try {
+      await request<CustomRequest>(`custom-orders/${selectedRequest.id}/cancel`, {}, 'POST');
+      setNotice('Đã hủy yêu cầu.');
+      await reloadRequest(selectedRequest.id);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -494,7 +575,8 @@ export default function AdminOperations(
   const filteredRequests = useMemo(
     () =>
       requests.filter((item) => {
-        const haystack = `${item.id} ${item.productId} ${item.description}`.toLowerCase();
+        const haystack =
+          `${item.id} ${item.productId} ${item.productName} ${item.orderCode ?? ''} ${item.description}`.toLowerCase();
         return (
           (!debouncedSearch.trim() || haystack.includes(debouncedSearch.trim().toLowerCase())) &&
           (!statusFilter || item.status === statusFilter)
@@ -506,6 +588,8 @@ export default function AdminOperations(
     () => Array.from(new Set(requests.map((item) => item.status))),
     [requests],
   );
+  const quoteLocked =
+    Boolean(selectedRequest?.orderId) || customTerminal(selectedRequest?.status);
 
   return (
     <section className="admin-card" aria-labelledby="operations-heading">
@@ -745,7 +829,7 @@ export default function AdminOperations(
                 <option value="">Tất cả</option>
                 {statuses.map((status) => (
                   <option key={status} value={status}>
-                    {status}
+                    {customStatusLabel(status)}
                   </option>
                 ))}
               </select>
@@ -778,10 +862,12 @@ export default function AdminOperations(
                       {item.id.slice(0, 8)}
                     </button>
                     <span>
-                      <strong>{item.description.slice(0, 80)}</strong>
+                      <strong>{item.productName || item.description.slice(0, 80)}</strong>
                       <small>
-                        SL {item.quantity} · <StatusBadge status={item.status} /> ·{' '}
+                        SL {item.quantity} ·{' '}
+                        <StatusBadge status={customStatusLabel(item.status)} /> ·{' '}
                         {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                        {item.orderCode ? ` · Đơn ${item.orderCode}` : ''}
                       </small>
                     </span>
                   </li>
@@ -803,19 +889,45 @@ export default function AdminOperations(
                         <strong>ID:</strong> {selectedRequest.id}
                       </p>
                       <p>
-                        <strong>Sản phẩm:</strong> {selectedRequest.productId} ·{' '}
+                        <strong>Sản phẩm:</strong>{' '}
+                        {selectedRequest.productName || selectedRequest.productId} ·{' '}
                         <strong>Số lượng:</strong> {selectedRequest.quantity}
                       </p>
                       <p>
-                        <strong>Ngày cần:</strong>{' '}
+                        <strong>Ngày khách mong nhận:</strong>{' '}
                         {selectedRequest.requestedCompletionDate
                           ? new Date(selectedRequest.requestedCompletionDate).toLocaleDateString(
                               'vi-VN',
                             )
                           : 'Chưa chốt'}
                       </p>
+                      {selectedRequest.orderCode && (
+                        <p>
+                          <strong>Đơn hàng:</strong> {selectedRequest.orderCode}
+                        </p>
+                      )}
                       <p>{selectedRequest.description}</p>
-                      <StatusBadge status={selectedRequest.status} />
+                      <p>
+                        <strong>Ảnh tham khảo:</strong>{' '}
+                        {safeHttpUrl(selectedRequest.referenceImageUrl) ? (
+                          <a
+                            href={safeHttpUrl(selectedRequest.referenceImageUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-link"
+                          >
+                            Mở ảnh tham khảo
+                          </a>
+                        ) : (
+                          'Không có'
+                        )}
+                      </p>
+                      <StatusBadge status={customStatusLabel(selectedRequest.status)} />
+                      {quoteLocked && (
+                        <p className="admin-helper">
+                          Đơn đã tạo hoặc yêu cầu đã kết thúc; không thể phát hành báo giá mới.
+                        </p>
+                      )}
                     </div>
                     <form className="admin-form" onSubmit={submitQuote}>
                       <div className="admin-form-section">
@@ -827,11 +939,12 @@ export default function AdminOperations(
                               required
                               type="number"
                               min="0"
+                              step="1000"
                               value={quoteForm.unitPrice}
                               onChange={(e) =>
                                 setQuoteForm({ ...quoteForm, unitPrice: e.target.value })
                               }
-                              disabled={readOnly}
+                              disabled={readOnly || quoteLocked}
                             />
                           </label>
                           <label className="admin-field">
@@ -844,7 +957,7 @@ export default function AdminOperations(
                               onChange={(e) =>
                                 setQuoteForm({ ...quoteForm, depositPercent: e.target.value })
                               }
-                              disabled={readOnly}
+                              disabled={readOnly || quoteLocked}
                             />
                           </label>
                           <label className="admin-field">
@@ -856,7 +969,7 @@ export default function AdminOperations(
                               onChange={(e) =>
                                 setQuoteForm({ ...quoteForm, completionDate: e.target.value })
                               }
-                              disabled={readOnly}
+                              disabled={readOnly || quoteLocked}
                             />
                           </label>
                           <label className="admin-field">
@@ -867,10 +980,13 @@ export default function AdminOperations(
                               onChange={(e) =>
                                 setQuoteForm({ ...quoteForm, expiresAt: e.target.value })
                               }
-                              disabled={readOnly}
+                              disabled={readOnly || quoteLocked}
                             />
                           </label>
                         </div>
+                        <p className="admin-helper">
+                          Tiền cọc được backend làm tròn tới đồng; đơn giá nên theo bước 1.000 ₫.
+                        </p>
                         <label className="admin-field">
                           <span>Ghi chú *</span>
                           <textarea
@@ -879,11 +995,15 @@ export default function AdminOperations(
                             onChange={(e) =>
                               setQuoteForm({ ...quoteForm, adminNote: e.target.value })
                             }
-                            disabled={readOnly}
+                            disabled={readOnly || quoteLocked}
                           />
                         </label>
                         <div className="admin-form-actions">
-                          <button className="button" disabled={readOnly || busy} type="submit">
+                          <button
+                            className="button"
+                            disabled={readOnly || busy || quoteLocked}
+                            type="submit"
+                          >
                             Phát hành báo giá
                           </button>
                         </div>
@@ -908,7 +1028,7 @@ export default function AdminOperations(
                           <button
                             className="button"
                             type="button"
-                            disabled={readOnly || busy || !quote.orderId}
+                            disabled={readOnly || busy || !customCanStart(selectedRequest)}
                             onClick={() => void lifecycleAction('production/start')}
                           >
                             Bắt đầu sản xuất
@@ -916,12 +1036,16 @@ export default function AdminOperations(
                           <button
                             className="button button-danger"
                             type="button"
-                            disabled={readOnly || busy || !quote.orderId}
+                            disabled={readOnly || busy || !customCanComplete(selectedRequest)}
                             onClick={() => void lifecycleAction('complete')}
                           >
-                            Hoàn tất sản xuất
+                            Hoàn tất đơn
                           </button>
                         </div>
+                        {!customCanStart(selectedRequest) &&
+                          !customCanComplete(selectedRequest) && (
+                            <p className="admin-muted">{customBlockReason(selectedRequest)}</p>
+                          )}
                         {lifecycle && (
                           <p className="admin-muted">
                             Sản xuất: {lifecycle.status} · Giao hàng: {lifecycle.deliveryStatus}
@@ -929,6 +1053,23 @@ export default function AdminOperations(
                         )}
                       </div>
                     )}
+                    <div className="admin-form-section">
+                      <h4>Hủy yêu cầu</h4>
+                      <p className="admin-helper">
+                        Chỉ hủy được trước khi tạo đơn. Sau khi đã tạo đơn, hủy đơn hàng theo quy
+                        trình đơn hàng (chỉ khi chưa thanh toán).
+                      </p>
+                      <div className="admin-actions">
+                        <button
+                          className="button button-outline"
+                          type="button"
+                          disabled={readOnly || busy || !customCanCancel(selectedRequest)}
+                          onClick={() => void cancelRequest()}
+                        >
+                          Hủy yêu cầu
+                        </button>
+                      </div>
+                    </div>
                   </>
                 )}
               </div>

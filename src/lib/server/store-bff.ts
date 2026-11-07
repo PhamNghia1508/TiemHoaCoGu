@@ -52,6 +52,11 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: new RegExp(`^gateway/orders/${GUID}/charge$`), methods: ['POST'], protected: true },
     { pattern: new RegExp(`^gateway/orders/${GUID}/balance$`), methods: ['GET'], protected: true },
     {
+      pattern: new RegExp(`^gateway/orders/${GUID}/simulate-sandbox$`),
+      methods: ['POST'],
+      protected: true,
+    },
+    {
       pattern: new RegExp(`^gateway/reconciliation/${GUID}/query$`),
       methods: ['POST'],
       protected: true,
@@ -77,7 +82,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: /^custom-orders$/, methods: ['GET', 'POST'], protected: true },
     { pattern: new RegExp(`^custom-orders/${GUID}$`), methods: ['GET', 'PUT'], protected: true },
     {
-      pattern: new RegExp(`^custom-orders/${GUID}/(quote|approve|checkout)$`),
+      pattern: new RegExp(`^custom-orders/${GUID}/(quote|approve|checkout|cancel)$`),
       methods: ['POST'],
       protected: true,
     },
