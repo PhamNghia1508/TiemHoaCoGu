@@ -250,6 +250,24 @@ export type Booking = {
   pendingTransactionCode?: string;
 };
 
+/** VNPAY hosted payment link for a workshop booking. */
+export type VnPayCheckout = {
+  bookingId: string;
+  txnRef: string;
+  amount: number;
+  paymentUrl: string;
+  expiresAtUtc: string;
+};
+
+/** Booking payment state derived from the backend (return, sync or IPN). */
+export type VnPaySync = {
+  bookingStatus: string;
+  remainingAmount: number;
+  paid: number;
+  awaitingAmount: number;
+  lastResult: 'paid' | 'canceled' | 'pending' | 'invalid';
+};
+
 export type WorkshopTicket = {
   bookingId: string;
   bookingCode: string;
