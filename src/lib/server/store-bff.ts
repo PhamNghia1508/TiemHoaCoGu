@@ -80,6 +80,11 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: new RegExp(`^bookings/${GUID}$`), methods: ['GET'], protected: true },
     { pattern: new RegExp(`^bookings/${GUID}/ticket$`), methods: ['GET'], protected: true },
     { pattern: new RegExp(`^bookings/${GUID}/cancel$`), methods: ['POST'], protected: true },
+    // VNPAY payment link, return verification and status sync: POST only, owner-scoped GUID,
+    // never a generic VNPAY proxy (the IPN is served by the backend, not by this BFF).
+    { pattern: new RegExp(`^bookings/${GUID}/vnpay$`), methods: ['POST'], protected: true },
+    { pattern: new RegExp(`^bookings/${GUID}/vnpay/return$`), methods: ['POST'], protected: true },
+    { pattern: new RegExp(`^bookings/${GUID}/vnpay/sync$`), methods: ['POST'], protected: true },
     { pattern: /^custom-orders$/, methods: ['GET', 'POST'], protected: true },
     { pattern: new RegExp(`^custom-orders/${GUID}$`), methods: ['GET', 'PUT'], protected: true },
     {
