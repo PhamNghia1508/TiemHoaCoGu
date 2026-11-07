@@ -135,6 +135,14 @@
   gap: 1px;
   background: var(--studio-nearblack);
 }
+.studio-process--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 1024px) {
+  .studio-process--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 .studio-process > li {
   list-style: none;
   padding: 24px;

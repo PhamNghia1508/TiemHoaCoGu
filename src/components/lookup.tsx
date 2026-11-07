@@ -1,18 +1,13 @@
 'use client';
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { useStore } from './store-provider';
+import CustomRequestPanel from './custom-request-panel';
 import { storeRequest } from '@/lib/browser-api';
-import type {
-  CustomQuote,
-  CustomRequest,
-  CustomRequestInput,
-  CustomCheckout,
-  Order,
-  Delivery,
-  Booking,
-} from '@/lib/api/client';
+import { customStatusLabel } from '@/lib/custom-order-status';
+import type { CustomRequest, Order, Delivery, Booking } from '@/lib/api/client';
 
 type CarrierTracking = {
   accepted: boolean;
@@ -23,13 +18,25 @@ type CarrierTracking = {
 };
 type Kind = 'orders' | 'bookings' | 'custom';
 type PreviewResult = { code: string; phone: string };
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const money = (n?: number) => (n === undefined ? '—' : `${Number(n).toLocaleString('vi-VN')} ₫`);
 const date = (s?: string) => (s ? new Date(s).toLocaleString('vi-VN') : '—');
 const lower = (s?: string) => (s ?? '').toLowerCase();
+const isOrder = (item: Order | Booking | CustomRequest): item is Order => 'orderStatus' in item;
+const isBooking = (item: Order | Booking | CustomRequest): item is Booking =>
+  'bookingStatus' in item;
+const isCustomRequest = (item: Order | Booking | CustomRequest): item is CustomRequest =>
+  'quoteVersion' in item;
 
 export default function Lookup() {
   const { mode } = useStore();
-  const [kind, setKind] = useState<Kind>('orders');
+  const search = useSearchParams();
+  const router = useRouter();
+  const [deepLinkId] = useState(() => {
+    const value = search.get('yeu-cau') ?? '';
+    return GUID.test(value) ? value : '';
+  });
+  const [kind, setKind] = useState<Kind>(deepLinkId ? 'custom' : 'orders');
   const [items, setItems] = useState<(Order | Booking | CustomRequest)[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
@@ -37,19 +44,10 @@ export default function Lookup() {
   const [trackingLoading, setTrackingLoading] = useState<Record<string, boolean>>({});
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [selected, setSelected] = useState<CustomRequest | null>(null);
-  const [quote, setQuote] = useState<CustomQuote | null>(null);
-  const [checkout, setCheckout] = useState<CustomCheckout | null>(null);
+  const [customNotice, setCustomNotice] = useState('');
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
-  const [address, setAddress] = useState('');
-  const [revise, setRevise] = useState<CustomRequestInput>({
-    productId: '',
-    quantity: 1,
-    description: '',
-  });
-  const [now] = useState(() => Date.now());
-  const checkoutAttempt = useRef<{ fingerprint: string; key: string } | null>(null);
 
   const clearDetails = () => {
     setSelectedOrder(null);
@@ -58,9 +56,32 @@ export default function Lookup() {
     setTrackingLoading({});
     setSelectedBooking(null);
     setSelected(null);
-    setQuote(null);
-    setCheckout(null);
   };
+
+  useEffect(() => {
+    if (mode !== 'connected' || !deepLinkId) return;
+    let active = true;
+    setPending(true);
+    setError('');
+    storeRequest<CustomRequest[]>('custom-orders')
+      .then((list) => {
+        if (!active) return;
+        setItems(list);
+        const found = list.find((item) => item.id === deepLinkId);
+        if (found) setSelected(found);
+        else setCustomNotice('Không tìm thấy yêu cầu trong tài khoản này.');
+      })
+      .catch((err: unknown) => {
+        if (active) setError(err instanceof Error ? err.message : 'Không thể tải lịch sử.');
+      })
+      .finally(() => {
+        if (active) setPending(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [deepLinkId, mode]);
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (mode === 'preview') {
@@ -75,6 +96,7 @@ export default function Lookup() {
     setPending(true);
     setError('');
     setPreview(null);
+    setCustomNotice('');
     clearDetails();
     try {
       const path =
@@ -85,6 +107,11 @@ export default function Lookup() {
     } finally {
       setPending(false);
     }
+  }
+  function chooseRequest(item: CustomRequest) {
+    setSelected(item);
+    setCustomNotice('');
+    router.replace(`/tra-cuu?yeu-cau=${encodeURIComponent(item.id)}`, { scroll: false });
   }
   async function chooseOrder(order: Order) {
     setSelectedOrder(order);
@@ -111,7 +138,7 @@ export default function Lookup() {
       await storeRequest(`orders/${selectedOrder.id}/cancel`, {}, 'POST');
       const fresh = await storeRequest<Order>(`orders/${selectedOrder.id}`);
       setSelectedOrder(fresh);
-      setItems((xs) => xs.map((x) => ('orderCode' in x && x.id === fresh.id ? fresh : x)));
+      setItems((xs) => xs.map((x) => (isOrder(x) && x.id === fresh.id ? fresh : x)));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể huỷ đơn.');
     } finally {
@@ -169,109 +196,18 @@ export default function Lookup() {
       setPending(false);
     }
   }
-  async function loadQuote(request: CustomRequest) {
-    setSelected(request);
-    setQuote(null);
-    setCheckout(null);
-    setRevise({
-      productId: request.productId,
-      quantity: request.quantity,
-      description: request.description,
-      referenceImageUrl: request.referenceImageUrl || undefined,
-      requestedCompletionDate: request.requestedCompletionDate,
-    });
-    setPending(true);
-    setError('');
-    try {
-      setQuote(await storeRequest<CustomQuote>(`custom-orders/${request.id}`));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể tải báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
-  async function reviseRequest(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!selected || pending || selected.status !== 'Requested') return;
-    setPending(true);
-    setError('');
-    try {
-      const fresh = await storeRequest<CustomRequest>(
-        `custom-orders/${selected.id}`,
-        revise,
-        'PUT',
-      );
-      setSelected(fresh);
-      setItems((xs) => xs.map((x) => (x.id === fresh.id ? fresh : x)));
-      setQuote(await storeRequest<CustomQuote>(`custom-orders/${fresh.id}`));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể cập nhật yêu cầu.');
-    } finally {
-      setPending(false);
-    }
-  }
-  async function approve() {
-    if (
-      !selected ||
-      !quote ||
-      pending ||
-      lower(quote.status) !== 'quoted' ||
-      !currentRevision ||
-      new Date(currentRevision.expiresAt).getTime() <= now
-    )
-      return;
-    setPending(true);
-    setError('');
-    try {
-      setQuote(
-        await storeRequest<CustomQuote>(
-          `custom-orders/${selected.id}/approve`,
-          { version: quote.currentRevision },
-          'POST',
-        ),
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể duyệt báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
-  async function doCheckout(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!selected || !quote || !address.trim() || pending || lower(quote.status) !== 'approved')
-      return setError('Chỉ checkout sau khi báo giá đã được duyệt và có địa chỉ giao hàng.');
-    const fingerprint = JSON.stringify([selected.id, quote.currentRevision, address.trim()]);
-    if (!checkoutAttempt.current || checkoutAttempt.current.fingerprint !== fingerprint)
-      checkoutAttempt.current = { fingerprint, key: crypto.randomUUID() };
-    setPending(true);
-    setError('');
-    try {
-      setCheckout(
-        await storeRequest<CustomCheckout>(
-          `custom-orders/${selected.id}/checkout`,
-          {
-            shippingAddress: address.trim(),
-            note: 'Checkout custom order',
-            idempotencyKey: checkoutAttempt.current.key,
-          },
-          'POST',
-        ),
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể checkout báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
-  const currentRevision = quote?.revisions.find((r) => r.version === quote.currentRevision);
   const label = (item: Order | Booking | CustomRequest) =>
-    'orderCode' in item ? item.orderCode : 'bookingCode' in item ? item.bookingCode : item.id;
+    isOrder(item)
+      ? item.orderCode
+      : isBooking(item)
+        ? item.bookingCode
+        : item.productName || item.id.slice(0, 8);
   const status = (item: Order | Booking | CustomRequest) =>
-    'orderStatus' in item
+    isOrder(item)
       ? item.orderStatus
-      : 'bookingStatus' in item
+      : isBooking(item)
         ? item.bookingStatus
-        : item.status;
+        : customStatusLabel(item.status);
   return (
     <div className="lookup-card">
       <form onSubmit={submit}>
@@ -283,6 +219,7 @@ export default function Lookup() {
             onChange={(e) => {
               setKind(e.target.value as Kind);
               setItems([]);
+              setCustomNotice('');
               clearDetails();
             }}
           >
@@ -299,7 +236,7 @@ export default function Lookup() {
             </label>
             <label className="field">
               Số điện thoại
-              <input name="phone" required pattern="[+0-9 ()\-]{9,20}" placeholder="0901234567" />
+              <input name="phone" required pattern={'[+0-9 \\(\\)\\-]{9,20}'} placeholder="0901234567" />
             </label>
             <p className="form-notice">
               Bản xem trước không kết nối dữ liệu thật. Thông tin chỉ để kiểm tra giao diện.
@@ -339,6 +276,11 @@ export default function Lookup() {
           {error}
         </div>
       )}
+      {customNotice && (
+        <div className="form-status" role="status">
+          {customNotice}
+        </div>
+      )}
       {preview && (
         <div className="form-status" role="status">
           <span className="eyebrow">TRA CỨU XEM TRƯỚC</span>
@@ -348,7 +290,7 @@ export default function Lookup() {
           </p>
         </div>
       )}
-      {items.length === 0 && mode === 'connected' && !pending && !preview && (
+      {items.length === 0 && mode === 'connected' && !pending && !preview && !customNotice && (
         <div className="form-status" role="status">
           Chưa có lịch sử{' '}
           {kind === 'orders' ? 'đơn hoa' : kind === 'bookings' ? 'đặt chỗ' : 'yêu cầu đặt riêng'} để
@@ -363,7 +305,7 @@ export default function Lookup() {
               <strong>{label(item)}</strong>
               <br />
               <span>Trạng thái: {status(item)}</span>
-              {'orderCode' in item && (
+              {'orderStatus' in item && (
                 <>
                   <br />
                   <span>
@@ -379,7 +321,7 @@ export default function Lookup() {
                   </button>
                 </>
               )}
-              {'bookingCode' in item && (
+              {'bookingStatus' in item && (
                 <>
                   <br />
                   <span>
@@ -395,11 +337,11 @@ export default function Lookup() {
                   </button>
                 </>
               )}
-              {'description' in item && (
+              {isCustomRequest(item) && (
                 <>
                   <br />
-                  <button type="button" className="text-link" onClick={() => void loadQuote(item)}>
-                    Chọn yêu cầu & tải báo giá
+                  <button type="button" className="text-link" onClick={() => chooseRequest(item)}>
+                    {selected?.id === item.id ? 'Đang xem yêu cầu này' : 'Xem chi tiết yêu cầu'}
                   </button>
                 </>
               )}
@@ -516,93 +458,14 @@ export default function Lookup() {
         </div>
       )}
       {selected && (
-        <div className="form-status" role="region" aria-label="Báo giá yêu cầu đã chọn">
-          <strong>Yêu cầu {selected.id}</strong>
-          <p>Trạng thái yêu cầu: {selected.status}</p>
-          {selected.status === 'Requested' && (
-            <form onSubmit={reviseRequest}>
-              <label className="field">
-                Mô tả cập nhật
-                <textarea
-                  value={revise.description}
-                  onChange={(e) => setRevise({ ...revise, description: e.target.value })}
-                  required
-                />
-              </label>
-              <label className="field">
-                Số lượng
-                <input
-                  type="number"
-                  min="1"
-                  max="1000"
-                  value={revise.quantity}
-                  onChange={(e) => setRevise({ ...revise, quantity: Number(e.target.value) })}
-                  required
-                />
-              </label>
-              <button type="submit" className="button" disabled={pending}>
-                Cập nhật yêu cầu
-              </button>
-            </form>
-          )}
-          <button
-            type="button"
-            className="text-link"
-            disabled={pending}
-            onClick={() => void loadQuote(selected)}
-          >
-            Tải lại báo giá
-          </button>
-          {quote && (
-            <>
-              <p>
-                Báo giá: {quote.status} · Phiên bản hiện tại: {quote.currentRevision}
-              </p>
-              {currentRevision && (
-                <p>
-                  Tổng: {money(currentRevision.totalAmount)} · Đặt cọc:{' '}
-                  {money(currentRevision.depositAmount)} · Hạn: {date(currentRevision.expiresAt)}
-                  <br />
-                  Ghi chú: {currentRevision.adminNote || '—'}
-                </p>
-              )}
-              <button
-                type="button"
-                className="button"
-                disabled={
-                  pending ||
-                  lower(quote.status) !== 'quoted' ||
-                  !currentRevision ||
-                  new Date(currentRevision.expiresAt).getTime() <= now
-                }
-                onClick={() => void approve()}
-              >
-                Duyệt phiên bản hiện tại
-              </button>
-              {lower(quote.status) === 'approved' && !checkout && (
-                <form onSubmit={doCheckout}>
-                  <label className="field">
-                    Địa chỉ giao hàng *
-                    <textarea
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <button type="submit" className="button" disabled={pending}>
-                    Checkout (chưa thanh toán)
-                  </button>
-                </form>
-              )}
-              {checkout && (
-                <p>
-                  Đã tạo đơn <strong>{checkout.orderCode}</strong>. Trạng thái thanh toán:{' '}
-                  {checkout.paymentStatus}.
-                </p>
-              )}
-            </>
-          )}
-        </div>
+        <CustomRequestPanel
+          key={selected.id}
+          request={selected}
+          onChanged={(fresh) => {
+            setSelected(fresh);
+            setItems((xs) => xs.map((x) => (x.id === fresh.id ? fresh : x)));
+          }}
+        />
       )}
       <Link href="/hoi-dap" className="text-link">
         Có một câu hỏi khác? <ArrowUpRight size={16} />

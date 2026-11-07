@@ -12,6 +12,12 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
+import {
+  customStatusLabel,
+  customStatusTone,
+  safeHttpUrl,
+  type CustomStatusTone,
+} from '@/lib/custom-order-status';
 
 type CustomRequestItem = {
   id: string;
@@ -22,6 +28,21 @@ type CustomRequestItem = {
   requestedCompletionDate?: string;
   status: string;
   createdAt: string;
+  productName: string;
+  updatedAt: string;
+  quoteVersion: number;
+  orderId?: string | null;
+  orderCode?: string | null;
+  depositReady: boolean;
+  fullyPaid: boolean;
+  deliveryComplete: boolean;
+};
+
+const toneClass: Record<CustomStatusTone, string> = {
+  waiting: 'badge-amber',
+  active: 'badge-processing',
+  done: 'badge-completed',
+  stopped: 'badge-cancelled',
 };
 
 function formatDate(iso?: string) {
@@ -37,21 +58,17 @@ function formatDate(iso?: string) {
   }
 }
 
-function statusBadge(status: string) {
-  switch (status.toLowerCase()) {
-    case 'inproduction':
-      return { label: 'Đang bó hoa', className: 'badge-processing' };
-    case 'approved':
-      return { label: 'Đã duyệt / Sẵn sàng cắm', className: 'badge-confirmed' };
-    case 'completed':
-      return { label: 'Đã hoàn tất', className: 'badge-completed' };
-    case 'quoted':
-      return { label: 'Đang chờ khách duyệt', className: 'badge-amber' };
-    case 'submitted':
-      return { label: 'Chờ Admin báo giá', className: 'badge-amber' };
-    default:
-      return { label: status, className: 'badge-default' };
-  }
+function blockReason(item: CustomRequestItem): string {
+  const status = item.status.toLowerCase();
+  if (status === 'completed') return 'Đã hoàn tất.';
+  if (status === 'cancelled') return 'Yêu cầu đã hủy.';
+  if (status === 'expired') return 'Đơn đã hết hạn thanh toán.';
+  if (status === 'checkedout' && !item.depositReady) return 'Chờ khách thanh toán cọc.';
+  if (status === 'production' && !item.fullyPaid) return 'Chờ khách thanh toán đủ.';
+  if (status === 'production' && item.fullyPaid && !item.deliveryComplete)
+    return 'Chờ giao hàng hoàn tất.';
+  if (['requested', 'quoted', 'approved'].includes(status)) return 'Chờ khách duyệt và tạo đơn.';
+  return 'Chưa đủ điều kiện chuyển bước.';
 }
 
 export default function StaffCustomOrders() {
@@ -84,14 +101,10 @@ export default function StaffCustomOrders() {
     setSuccessMsg('');
     try {
       await storeRequest(`custom-orders/${id}/production/start`, {}, 'POST');
-      setSuccessMsg('Đã ghi nhận bắt đầu bó hoa đặt riêng!');
+      setSuccessMsg('Đã ghi nhận bắt đầu sản xuất.');
       await loadRequests();
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'Chưa thể bắt đầu (kiểm tra tiền cọc hoặc trạng thái duyệt).',
-      );
+      setError(err instanceof Error ? err.message : 'Chưa thể bắt đầu sản xuất.');
     } finally {
       setActionBusy(null);
     }
@@ -103,10 +116,10 @@ export default function StaffCustomOrders() {
     setSuccessMsg('');
     try {
       await storeRequest(`custom-orders/${id}/complete`, {}, 'POST');
-      setSuccessMsg('Đã ghi nhận hoàn tất bó hoa đặt riêng!');
+      setSuccessMsg('Đã ghi nhận hoàn tất đơn.');
       await loadRequests();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể hoàn tất bó hoa.');
+      setError(err instanceof Error ? err.message : 'Không thể hoàn tất đơn.');
     } finally {
       setActionBusy(null);
     }
@@ -114,7 +127,6 @@ export default function StaffCustomOrders() {
 
   return (
     <div className="staff-view-container">
-      {/* Notifications */}
       {error && (
         <div className="staff-alert error" role="alert">
           <AlertCircle size={18} />
@@ -126,7 +138,7 @@ export default function StaffCustomOrders() {
       )}
 
       {successMsg && (
-        <div className="staff-alert success" role="alert">
+        <div className="staff-alert success" role="status">
           <CheckCircle2 size={18} />
           <span>{successMsg}</span>
           <button type="button" onClick={() => setSuccessMsg('')} className="staff-alert-close">
@@ -139,7 +151,8 @@ export default function StaffCustomOrders() {
         <div>
           <h3>Tiến độ Bó hoa Đặt riêng (Crafting Studio)</h3>
           <p className="staff-muted">
-            Thợ cắm hoa nhận các đơn khách đã chốt cọc để tiến hành cắm hoa và bàn giao.
+            Chỉ bắt đầu khi đơn đã tạo và cọc đã ghi nhận; chỉ hoàn tất khi đã thanh toán đủ và giao
+            hàng xong.
           </p>
         </div>
         <button
@@ -169,42 +182,50 @@ export default function StaffCustomOrders() {
       ) : (
         <div className="staff-custom-grid">
           {requests.map((item) => {
-            const badge = statusBadge(item.status);
             const isBusy = actionBusy === item.id;
-            const canStart = item.status.toLowerCase() === 'approved';
-            const canComplete = item.status.toLowerCase() === 'inproduction';
+            const status = item.status.toLowerCase();
+            const canStart = status === 'checkedout' && item.depositReady;
+            const canComplete =
+              status === 'production' && item.fullyPaid && item.deliveryComplete;
+            const referenceUrl = safeHttpUrl(item.referenceImageUrl);
+            const reason = blockReason(item);
 
             return (
               <div key={item.id} className="staff-custom-card">
                 <div className="staff-custom-header">
                   <span className="staff-mono">Mã #{item.id.slice(0, 8)}</span>
-                  <span className={`staff-badge ${badge.className}`}>{badge.label}</span>
+                  <span
+                    className={`staff-badge ${toneClass[customStatusTone(item.status)]}`}
+                  >
+                    {customStatusLabel(item.status)}
+                  </span>
                 </div>
 
                 <div className="staff-custom-body">
                   <p className="staff-custom-desc">
-                    {item.description || 'Khách đặt hoa sáp thiết kế riêng theo yêu cầu.'}
+                    <strong>{item.productName || item.productId}</strong>
                   </p>
+                  <p className="staff-custom-desc">{item.description || 'Không có mô tả.'}</p>
 
                   <div className="staff-custom-details-meta">
                     <span>
-                      <Layers size={14} /> Số lượng: <strong>{item.quantity} bó</strong>
+                      <Layers size={14} /> Số lượng: <strong>{item.quantity}</strong>
                     </span>
                     <span>
-                      <Calendar size={14} /> Hẹn hoàn tất:{' '}
+                      <Calendar size={14} /> Ngày khách mong nhận:{' '}
                       <strong>{formatDate(item.requestedCompletionDate)}</strong>
                     </span>
+                    {item.orderCode && (
+                      <span>
+                        Đơn hàng: <strong>{item.orderCode}</strong>
+                      </span>
+                    )}
                   </div>
 
-                  {item.referenceImageUrl && (
+                  {referenceUrl && (
                     <div className="staff-custom-img-preview">
                       <ImageIcon size={14} />
-                      <a
-                        href={item.referenceImageUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-link"
-                      >
+                      <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className="text-link">
                         Xem ảnh mẫu khách gửi
                       </a>
                     </div>
@@ -219,7 +240,7 @@ export default function StaffCustomOrders() {
                       onClick={() => void handleStartProduction(item.id)}
                       disabled={isBusy}
                     >
-                      <Play size={14} /> Bắt đầu bó hoa
+                      <Play size={14} /> Bắt đầu sản xuất
                     </button>
                   )}
 
@@ -230,15 +251,13 @@ export default function StaffCustomOrders() {
                       onClick={() => void handleComplete(item.id)}
                       disabled={isBusy}
                     >
-                      <CheckCircle2 size={14} /> Hoàn tất cắm hoa
+                      <CheckCircle2 size={14} /> Hoàn tất đơn
                     </button>
                   )}
 
                   {!canStart && !canComplete && (
                     <span className="staff-muted" style={{ fontSize: '13px' }}>
-                      {item.status.toLowerCase() === 'completed'
-                        ? '✓ Đã xong bó hoa'
-                        : 'Chờ khách chốt cọc'}
+                      {reason}
                     </span>
                   )}
                 </div>
