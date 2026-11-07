@@ -246,6 +246,41 @@ export type Booking = {
   holdExpiresAt: string;
   checkedInAt?: string;
   createdAt: string;
+  pendingVerificationAmount: number;
+  pendingTransactionCode?: string;
+};
+
+export type WorkshopTicket = {
+  bookingId: string;
+  bookingCode: string;
+  customerName: string;
+  ticketCount: number;
+  workshopName: string;
+  sessionStartUtc: string;
+  sessionEndUtc: string;
+  location: string;
+  bookingStatus: string;
+  checkedInAt?: string;
+  issued: boolean;
+  qrPngBase64?: string;
+  checkInUrl?: string;
+};
+
+export type TicketScan = {
+  bookingId: string;
+  bookingCode: string;
+  customerName: string;
+  ticketCount: number;
+  workshopName: string;
+  sessionId: string;
+  sessionStartUtc: string;
+  sessionEndUtc: string;
+  location: string;
+  bookingStatus: string;
+  checkedInAt?: string;
+  fullyPaid: boolean;
+  canCheckIn: boolean;
+  reason?: string;
 };
 
 export const catalogApi = (o?: ApiClientOptions) => ({

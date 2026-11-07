@@ -29,7 +29,7 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['shipping', 'locations', 'wards'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['shipping', 'locations', 'custom'], 'GET')).toBeNull();
   });
-  it('allows only public payment readiness and authenticated order-scoped MoMo sandbox routes', () => {
+  it('allows only public payment readiness and authenticated order-scoped sandbox gateway routes', () => {
     const id = '00000000-0000-4000-8000-000000000001';
     expect(resolveStoreRoute(['gateway', 'availability'], 'GET')).toEqual({
       upstream: '/api/gateway/availability',
@@ -164,5 +164,48 @@ describe('store BFF security', () => {
     } finally {
       vi.unstubAllEnvs();
     }
+  });
+  it('allows workshop ticket and staff check-in routes and rejects malformed tokens and other subpaths', () => {
+    const guid = '00000000-0000-4000-8000-000000000001';
+    const token = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn_-A'; // 43 chars
+    expect(resolveStoreRoute(['bookings', guid, 'ticket'], 'GET')).toEqual({
+      upstream: `/api/bookings/${guid}/ticket`,
+      protected: true,
+      write: false,
+    });
+    expect(resolveStoreRoute(['bookings', 'tickets', token], 'GET')).toEqual({
+      upstream: `/api/bookings/tickets/${token}`,
+      protected: true,
+      write: false,
+    });
+    expect(resolveStoreRoute(['bookings', 'tickets', token, 'check-in'], 'POST')).toEqual({
+      upstream: `/api/bookings/tickets/${token}/check-in`,
+      protected: true,
+      write: true,
+    });
+    expect(resolveStoreRoute(['payments', 'booking', guid, 'confirm'], 'POST')).toEqual({
+      upstream: `/api/payments/booking/${guid}/confirm`,
+      protected: true,
+      write: true,
+    });
+    expect(resolveStoreRoute(['bookings', guid, 'ticket'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['bookings', 'tickets', token], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['bookings', 'tickets', token, 'check-in'], 'GET')).toBeNull();
+    expect(resolveStoreRoute(['payments', 'booking', guid, 'confirm'], 'GET')).toBeNull();
+    for (const bad of [
+      'too-short',
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn_-AB', // 44
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn+/A',
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn==A',
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmn_-A',
+      '../AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    ]) {
+      expect(resolveStoreRoute(['bookings', 'tickets', bad], 'GET')).toBeNull();
+      expect(resolveStoreRoute(['bookings', 'tickets', bad, 'check-in'], 'POST')).toBeNull();
+    }
+    expect(resolveStoreRoute(['bookings', 'tickets', token, 'other'], 'GET')).toBeNull();
+    expect(resolveStoreRoute(['bookings', 'tickets'], 'GET')).toBeNull();
+    expect(resolveStoreRoute(['payments', 'booking', guid, 'confirm', 'extra'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['payments', 'booking', 'not-a-guid', 'confirm'], 'POST')).toBeNull();
   });
 });
