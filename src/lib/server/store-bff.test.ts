@@ -29,7 +29,7 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['shipping', 'locations', 'wards'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['shipping', 'locations', 'custom'], 'GET')).toBeNull();
   });
-  it('allows only public payment readiness and authenticated order-scoped sandbox gateway routes', () => {
+  it('allows only public payment readiness and authenticated order-scoped MoMo sandbox routes', () => {
     const id = '00000000-0000-4000-8000-000000000001';
     expect(resolveStoreRoute(['gateway', 'availability'], 'GET')).toEqual({
       upstream: '/api/gateway/availability',

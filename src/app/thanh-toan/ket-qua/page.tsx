@@ -12,7 +12,7 @@ export default function PaymentResultPage() {
   return (
     <>
       <PageIntro
-        eyebrow="CỔNG THANH TOÁN SANDBOX / ĐỐI CHIẾU"
+        eyebrow="MO MO SANDBOX / ĐỐI CHIẾU"
         title={
           <>
             Để hệ thống xác nhận,
@@ -20,7 +20,7 @@ export default function PaymentResultPage() {
             <em>rồi mình yên tâm.</em>
           </>
         }
-        description="Trang này đọc số tiền đã ghi sổ từ tài khoản của bạn. Tham số quay về từ cổng thanh toán không được xem là biên nhận thanh toán."
+        description="Trang này đọc số tiền đã ghi sổ từ tài khoản của bạn. Tham số quay về từ MoMo không được xem là biên nhận thanh toán."
       />
       <Suspense
         fallback={

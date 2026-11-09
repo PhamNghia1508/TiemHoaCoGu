@@ -39,5 +39,3 @@ docs/*credentials*.md
 *.pyc
 __pycache__/
 scratch*
-
-.vs/
