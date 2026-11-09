@@ -3,7 +3,15 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { CheckCircle2, XCircle, Clock, ArrowRight, RotateCcw, ShoppingBag, ShieldCheck } from 'lucide-react';
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  ArrowRight,
+  RotateCcw,
+  ShoppingBag,
+  ShieldCheck,
+} from 'lucide-react';
 import { money } from '@/lib/catalog';
 import { storeRequest } from '@/lib/browser-api';
 
@@ -95,7 +103,10 @@ export default function PaymentResult() {
   );
   const canceled = responseCode === '24';
   const waiting = Boolean(
-    balance && !confirmed && !canceled && (balance.pendingAmount > 0 || balance.remainingAmount > 0),
+    balance &&
+    !confirmed &&
+    !canceled &&
+    (balance.pendingAmount > 0 || balance.remainingAmount > 0),
   );
 
   return (
@@ -142,11 +153,16 @@ export default function PaymentResult() {
             <p style={{ marginTop: '8px', fontSize: '15px', color: '#334155' }}>
               Hệ thống Backend đã xác nhận giao dịch qua thẻ <strong>{bankCode}</strong>.
               {balance && (
-                <> Đã ghi nhận thanh toán <strong>{money(balance.paidAmount || balance.totalAmount)}</strong>.</>
+                <>
+                  {' '}
+                  Đã ghi nhận thanh toán{' '}
+                  <strong>{money(balance.paidAmount || balance.totalAmount)}</strong>.
+                </>
               )}
             </p>
             <p style={{ fontSize: '13.5px', color: '#64748b' }}>
-              Đơn hàng của bạn đã chuyển sang trạng thái <strong>Đã thanh toán (Paid)</strong> và đang được xưởng chuẩn bị hoa.
+              Đơn hàng của bạn đã chuyển sang trạng thái <strong>Đã thanh toán (Paid)</strong> và
+              đang được xưởng chuẩn bị hoa.
             </p>
           </>
         ) : canceled ? (
@@ -158,10 +174,12 @@ export default function PaymentResult() {
               </h2>
             </div>
             <p style={{ marginTop: '8px', fontSize: '15px', color: '#334155' }}>
-              Khách hàng đã hủy yêu cầu thanh toán trên cổng VNPAY (Mã phản hồi: <strong>24</strong>).
+              Khách hàng đã hủy yêu cầu thanh toán trên cổng VNPAY (Mã phản hồi: <strong>24</strong>
+              ).
             </p>
             <p style={{ fontSize: '13.5px', color: '#64748b' }}>
-              Đơn hàng của bạn vẫn được lưu an toàn trong hệ thống ở trạng thái <strong>Chưa thanh toán (Unpaid)</strong>. Bạn có thể thanh toán lại bất cứ lúc nào.
+              Đơn hàng của bạn vẫn được lưu an toàn trong hệ thống ở trạng thái{' '}
+              <strong>Chưa thanh toán (Unpaid)</strong>. Bạn có thể thanh toán lại bất cứ lúc nào.
             </p>
           </>
         ) : balance && waiting ? (
@@ -173,11 +191,15 @@ export default function PaymentResult() {
               </h2>
             </div>
             <p style={{ marginTop: '8px', fontSize: '15px', color: '#334155' }}>
-              Đã ghi nhận {money(balance.paidAmount)}; còn lại <strong>{money(balance.remainingAmount)}</strong>.
-              {balance.pendingAmount > 0 ? ` Có ${money(balance.pendingAmount)} đang chờ xử lý.` : ''}
+              Đã ghi nhận {money(balance.paidAmount)}; còn lại{' '}
+              <strong>{money(balance.remainingAmount)}</strong>.
+              {balance.pendingAmount > 0
+                ? ` Có ${money(balance.pendingAmount)} đang chờ xử lý.`
+                : ''}
             </p>
             <p style={{ fontSize: '13.5px', color: '#64748b' }}>
-              Nếu bạn vừa thực hiện thao tác ở cổng thanh toán, vui lòng bấm &ldquo;Cập nhật trạng thái&rdquo; bên dưới để đối chiếu kết quả mới nhất.
+              Nếu bạn vừa thực hiện thao tác ở cổng thanh toán, vui lòng bấm &ldquo;Cập nhật trạng
+              thái&rdquo; bên dưới để đối chiếu kết quả mới nhất.
             </p>
           </>
         ) : (
@@ -195,8 +217,8 @@ export default function PaymentResult() {
               fontSize: '13.5px',
             }}
           >
-            Mã đơn: <strong style={{ fontFamily: 'monospace' }}>{balance.orderId}</strong> · Tổng tiền:{' '}
-            <strong style={{ color: '#0f172a' }}>{money(balance.totalAmount)}</strong>
+            Mã đơn: <strong style={{ fontFamily: 'monospace' }}>{balance.orderId}</strong> · Tổng
+            tiền: <strong style={{ color: '#0f172a' }}>{money(balance.totalAmount)}</strong>
           </div>
         )}
 
@@ -216,7 +238,8 @@ export default function PaymentResult() {
               disabled={retrying}
               onClick={() => void handleRetryPay()}
             >
-              <RotateCcw size={16} /> {retrying ? 'Đang chuyển sang VNPAY…' : 'Thử thanh toán lại ngay'}
+              <RotateCcw size={16} />{' '}
+              {retrying ? 'Đang chuyển sang VNPAY…' : 'Thử thanh toán lại ngay'}
             </button>
           )}
 
@@ -233,11 +256,19 @@ export default function PaymentResult() {
             Cập nhật trạng thái
           </button>
 
-          <Link href="/tra-cuu" className="text-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <Link
+            href="/tra-cuu"
+            className="text-link"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
             Xem đơn trong lịch sử <ArrowRight size={15} />
           </Link>
 
-          <Link href="/cua-tiem" className="text-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <Link
+            href="/cua-tiem"
+            className="text-link"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+          >
             <ShoppingBag size={15} /> Tiếp tục chọn hoa
           </Link>
         </div>
