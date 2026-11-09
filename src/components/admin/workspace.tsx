@@ -123,7 +123,7 @@ const groups: { label: string; items: NavItem[] }[] = [
       {
         key: 'payments',
         label: 'Thanh toán thử nghiệm',
-        description: 'Chỉ đối soát MoMo sandbox; không thu tiền hoặc hoàn tiền thật.',
+        description: 'Đối soát cổng thanh toán sandbox; không thu tiền hoặc hoàn tiền thật.',
         Icon: CircleDollarSign,
       },
       {
