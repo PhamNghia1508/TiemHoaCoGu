@@ -277,7 +277,8 @@ export default function Checkout() {
       if (
         !redirect ||
         redirect.protocol !== 'https:' ||
-        (redirect.hostname !== 'test-payment.momo.vn' && redirect.hostname !== 'sandbox.vnpayment.vn')
+        (redirect.hostname !== 'test-payment.momo.vn' &&
+          redirect.hostname !== 'sandbox.vnpayment.vn')
       )
         throw new Error(
           'Cổng thanh toán sandbox chưa trả về đường dẫn kiểm thử hợp lệ. Đừng gửi lại đơn; hãy kiểm tra trạng thái đơn.',
