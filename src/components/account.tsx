@@ -67,6 +67,8 @@ type Booking = {
   holdExpiresAt: string;
   checkedInAt?: string;
   createdAt: string;
+  pendingVerificationAmount?: number;
+  pendingTransactionCode?: string;
 };
 type WorkshopItem = {
   id: string;
@@ -852,9 +854,11 @@ export default function Account() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              gap: '8px',
+              flexWrap: 'wrap',
             }}
           >
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
               {isPending && (
                 <Link
                   href={`/thanh-toan?bookingId=${booking.id}`}
@@ -892,6 +896,13 @@ export default function Account() {
                 </button>
               ) : null}
             </div>
+            <Link
+              href={`/tra-cuu?ve=${booking.id}`}
+              className="account-btn-secondary"
+              style={{ padding: '6px 12px', fontSize: '12px' }}
+            >
+              Xem vé <ExternalLink size={13} aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </article>
@@ -1579,51 +1590,61 @@ export default function Account() {
                                 )}
                               </div>
 
-                              {/* Actions if pending */}
-                              {isPending && (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    gap: '10px',
-                                    justifyContent: 'flex-end',
-                                    paddingTop: '6px',
-                                    borderTop: '1px solid #f1f5f9',
-                                  }}
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  gap: '10px',
+                                  justifyContent: 'flex-end',
+                                  alignItems: 'center',
+                                  flexWrap: 'wrap',
+                                  paddingTop: '6px',
+                                  borderTop: '1px solid #f1f5f9',
+                                }}
+                              >
+                                <Link
+                                  href={`/tra-cuu?ve=${b.id}`}
+                                  className="account-btn-secondary"
+                                  style={{ padding: '6px 12px', fontSize: '12px' }}
                                 >
-                                  <Link
-                                    href={`/thanh-toan?bookingId=${b.id}`}
-                                    className="account-btn-primary"
-                                    style={{
-                                      padding: '6px 14px',
-                                      fontSize: '12px',
-                                      fontWeight: 700,
-                                      background: '#243db5',
-                                      color: '#ffffff',
-                                      borderRadius: '8px',
-                                      textDecoration: 'none',
-                                      display: 'inline-flex',
-                                      alignItems: 'center',
-                                      gap: '4px',
-                                    }}
-                                  >
-                                    Thanh toán ngay →
-                                  </Link>
-                                  <button
-                                    type="button"
-                                    className="account-btn-secondary"
-                                    style={{
-                                      padding: '6px 12px',
-                                      fontSize: '12px',
-                                      color: '#dc2626',
-                                      borderColor: '#fca5a5',
-                                    }}
-                                    onClick={() => void handleCancelBooking(b.id)}
-                                    disabled={busy}
-                                  >
-                                    Hủy giữ chỗ
-                                  </button>
-                                </div>
-                              )}
+                                  Xem vé
+                                </Link>
+                                {isPending && (
+                                  <>
+                                    <Link
+                                      href={`/thanh-toan?bookingId=${b.id}`}
+                                      className="account-btn-primary"
+                                      style={{
+                                        padding: '6px 14px',
+                                        fontSize: '12px',
+                                        fontWeight: 700,
+                                        background: '#243db5',
+                                        color: '#ffffff',
+                                        borderRadius: '8px',
+                                        textDecoration: 'none',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '4px',
+                                      }}
+                                    >
+                                      Thanh toán ngay →
+                                    </Link>
+                                    <button
+                                      type="button"
+                                      className="account-btn-secondary"
+                                      style={{
+                                        padding: '6px 12px',
+                                        fontSize: '12px',
+                                        color: '#dc2626',
+                                        borderColor: '#fca5a5',
+                                      }}
+                                      onClick={() => void handleCancelBooking(b.id)}
+                                      disabled={busy}
+                                    >
+                                      Hủy giữ chỗ
+                                    </button>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           );
                         })}

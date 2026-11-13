@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
   Flower2,
   Package,
@@ -12,12 +12,11 @@ import {
   LogOut,
   ArrowUpRight,
   ShieldAlert,
-  Lock,
   ArrowRight,
   User,
-  CheckCircle2,
   AlertCircle,
   RefreshCw,
+  ScanLine,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
 import type { StaffUser } from './types';
@@ -25,14 +24,22 @@ import StaffOrderManager from './order-manager';
 import StaffWorkshopRoster from './workshop-roster';
 import StaffCustomOrders from './custom-orders';
 import StaffCounterPos from './counter-pos';
+import StaffTicketCheckIn from './ticket-check-in';
 
 export default function StaffWorkspace() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const veParam = searchParams.get('ve') || '';
   const [user, setUser] = useState<StaffUser | null>(null);
   const [authStatus, setAuthStatus] = useState<
     'loading' | 'unauthenticated' | 'forbidden' | 'authorized'
   >('loading');
-  const [activeTab, setActiveTab] = useState<'orders' | 'workshops' | 'custom' | 'pos'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'workshops' | 'checkin' | 'custom' | 'pos'>(
+    veParam ? 'checkin' : 'orders',
+  );
+
+  useEffect(() => {
+    if (veParam) setActiveTab('checkin');
+  }, [veParam]);
 
   // Staff Login Form states
   const [loginEmail, setLoginEmail] = useState('');
@@ -237,6 +244,14 @@ export default function StaffWorkspace() {
             </button>
             <button
               type="button"
+              className={`staff-nav-tab ${activeTab === 'checkin' ? 'active' : ''}`}
+              onClick={() => setActiveTab('checkin')}
+            >
+              <ScanLine size={17} />
+              <span>Quét vé</span>
+            </button>
+            <button
+              type="button"
               className={`staff-nav-tab ${activeTab === 'custom' ? 'active' : ''}`}
               onClick={() => setActiveTab('custom')}
             >
@@ -281,6 +296,7 @@ export default function StaffWorkspace() {
         <div className="staff-content-wrapper">
           {activeTab === 'orders' && <StaffOrderManager />}
           {activeTab === 'workshops' && <StaffWorkshopRoster />}
+          {activeTab === 'checkin' && <StaffTicketCheckIn initialToken={veParam} />}
           {activeTab === 'custom' && <StaffCustomOrders />}
           {activeTab === 'pos' && <StaffCounterPos />}
         </div>

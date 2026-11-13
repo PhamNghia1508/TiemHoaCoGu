@@ -1497,3 +1497,77 @@ body:has(.staff-guard-screen) :is(.announcement, .site-header, .site-footer) {
 .floral-action-link.close-link {
   color: #60675f;
 }
+
+/* Staff ticket check-in (scoped) */
+.staff-checkin-view {
+  display: grid;
+  gap: 16px;
+}
+
+.staff-checkin-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.staff-checkin-form .staff-field {
+  min-width: min(100%, 320px);
+}
+
+.staff-checkin-camera-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.staff-checkin-video-wrap {
+  margin-top: 14px;
+  border: 1px solid #dfe2d8;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1c2326;
+  max-width: 420px;
+}
+
+.staff-checkin-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.staff-checkin-result {
+  margin-top: 0;
+}
+
+.staff-checkin-guest-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.staff-checkin-details {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: #334155;
+}
+
+.staff-checkin-success {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: #047857;
+}
+
+.staff-checkin-success strong {
+  color: #065f46;
+  font-size: 16px;
+}

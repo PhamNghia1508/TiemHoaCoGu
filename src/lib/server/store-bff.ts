@@ -78,6 +78,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     // Booking writes intentionally require auth so a user's history is reliable.
     { pattern: new RegExp(`^bookings/sessions/${GUID}$`), methods: ['POST'], protected: true },
     { pattern: new RegExp(`^bookings/${GUID}$`), methods: ['GET'], protected: true },
+    { pattern: new RegExp(`^bookings/${GUID}/ticket$`), methods: ['GET'], protected: true },
     { pattern: new RegExp(`^bookings/${GUID}/cancel$`), methods: ['POST'], protected: true },
     { pattern: /^custom-orders$/, methods: ['GET', 'POST'], protected: true },
     { pattern: new RegExp(`^custom-orders/${GUID}$`), methods: ['GET', 'PUT'], protected: true },
@@ -94,12 +95,16 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
       return { upstream: `/api/${p}`, protected: candidate.protected, write: WRITE_METHODS.has(m) };
   }
 
+  const TICKET_TOKEN = '[A-Za-z0-9_-]{43}';
   const operational: Array<{ pattern: RegExp; methods: string[] }> = [
     { pattern: new RegExp(`^orders/${GUID}/status$`), methods: ['POST'] },
     { pattern: new RegExp(`^orders/${GUID}/deliveries/${GUID}/status$`), methods: ['POST'] },
     { pattern: new RegExp(`^orders/staff/${GUID}/deliveries$`), methods: ['GET'] },
     { pattern: new RegExp(`^bookings/${GUID}/(check-in|no-show)$`), methods: ['POST'] },
+    { pattern: new RegExp(`^bookings/tickets/${TICKET_TOKEN}$`), methods: ['GET'] },
+    { pattern: new RegExp(`^bookings/tickets/${TICKET_TOKEN}/check-in$`), methods: ['POST'] },
     { pattern: new RegExp(`^payments/(booking|order)/${GUID}$`), methods: ['POST'] },
+    { pattern: new RegExp(`^payments/booking/${GUID}/confirm$`), methods: ['POST'] },
   ];
   for (const candidate of operational) {
     if (candidate.pattern.test(p) && candidate.methods.includes(m))

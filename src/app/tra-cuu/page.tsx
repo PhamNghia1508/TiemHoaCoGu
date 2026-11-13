@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { PageIntro } from '@/components/site';
 import Lookup from '@/components/lookup';
 export const metadata: Metadata = {
