@@ -48,3 +48,16 @@ Lượt kiểm tra mới nhất: backend Release **214 passed, 12 skipped, 0 fai
 Trước khi bật ghi ở production phải có backend/DB bền vững, HTTPS, secrets, backup/monitoring, kiểm tra cookie/CSRF qua reverse proxy và kiểm thử provider/webhook thật. `STOREFRONT_WRITES_ENABLED` mặc định tắt; các PR có thể được cập nhật nhưng merge/deploy cần chỉ thị riêng.
 
 Cách chạy và cấu hình: [API-INTEGRATION.md](./API-INTEGRATION.md).
+
+## Cập nhật 2026-11-13: GHN địa chỉ 2 cấp
+
+Các câu ở trên nói GHN "bị khóa vì chưa có mapping phí" đã lỗi thời; trạng thái hiện tại:
+
+- Báo phí: `POST /api/shipping/quote` gọi GHN staging `POST /v2/shipping-order/preview` với `is_new_to_address=true`, `to_ward_name`, `to_province_name`; phí lấy từ `data.total_fee`. Không dùng `/v2/shipping-order/fee` vì endpoint đó vẫn bắt buộc `to_district_id`/`to_ward_code` của danh mục 3 cấp đã bỏ.
+- Tạo vận đơn: `POST /v2/shipping-order/create` gửi `client_order_code` (= `DeliveryCode`, retry không tạo trùng), địa chỉ 2 cấp, `cod_amount` theo giá trị hàng chưa thanh toán. Không còn gửi `to_district_id = wardId` sai như bản trước.
+- Tra cứu: `GET /v2/shipping-order/detail?order_code=...`, đọc `updated_date`; hủy qua `POST /v2/switch-status/cancel`.
+- Lỗi GHN trả **502** kèm thông điệp GHN và rollback, không tự thay bằng biểu cước nội bộ. Chỉ `Shipping:Carrier:SandboxEmulation=true` mới mô phỏng phí/mã vận đơn (dùng cho demo/test offline; ứng dụng ghi warning lúc khởi động). Khi chạy thật, startup từ chối nếu thiếu Token/ShopId hoặc còn `FallbackCatalog=true`.
+- Đã thêm cột `ShippingQuotes.ProvinceId/ProvinceName/WardId/WardName` và `Orders.ShippingProvinceId/ShippingProvinceName/ShippingWardId/ShippingWardName`, kèm migration `AddGhnTwoLevelAddress` và script SQL Server idempotent. Đơn cũ không có mã GHN 2 cấp sẽ bị từ chối khi tạo vận đơn thật.
+- Form đặt riêng (trang tra cứu đơn) có selector Tỉnh/Phường lấy từ cùng danh mục GHN; `CustomCheckoutInput` nhận `provinceId`/`wardId` (tùy chọn để không phá client cũ), backend xác thực cha–con, ghép địa chỉ chuẩn và lưu mã/tên vào `Orders`, nên Staff tạo được vận đơn GHN cho đơn đặt riêng.
+- Test mới `GhnCarrierAdapterTests` kiểm tra đúng endpoint/header/payload preview và create, lỗi GHN không fallback, tracking dùng GET, hủy đơn, và chế độ emulation không gọi HTTP. Backend Release: **278 passed, 12 skipped (SQL Server), 0 failed**.
+- Chưa có Token/ShopId GHN thật trong repo. Để chạy GHN thật: đặt `Shipping:GhnStaging:Token/ShopId`, `Shipping:Carrier:SandboxEmulation=false`, `Shipping:GhnStaging:FallbackCatalog=false`.

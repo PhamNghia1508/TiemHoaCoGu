@@ -185,12 +185,17 @@ test('UI đặt riêng: tạo yêu cầu, xem và duyệt giá thật, checkout 
   const customer = await authenticatedContext(browser);
   const page = await customer.context.newPage();
   await page.goto('/dat-rieng');
-  await page.locator('[name="productId"]').selectOption(p.id);
-  await page.locator('[name="name"]').fill(customer.user.fullName);
-  await page.locator('[name="phone"]').fill(customer.user.phoneNumber);
-  await page.locator('[name="occasion"]').selectOption({ index: 1 });
-  await page.locator('[name="budget"]').selectOption({ index: 1 });
-  await page.locator('[name="message"]').fill('Synthetic UI custom request');
+  await page.getByRole('button', { name: 'Sinh nhật' }).click();
+  await page.getByRole('button', { name: '300.000 – 500.000 ₫' }).click();
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByRole('button', { name: 'Trắng & xanh lá' }).click();
+  await page.getByLabel('Sản phẩm nền').selectOption(p.id);
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByLabel('Điều bạn muốn gửi gắm').fill('Synthetic UI custom request');
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByLabel('Tên của bạn').fill(customer.user.fullName);
+  await page.getByLabel('Số điện thoại').fill(customer.user.phoneNumber);
+  await page.getByRole('button', { name: 'Xem bản nháp' }).click();
   const createdResponse = page.waitForResponse(
     (r) => r.url().endsWith('/api/store/custom-orders') && r.request().method() === 'POST',
   );

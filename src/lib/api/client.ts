@@ -168,6 +168,10 @@ export type CustomRequest = {
   depositReady: boolean;
   fullyPaid: boolean;
   deliveryComplete: boolean;
+  deliveryProvinceId?: number;
+  deliveryProvinceName?: string;
+  deliveryWardId?: number;
+  deliveryWardName?: string;
 };
 export type CustomQuote = {
   id: string;
@@ -200,6 +204,8 @@ export type CustomRequestInput = {
   referenceImageUrl?: string;
   requestedCompletionDate?: string;
   quoteVersion?: number;
+  provinceId?: number;
+  wardId?: number;
 };
 export type CustomCheckout = {
   orderId: string;
@@ -213,6 +219,8 @@ export type CustomCheckout = {
 };
 export type CustomCheckoutInput = {
   shippingAddress: string;
+  provinceId?: number;
+  wardId?: number;
   note?: string;
   idempotencyKey: string;
   receiverName?: string;

@@ -215,6 +215,7 @@ const labels: Record<string, string> = {
   Preparing: 'Đang chuẩn bị',
   Shipped: 'Đã gửi',
   Delivered: 'Đã giao',
+  Returned: 'Đã hoàn hàng',
   Pending: 'Đang chờ',
   Unknown: 'Chưa rõ kết quả',
   Active: 'Đang bật',
@@ -233,7 +234,7 @@ export function StatusBadge({ status }: { status: string }) {
       ? 'info'
       : ['paid', 'completed', 'delivered', 'active', 'attended', 'confirmed'].includes(lower)
         ? 'success'
-        : ['cancelled', 'inactive', 'failed', 'refunded'].includes(lower)
+        : ['cancelled', 'inactive', 'failed', 'refunded', 'returned'].includes(lower)
           ? 'neutral'
           : ['unknown', 'unpaid', 'pending', 'partiallypaid'].includes(lower)
             ? 'warning'

@@ -38,6 +38,24 @@ afterEach(() => {
 });
 
 describe('BFF handler', () => {
+  it('ảnh đặt riêng yêu cầu đăng nhập, origin hợp lệ và write gate', async () => {
+    const path = 'custom-orders/reference-images';
+    const form = new FormData();
+    form.set('file', new Blob(['test'], { type: 'image/png' }), 'test.png');
+    const upload = (from = origin) =>
+      new Request(`${origin}/api/store/${path}`, {
+        method: 'POST',
+        headers: { Origin: from },
+        body: form,
+      });
+    expect((await POST(upload(), context(path))).status).toBe(401);
+    values.set('store_access', 'test-token');
+    expect((await POST(upload('https://evil.test'), context(path))).status).toBe(403);
+    vi.stubEnv('STOREFRONT_WRITES_ENABLED', 'false');
+    expect((await POST(upload(), context(path))).status).toBe(503);
+    vi.stubEnv('STOREFRONT_WRITES_ENABLED', 'true');
+    expect((await POST(upload(), context(path))).status).toBe(200);
+  });
   it('multipart chỉ hợp lệ ở media, có xác thực và write gate', async () => {
     const form = new FormData();
     form.set('file', new Blob(['test'], { type: 'image/png' }), 'test.png');

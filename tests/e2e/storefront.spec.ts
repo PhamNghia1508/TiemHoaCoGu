@@ -196,34 +196,48 @@ test('đặt riêng: preview không gửi API, chế độ thật yêu cầu đ�
     if (r.method() === 'POST') writes.push(r.url());
   });
   await page.goto('/dat-rieng');
-  await page.locator('main').getByLabel('Bạn muốn tặng ai?').selectOption('Sinh nhật');
-  await page.locator('main').getByLabel('Khoảng ngân sách').selectOption('400.000 – 700.000 ₫');
-  await page
-    .locator('main')
-    .getByLabel('Điều bạn muốn gửi gắm')
-    .fill('Một bó hoa màu kem nhẹ nhàng.');
-  await page.locator('main').getByLabel('Tên của bạn').fill('Khách kiểm thử');
-  await page.locator('main').getByLabel('Số điện thoại').fill('0901234567');
+  await page.getByRole('button', { name: 'Sinh nhật' }).click();
+  await page.getByRole('button', { name: '300.000 – 500.000 ₫' }).click();
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByRole('button', { name: 'Trắng & xanh lá' }).click();
   if (connectedMode) {
-    await expect(page.locator('main .form-notice')).toContainText('Yêu cầu thật cần đăng nhập');
-    const baseProduct = page.locator('select[name="productId"]');
+    const baseProduct = page.getByLabel('Sản phẩm nền');
     await expect.poll(() => baseProduct.locator('option').count()).toBeGreaterThan(1);
     await baseProduct.selectOption({ index: 1 });
+  }
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByLabel('Điều bạn muốn gửi gắm').fill('Một bó hoa màu kem nhẹ nhàng.');
+  if (!connectedMode) {
+    const upload = page.getByLabel('Ảnh tham khảo (không bắt buộc)');
+    await upload.setInputFiles({
+      name: 'hoa.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+kdjQAAAAASUVORK5CYII=',
+        'base64',
+      ),
+    });
+    await expect(page.getByAltText('Ảnh tham khảo đã chọn')).toBeVisible();
+  }
+  await page.getByRole('button', { name: 'Tiếp theo' }).click();
+  await page.getByLabel('Tên của bạn').fill('Khách kiểm thử');
+  await page.getByLabel('Số điện thoại').fill('0901234567');
+  await page.getByRole('button', { name: 'Xem bản nháp' }).click();
+  await expect(page.getByRole('heading', { name: 'Ý tưởng của bạn', exact: true })).toBeVisible();
+  if (connectedMode) {
     const response = page.waitForResponse(
       (r) => r.url().endsWith('/api/store/custom-orders') && r.request().method() === 'POST',
     );
     await page.getByRole('button', { name: 'Gửi yêu cầu báo giá' }).click();
     expect((await response).status()).toBe(401);
     await expect(page.locator('main [role="alert"]')).toContainText(/đăng nhập/i);
-    await expect(page.locator('main .form-status[role="status"]')).toHaveCount(0);
     expect(writes).toEqual([`${new URL(page.url()).origin}/api/store/custom-orders`]);
   } else {
-    await expect(page.locator('main .form-notice')).toContainText('form trải nghiệm');
-    await page.getByRole('button', { name: 'Xem bản nháp yêu cầu' }).click();
-    await expect(page.getByRole('status').filter({ hasText: 'BẢN NHÁP' })).toBeVisible();
+    await expect(page.getByText('Bản nháp chưa được gửi')).toBeVisible();
+    await expect(page.getByText('hoa.png')).toBeVisible();
     expect(writes).toEqual([]);
-    await page.locator('main').getByLabel('Điều bạn muốn gửi gắm').fill('Đổi màu xanh.');
-    await expect(page.locator('.form-status')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Sửa lại' }).click();
+    await expect(page.getByLabel('Số điện thoại')).toHaveValue('0901234567');
   }
 });
 
@@ -365,4 +379,32 @@ test('menu mobile đóng sau khi chọn trang; storage hỏng không làm hỏng
   await expect(page.getByRole('dialog', { name: /Túi hoa/ })).toContainText(
     'Một chiếc túi đang chờ hoa',
   );
+});
+
+test('trang đặt riêng vừa màn hình và phần chọn ảnh dễ thao tác', async ({ page }, info) => {
+  if (info.project.name !== 'desktop') return;
+  for (const width of [320, 390, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/dat-rieng');
+    await page.getByRole('button', { name: 'Sinh nhật' }).click();
+    await page.getByRole('button', { name: '300.000 – 500.000 ₫' }).click();
+    await page.getByRole('button', { name: 'Tiếp theo' }).click();
+    await page.getByRole('button', { name: 'Trắng & xanh lá' }).click();
+    if (connectedMode) await page.getByLabel('Sản phẩm nền').selectOption({ index: 1 });
+    await page.getByRole('button', { name: 'Tiếp theo' }).click();
+    const elements = page.locator(
+      '.idea-step-content textarea, .custom-file-button, .x-nav button',
+    );
+    for (const element of await elements.all()) {
+      const box = await element.boundingBox();
+      expect(box, `Thiếu phần tử ở độ rộng ${width}`).not.toBeNull();
+      expect(box!.x, `Tràn cạnh trái ở ${width}`).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width, `Tràn cạnh phải ở ${width}`).toBeLessThanOrEqual(width);
+    }
+    const sizes = await page.evaluate(() => ({
+      width: document.documentElement.clientWidth,
+      scroll: document.documentElement.scrollWidth,
+    }));
+    expect(sizes.scroll).toBeLessThanOrEqual(sizes.width);
+  }
 });
