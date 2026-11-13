@@ -262,6 +262,11 @@ export default function StaffWorkshopRoster() {
     }
   };
 
+  type RosterBookingWithPending = RosterBooking & {
+    pendingVerificationAmount?: number;
+    pendingTransactionCode?: string;
+  };
+
   // Record Counter Payment for Pending Booking
   const handleRecordPayment = async (booking: RosterBooking) => {
     setActionBusy(booking.id);
@@ -285,6 +290,29 @@ export default function StaffWorkshopRoster() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ghi nhận thanh toán tại xưởng thất bại.');
+    } finally {
+      setActionBusy(null);
+    }
+  };
+
+  const handleConfirmTransfer = async (booking: RosterBookingWithPending) => {
+    if (!booking.pendingTransactionCode) return;
+    if (!window.confirm(`Xác nhận đã nhận tiền cho vé ${booking.bookingCode}?`)) return;
+    setActionBusy(booking.id);
+    setError('');
+    setSuccessMsg('');
+    try {
+      await storeRequest(
+        `payments/booking/${booking.id}/confirm`,
+        { transactionCode: booking.pendingTransactionCode },
+        'POST',
+      );
+      setSuccessMsg(`Đã xác nhận thanh toán cho vé ${booking.bookingCode}.`);
+      if (activeSession) {
+        await loadRosterForSession(activeSession);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Không thể xác nhận thanh toán.');
     } finally {
       setActionBusy(null);
     }
@@ -502,11 +530,13 @@ export default function StaffWorkshopRoster() {
                     </tr>
                   </thead>
                   <tbody>
-                    {roster.map((booking) => {
+                    {roster.map((rawBooking) => {
+                      const booking = rawBooking as RosterBookingWithPending;
                       const badge = bookingBadge(booking.bookingStatus);
                       const isBusy = actionBusy === booking.id;
                       const canCheckIn = booking.bookingStatus.toLowerCase() === 'confirmed';
                       const canNoShow = booking.bookingStatus.toLowerCase() === 'confirmed';
+                      const pendingAmount = booking.pendingVerificationAmount ?? 0;
 
                       return (
                         <tr key={booking.id}>
@@ -538,9 +568,33 @@ export default function StaffWorkshopRoster() {
                           </td>
                           <td>
                             <span className={`staff-badge ${badge.className}`}>{badge.label}</span>
+                            {pendingAmount > 0 && (
+                              <div style={{ marginTop: '6px' }}>
+                                <span className="staff-badge badge-amber">
+                                  Khách báo đã chuyển {formatMoney(pendingAmount)}
+                                </span>
+                              </div>
+                            )}
                           </td>
                           <td style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'inline-flex', gap: '8px' }}>
+                            <div
+                              style={{
+                                display: 'inline-flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-end',
+                              }}
+                            >
+                              {pendingAmount > 0 && booking.pendingTransactionCode && (
+                                <button
+                                  type="button"
+                                  className="staff-btn staff-btn-success staff-btn-sm"
+                                  onClick={() => void handleConfirmTransfer(booking)}
+                                  disabled={isBusy}
+                                >
+                                  Xác nhận đã nhận tiền
+                                </button>
+                              )}
                               {booking.bookingStatus.toLowerCase() === 'pending' && (
                                 <button
                                   type="button"
@@ -575,7 +629,7 @@ export default function StaffWorkshopRoster() {
                                 </button>
                               )}
 
-                              {!canCheckIn && !canNoShow && (
+                              {!canCheckIn && !canNoShow && pendingAmount <= 0 && (
                                 <span className="staff-muted" style={{ fontSize: '13px' }}>
                                   {booking.bookingStatus === 'attended' ? '✓ Đã vào lớp' : '—'}
                                 </span>
