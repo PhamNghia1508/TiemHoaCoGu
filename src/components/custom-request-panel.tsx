@@ -174,11 +174,7 @@ export default function CustomRequestPanel({
         requestedCompletionDate,
         quoteVersion: quote?.currentRevision,
       };
-      const fresh = await storeRequest<CustomRequest>(
-        `custom-orders/${request.id}`,
-        body,
-        'PUT',
-      );
+      const fresh = await storeRequest<CustomRequest>(`custom-orders/${request.id}`, body, 'PUT');
       onChanged(fresh);
       setReviseOpen(false);
       await load(true);
@@ -428,8 +424,8 @@ export default function CustomRequestPanel({
             <ul>
               {quote.revisions.map((revision) => (
                 <li key={revision.version}>
-                  <strong>Phiên bản {revision.version}</strong> ·{' '}
-                  {revisionLabel(revision.status)} · Tổng {moneyOrDash(revision.totalAmount)} · Cọc{' '}
+                  <strong>Phiên bản {revision.version}</strong> · {revisionLabel(revision.status)} ·
+                  Tổng {moneyOrDash(revision.totalAmount)} · Cọc{' '}
                   {moneyOrDash(revision.depositAmount)} · Hoàn thiện{' '}
                   {dateOnly(revision.completionDate)} · Gửi {dateTime(revision.createdAt)}
                   {revision.adminNote ? <p>{revision.adminNote}</p> : null}
@@ -445,7 +441,12 @@ export default function CustomRequestPanel({
           <h4 id="custom-actions-title">Bạn muốn làm gì tiếp?</h4>
           <div className="custom-actions">
             {lower(request.status) === 'quoted' && (
-              <button type="button" className="button" disabled={pending || !canApprove} onClick={() => void approve()}>
+              <button
+                type="button"
+                className="button"
+                disabled={pending || !canApprove}
+                onClick={() => void approve()}
+              >
                 Duyệt báo giá này <ArrowUpRight size={18} />
               </button>
             )}
@@ -474,9 +475,7 @@ export default function CustomRequestPanel({
           </div>
           {reviseOpen && (
             <form className="custom-subform" onSubmit={submitRevise}>
-              <p className="form-notice">
-                Sửa yêu cầu sẽ hủy báo giá hiện tại; tiệm báo giá lại.
-              </p>
+              <p className="form-notice">Sửa yêu cầu sẽ hủy báo giá hiện tại; tiệm báo giá lại.</p>
               <div className="form-grid">
                 <label className="field">
                   Số lượng *
@@ -590,7 +589,8 @@ export default function CustomRequestPanel({
         <section className="custom-panel-section" aria-labelledby="custom-payment-title">
           <h4 id="custom-payment-title">Thanh toán</h4>
           <p>
-            Đơn <strong>{request.orderCode || (quote?.orderId ?? request.orderId)?.slice(0, 8)}</strong>{' '}
+            Đơn{' '}
+            <strong>{request.orderCode || (quote?.orderId ?? request.orderId)?.slice(0, 8)}</strong>{' '}
             đã được tạo.
             {balance && balance.paidAmount === 0 && lower(request.status) === 'checkedout'
               ? ' Đơn chưa thanh toán sẽ hết hạn sau 30 phút kể từ khi tạo.'
@@ -641,7 +641,8 @@ export default function CustomRequestPanel({
                       disabled={pending}
                       onClick={() => void pay(balance.minimumNextPayment)}
                     >
-                      Thanh toán cọc · {money(balance.minimumNextPayment)} <ArrowUpRight size={18} />
+                      Thanh toán cọc · {money(balance.minimumNextPayment)}{' '}
+                      <ArrowUpRight size={18} />
                     </button>
                   )}
                   {balance.paidAmount > 0 && balance.remainingAmount > 0 && (

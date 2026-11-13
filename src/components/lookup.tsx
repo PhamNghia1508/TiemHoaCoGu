@@ -236,7 +236,12 @@ export default function Lookup() {
             </label>
             <label className="field">
               Số điện thoại
-              <input name="phone" required pattern={'[+0-9 \\(\\)\\-]{9,20}'} placeholder="0901234567" />
+              <input
+                name="phone"
+                required
+                pattern={'[+0-9 \\(\\)\\-]{9,20}'}
+                placeholder="0901234567"
+              />
             </label>
             <p className="form-notice">
               Bản xem trước không kết nối dữ liệu thật. Thông tin chỉ để kiểm tra giao diện.

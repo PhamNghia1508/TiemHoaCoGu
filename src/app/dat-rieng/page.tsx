@@ -47,9 +47,7 @@ export default function CustomPage() {
           <li>
             <strong>01</strong>
             <h3>Bạn kể</h3>
-            <p>
-              Chọn sản phẩm nền, số lượng, dịp, ngân sách, bảng màu và điều bạn muốn gửi gắm.
-            </p>
+            <p>Chọn sản phẩm nền, số lượng, dịp, ngân sách, bảng màu và điều bạn muốn gửi gắm.</p>
           </li>
           <li>
             <strong>02</strong>

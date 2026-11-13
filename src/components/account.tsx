@@ -1734,9 +1734,7 @@ export default function Account() {
                 <article key={req.id} className="order-card">
                   <div className="order-card-header">
                     <div>
-                      <h3 className="order-code-title">
-                        {req.productName || 'Yêu cầu đặt hoa'}
-                      </h3>
+                      <h3 className="order-code-title">{req.productName || 'Yêu cầu đặt hoa'}</h3>
                       <p className="order-date">Gửi ngày {formatDate(req.createdAt)}</p>
                     </div>
                     <span className={`badge-status ${customBadgeClass(req.status)}`}>
@@ -1754,7 +1752,9 @@ export default function Account() {
 
                   <div className="order-card-footer">
                     <span style={{ fontSize: '13px', color: 'var(--portal-muted)' }}>
-                      {req.updatedAt ? `Cập nhật ${formatDate(req.updatedAt)}` : 'Báo giá trong tra cứu'}
+                      {req.updatedAt
+                        ? `Cập nhật ${formatDate(req.updatedAt)}`
+                        : 'Báo giá trong tra cứu'}
                     </span>
                     <Link
                       href={`/tra-cuu?yeu-cau=${encodeURIComponent(req.id)}`}

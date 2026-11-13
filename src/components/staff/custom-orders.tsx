@@ -185,8 +185,7 @@ export default function StaffCustomOrders() {
             const isBusy = actionBusy === item.id;
             const status = item.status.toLowerCase();
             const canStart = status === 'checkedout' && item.depositReady;
-            const canComplete =
-              status === 'production' && item.fullyPaid && item.deliveryComplete;
+            const canComplete = status === 'production' && item.fullyPaid && item.deliveryComplete;
             const referenceUrl = safeHttpUrl(item.referenceImageUrl);
             const reason = blockReason(item);
 
@@ -194,9 +193,7 @@ export default function StaffCustomOrders() {
               <div key={item.id} className="staff-custom-card">
                 <div className="staff-custom-header">
                   <span className="staff-mono">Mã #{item.id.slice(0, 8)}</span>
-                  <span
-                    className={`staff-badge ${toneClass[customStatusTone(item.status)]}`}
-                  >
+                  <span className={`staff-badge ${toneClass[customStatusTone(item.status)]}`}>
                     {customStatusLabel(item.status)}
                   </span>
                 </div>
@@ -225,7 +222,12 @@ export default function StaffCustomOrders() {
                   {referenceUrl && (
                     <div className="staff-custom-img-preview">
                       <ImageIcon size={14} />
-                      <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className="text-link">
+                      <a
+                        href={referenceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-link"
+                      >
                         Xem ảnh mẫu khách gửi
                       </a>
                     </div>

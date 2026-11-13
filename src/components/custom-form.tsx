@@ -113,7 +113,10 @@ export default function CustomForm() {
       }}
     >
       <h2 className="form-section-title">Kể tiệm nghe một chút.</h2>
-      <fieldset disabled={pending || Boolean(created)} style={{ border: 0, padding: 0, minWidth: 0 }}>
+      <fieldset
+        disabled={pending || Boolean(created)}
+        style={{ border: 0, padding: 0, minWidth: 0 }}
+      >
         <div className="form-grid">
           {mode === 'connected' && (
             <label className="field full">
@@ -282,8 +285,8 @@ export default function CustomForm() {
             <Check size={12} /> ĐÃ GỬI YÊU CẦU
           </span>
           <p>
-            Mã yêu cầu: <strong>{created.id.slice(0, 8)}</strong>. Tiệm sẽ xem và báo giá; bạn
-            theo dõi và duyệt báo giá trong trang tra cứu.
+            Mã yêu cầu: <strong>{created.id.slice(0, 8)}</strong>. Tiệm sẽ xem và báo giá; bạn theo
+            dõi và duyệt báo giá trong trang tra cứu.
           </p>
           <Link href={`/tra-cuu?yeu-cau=${encodeURIComponent(created.id)}`} className="text-link">
             Xem tiến độ yêu cầu <ArrowUpRight size={16} />

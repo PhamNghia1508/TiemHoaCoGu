@@ -50,9 +50,7 @@ describe('custom order status helper', () => {
   });
 
   it('accepts only absolute http and https reference URLs', () => {
-    expect(safeHttpUrl('https://example.com/mau-hoa.jpg')).toBe(
-      'https://example.com/mau-hoa.jpg',
-    );
+    expect(safeHttpUrl('https://example.com/mau-hoa.jpg')).toBe('https://example.com/mau-hoa.jpg');
     expect(safeHttpUrl('http://example.com/a.png')).toBe('http://example.com/a.png');
     expect(safeHttpUrl('  https://example.com/a.png  ')).toBe('https://example.com/a.png');
     expect(safeHttpUrl('javascript:alert(1)')).toBeUndefined();

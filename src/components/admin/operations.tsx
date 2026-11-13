@@ -161,14 +161,13 @@ const customCanStart = (item: CustomRequest | null) =>
   Boolean(item && item.status.toLowerCase() === 'checkedout' && item.depositReady);
 const customCanComplete = (item: CustomRequest | null) =>
   Boolean(
-    item &&
-      item.status.toLowerCase() === 'production' &&
-      item.fullyPaid &&
-      item.deliveryComplete,
+    item && item.status.toLowerCase() === 'production' && item.fullyPaid && item.deliveryComplete,
   );
 const customCanCancel = (item: CustomRequest | null) =>
   Boolean(
-    item && !item.orderId && ['requested', 'quoted', 'approved'].includes(item.status.toLowerCase()),
+    item &&
+    !item.orderId &&
+    ['requested', 'quoted', 'approved'].includes(item.status.toLowerCase()),
   );
 const customBlockReason = (item: CustomRequest) => {
   const status = item.status.toLowerCase();
@@ -588,8 +587,7 @@ export default function AdminOperations(
     () => Array.from(new Set(requests.map((item) => item.status))),
     [requests],
   );
-  const quoteLocked =
-    Boolean(selectedRequest?.orderId) || customTerminal(selectedRequest?.status);
+  const quoteLocked = Boolean(selectedRequest?.orderId) || customTerminal(selectedRequest?.status);
 
   return (
     <section className="admin-card" aria-labelledby="operations-heading">
@@ -864,9 +862,8 @@ export default function AdminOperations(
                     <span>
                       <strong>{item.productName || item.description.slice(0, 80)}</strong>
                       <small>
-                        SL {item.quantity} ·{' '}
-                        <StatusBadge status={customStatusLabel(item.status)} /> ·{' '}
-                        {new Date(item.createdAt).toLocaleDateString('vi-VN')}
+                        SL {item.quantity} · <StatusBadge status={customStatusLabel(item.status)} />{' '}
+                        · {new Date(item.createdAt).toLocaleDateString('vi-VN')}
                         {item.orderCode ? ` · Đơn ${item.orderCode}` : ''}
                       </small>
                     </span>
