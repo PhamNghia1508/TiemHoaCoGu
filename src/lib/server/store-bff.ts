@@ -83,7 +83,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     { pattern: /^custom-orders$/, methods: ['GET', 'POST'], protected: true },
     { pattern: new RegExp(`^custom-orders/${GUID}$`), methods: ['GET', 'PUT'], protected: true },
     {
-      pattern: new RegExp(`^custom-orders/${GUID}/(quote|approve|checkout)$`),
+      pattern: new RegExp(`^custom-orders/${GUID}/(quote|approve|checkout|cancel)$`),
       methods: ['POST'],
       protected: true,
     },

@@ -160,6 +160,14 @@ export type CustomRequest = {
   requestedCompletionDate?: string;
   status: string;
   createdAt: string;
+  productName: string;
+  updatedAt: string;
+  quoteVersion: number;
+  orderId?: string;
+  orderCode?: string;
+  depositReady: boolean;
+  fullyPaid: boolean;
+  deliveryComplete: boolean;
 };
 export type CustomQuote = {
   id: string;
@@ -191,6 +199,7 @@ export type CustomRequestInput = {
   description: string;
   referenceImageUrl?: string;
   requestedCompletionDate?: string;
+  quoteVersion?: number;
 };
 export type CustomCheckout = {
   orderId: string;
@@ -201,6 +210,23 @@ export type CustomCheckout = {
   paidAmount: number;
   balanceAmount: number;
   paymentStatus: string;
+};
+export type CustomCheckoutInput = {
+  shippingAddress: string;
+  note?: string;
+  idempotencyKey: string;
+  receiverName?: string;
+  receiverPhone?: string;
+};
+export type PaymentBalance = {
+  orderId: string;
+  totalAmount: number;
+  paidAmount: number;
+  pendingAmount: number;
+  remainingAmount: number;
+  minimumNextPayment: number;
+  canPay: boolean;
+  paymentUrl?: string;
 };
 export type WorkshopList = {
   id: string;
@@ -310,10 +336,10 @@ export const customOrdersApi = (o?: ApiClientOptions) => ({
   quote: (id: string) => apiFetch<CustomQuote>(`/api/custom-orders/${id}`, {}, o),
   approve: (id: string, version: number) =>
     apiFetch<CustomQuote>(`/api/custom-orders/${id}/approve`, json('POST', { version }), o),
-  checkout: (
-    id: string,
-    body: { shippingAddress: string; note?: string; idempotencyKey: string },
-  ) => apiFetch<CustomCheckout>(`/api/custom-orders/${id}/checkout`, json('POST', body), o),
+  checkout: (id: string, body: CustomCheckoutInput) =>
+    apiFetch<CustomCheckout>(`/api/custom-orders/${id}/checkout`, json('POST', body), o),
+  cancel: (id: string) =>
+    apiFetch<CustomRequest>(`/api/custom-orders/${id}/cancel`, json('POST', {}), o),
 });
 export const workshopsApi = (o?: ApiClientOptions) => ({
   list: () => apiFetch<WorkshopList[]>('/api/workshops', {}, o),

@@ -31,6 +31,7 @@ import {
   ScrollText,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
+import { customStatusLabel, customStatusTone } from '@/lib/custom-order-status';
 import { useStore } from '@/components/store-provider';
 import FloralCalendarPopover from './staff/floral-calendar-popover';
 
@@ -93,11 +94,25 @@ type OrderItem = {
 };
 type CustomRequestItem = {
   id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
   description?: string;
   status: string;
   createdAt: string;
-  quoteAmount?: number;
+  requestedCompletionDate?: string;
+  updatedAt?: string;
+  quoteVersion?: number;
+  orderId?: string | null;
+  orderCode?: string | null;
+  depositReady?: boolean;
+  fullyPaid?: boolean;
+  deliveryComplete?: boolean;
 };
+function customBadgeClass(status: string) {
+  const tone = customStatusTone(status);
+  return tone === 'done' ? 'confirmed' : tone === 'stopped' ? 'cancelled' : 'hold';
+}
 
 const emptyAddress = {
   receiverName: '',
@@ -1740,26 +1755,30 @@ export default function Account() {
                 <article key={req.id} className="order-card">
                   <div className="order-card-header">
                     <div>
-                      <h3 className="order-code-title">Yêu cầu đặt hoa</h3>
+                      <h3 className="order-code-title">{req.productName || 'Yêu cầu đặt hoa'}</h3>
                       <p className="order-date">Gửi ngày {formatDate(req.createdAt)}</p>
                     </div>
-                    <span className={`badge-status ${statusBadgeClass(req.status)}`}>
-                      {statusLabel(req.status)}
+                    <span className={`badge-status ${customBadgeClass(req.status)}`}>
+                      {customStatusLabel(req.status)}
                     </span>
                   </div>
 
+                  <p style={{ fontSize: '13.5px', color: 'var(--portal-ink)', margin: '8px 0' }}>
+                    Số lượng: {req.quantity}
+                    {req.orderCode ? ` · Đơn ${req.orderCode}` : ''}
+                  </p>
                   <p style={{ fontSize: '13.5px', color: 'var(--portal-ink)', margin: '8px 0' }}>
                     {req.description || 'Không có mô tả chi tiết.'}
                   </p>
 
                   <div className="order-card-footer">
                     <span style={{ fontSize: '13px', color: 'var(--portal-muted)' }}>
-                      {req.quoteAmount
-                        ? `Báo giá: ${formatMoney(req.quoteAmount)}`
-                        : 'Đang chờ tiệm báo giá'}
+                      {req.updatedAt
+                        ? `Cập nhật ${formatDate(req.updatedAt)}`
+                        : 'Báo giá trong tra cứu'}
                     </span>
                     <Link
-                      href="/tra-cuu"
+                      href={`/tra-cuu?yeu-cau=${encodeURIComponent(req.id)}`}
                       className="account-btn-secondary"
                       style={{ padding: '6px 12px', fontSize: '12px' }}
                     >

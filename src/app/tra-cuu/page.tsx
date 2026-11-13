@@ -24,7 +24,13 @@ export default function LookupPage() {
             : 'Một nơi để kiểm tra đơn hoa hoặc buổi hẹn ở xưởng. Chức năng tra cứu thật sẽ mở sau khi backend và tài khoản khách hàng được kết nối.'
         }
       />
-      <Suspense fallback={<div className="lookup-card">Đang tải tra cứu…</div>}>
+      <Suspense
+        fallback={
+          <div className="lookup-card" role="status">
+            Đang tải lịch sử tài khoản…
+          </div>
+        }
+      >
         <Lookup />
       </Suspense>
     </>

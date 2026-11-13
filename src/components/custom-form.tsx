@@ -2,14 +2,11 @@
 import { useRef, useState, type FormEvent } from 'react';
 import { ArrowUpRight, Check } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useStore } from './store-provider';
 import { storeRequest } from '@/lib/browser-api';
-import type {
-  CustomQuote,
-  CustomRequest,
-  CustomRequestInput,
-  CustomCheckout,
-} from '@/lib/api/client';
+import { safeHttpUrl } from '@/lib/custom-order-status';
+import type { CustomRequest, CustomRequestInput } from '@/lib/api/client';
 
 type Palette = { label: string; color: string };
 const palettes: Palette[] = [
@@ -20,8 +17,23 @@ const palettes: Palette[] = [
 ];
 type Preview = { name: string; occasion: string; budget: string; message: string; palette: string };
 
+/** Local calendar date → ISO at 12:00 local time, as the BE expects a wish date, not a slot. */
+function wishDateToIso(value: string): string | undefined {
+  const parts = value.split('-').map(Number);
+  if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) return undefined;
+  const [year, month, day] = parts;
+  const date = new Date(year, month - 1, day, 12, 0, 0, 0);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+}
+function tomorrowInputValue(): string {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
 export default function CustomForm() {
   const { mode, products } = useStore();
+  const router = useRouter();
   const customizable = products.filter((p) =>
     Boolean((p as typeof p & { isCustomizable?: boolean }).isCustomizable),
   );
@@ -29,13 +41,13 @@ export default function CustomForm() {
   const [review, setReview] = useState<Preview | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
-  const checkoutAttempt = useRef<{ fingerprint: string; key: string } | null>(null);
-  const [request, setRequest] = useState<CustomRequest | null>(null);
-  const [quote, setQuote] = useState<CustomQuote | null>(null);
-  const [address, setAddress] = useState('');
-  const [completed, setCompleted] = useState<CustomCheckout | null>(null);
+  const [created, setCreated] = useState<CustomRequest | null>(null);
+  const [minWishDate] = useState(tomorrowInputValue);
+  const submitting = useRef(false);
+
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (pending || submitting.current) return;
     const form = new FormData(e.currentTarget);
     const productId = String(form.get('productId') || '');
     const values: Preview = {
@@ -51,92 +63,50 @@ export default function CustomForm() {
       setError('Hãy chọn sản phẩm nền.');
       return;
     }
-    setError('');
+    const quantity = Number(form.get('quantity') || 1);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+      setError('Số lượng phải là số nguyên từ 1 đến 1000.');
+      return;
+    }
+    const wishDate = String(form.get('requestedCompletionDate') || '');
+    const requestedCompletionDate = wishDate ? wishDateToIso(wishDate) : undefined;
+    if (wishDate && !requestedCompletionDate) {
+      setError('Ngày bạn mong nhận không hợp lệ.');
+      return;
+    }
+    const referenceImageUrl = String(form.get('referenceImageUrl') || '').trim();
+    if (referenceImageUrl && !safeHttpUrl(referenceImageUrl)) {
+      setError('Ảnh tham khảo phải là đường dẫn http hoặc https.');
+      return;
+    }
+    submitting.current = true;
     setPending(true);
+    setError('');
+    setCreated(null);
     try {
       const body: CustomRequestInput = {
         productId,
-        quantity: 1,
-        referenceImageUrl: String(form.get('referenceImageUrl') || '') || undefined,
+        quantity,
+        referenceImageUrl: referenceImageUrl || undefined,
+        requestedCompletionDate,
         description: `Liên hệ: ${values.name} — ${String(form.get('phone') || '')}\n${values.occasion}; ngân sách ${values.budget}; bảng màu ${palette}\n${values.message}`,
       };
-      const created = await storeRequest<CustomRequest>('custom-orders', body, 'POST');
-      setRequest(created);
-      setQuote(await storeRequest<CustomQuote>(`custom-orders/${created.id}`));
+      const result = await storeRequest<CustomRequest>('custom-orders', body, 'POST');
+      setCreated(result);
+      router.push(`/tra-cuu?yeu-cau=${encodeURIComponent(result.id)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể gửi yêu cầu.');
     } finally {
+      submitting.current = false;
       setPending(false);
     }
   }
-  async function reloadQuote() {
-    if (!request || pending) return;
-    setPending(true);
-    setError('');
-    try {
-      setQuote(await storeRequest<CustomQuote>(`custom-orders/${request.id}`));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể tải báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
-  async function approve() {
-    if (!quote || !request || pending || quote.status.toLowerCase() !== 'quoted') return;
-    setPending(true);
-    setError('');
-    try {
-      setQuote(
-        await storeRequest<CustomQuote>(
-          `custom-orders/${request.id}/approve`,
-          { version: quote.currentRevision },
-          'POST',
-        ),
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể duyệt báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
-  async function checkout() {
-    if (
-      !quote ||
-      !request ||
-      !address.trim() ||
-      pending ||
-      quote.status.toLowerCase() !== 'approved'
-    ) {
-      setError('Chỉ checkout sau khi báo giá đã được duyệt và có địa chỉ giao hàng.');
-      return;
-    }
-    setPending(true);
-    setError('');
-    const fingerprint = JSON.stringify([request.id, quote.currentRevision, address]);
-    if (!checkoutAttempt.current || checkoutAttempt.current.fingerprint !== fingerprint)
-      checkoutAttempt.current = { fingerprint, key: crypto.randomUUID() };
-    try {
-      const out = await storeRequest<CustomCheckout>(
-        `custom-orders/${request.id}/checkout`,
-        {
-          shippingAddress: address,
-          note: 'Checkout custom order',
-          idempotencyKey: checkoutAttempt.current.key,
-        },
-        'POST',
-      );
-      setCompleted(out);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Không thể checkout báo giá.');
-    } finally {
-      setPending(false);
-    }
-  }
+
   return (
     <form
       onSubmit={submit}
       onChange={() => {
-        if (!completed) {
+        if (!created) {
           setReview(null);
           if (mode === 'connected') setError('');
         }
@@ -144,7 +114,7 @@ export default function CustomForm() {
     >
       <h2 className="form-section-title">Kể tiệm nghe một chút.</h2>
       <fieldset
-        disabled={pending || Boolean(request)}
+        disabled={pending || Boolean(created)}
         style={{ border: 0, padding: 0, minWidth: 0 }}
       >
         <div className="form-grid">
@@ -181,6 +151,22 @@ export default function CustomForm() {
               <option>700.000 – 1.000.000 ₫</option>
               <option>Trên 1.000.000 ₫</option>
             </select>
+          </label>
+          <label className="field">
+            Số lượng *
+            <input
+              type="number"
+              name="quantity"
+              min={1}
+              max={1000}
+              step={1}
+              defaultValue={1}
+              required
+            />
+          </label>
+          <label className="field">
+            Ngày bạn mong nhận
+            <input type="date" name="requestedCompletionDate" min={minWishDate} />
           </label>
           <div className="field full">
             <span>Bảng màu bạn thích</span>
@@ -225,7 +211,7 @@ export default function CustomForm() {
               name="phone"
               autoComplete="tel"
               type="tel"
-              pattern="[+0-9 ()\-]{9,20}"
+              pattern={'[+0-9 \\(\\)\\-]{9,20}'}
               maxLength={20}
             />
           </label>
@@ -235,15 +221,21 @@ export default function CustomForm() {
         {mode === 'preview'
           ? 'Đây là form trải nghiệm. Thông tin chỉ được dùng để xem trước, chưa gửi đến tiệm.'
           : mode === 'connected'
-            ? 'Yêu cầu thật cần đăng nhập. Tiệm sẽ báo giá; bạn phải duyệt rõ ràng trước checkout.'
+            ? 'Gửi yêu cầu chưa phải đặt hàng hay thanh toán. Tiệm sẽ báo giá riêng; bạn duyệt báo giá, tạo đơn và đặt cọc ở bước sau trong trang tra cứu.'
             : 'Catalog chưa sẵn sàng, chưa thể gửi yêu cầu.'}
       </p>
+      {mode === 'connected' && !customizable.length && (
+        <div className="form-status" role="status">
+          Hiện chưa có sản phẩm nền nào có thể tùy biến. Vui lòng quay lại sau hoặc chọn sản phẩm
+          khác ở cửa tiệm.
+        </div>
+      )}
       <button
         type="submit"
         className="button"
         disabled={
           pending ||
-          Boolean(request) ||
+          Boolean(created) ||
           mode === 'unavailable' ||
           (mode === 'connected' && !customizable.length)
         }
@@ -263,6 +255,14 @@ export default function CustomForm() {
       {error && (
         <div className="form-status" role="alert">
           {error}
+          {error.includes('đăng nhập') && (
+            <>
+              {' '}
+              <Link href="/tai-khoan" className="text-link">
+                Đăng nhập lại
+              </Link>
+            </>
+          )}
         </div>
       )}
       {review && mode === 'preview' && (
@@ -279,60 +279,18 @@ export default function CustomForm() {
           <p style={{ marginTop: 10, whiteSpace: 'pre-wrap' }}>{review.message}</p>
         </div>
       )}
-      {quote && request && (
+      {created && (
         <div className="form-status" role="status">
-          <span className="eyebrow">BÁO GIÁ — {quote.status}</span>
-          <p>Mã yêu cầu đã gửi: {request.id}.</p>
+          <span className="eyebrow">
+            <Check size={12} /> ĐÃ GỬI YÊU CẦU
+          </span>
           <p>
-            Phiên bản hiện tại: {quote.currentRevision}.{' '}
-            {quote.revisions.at(-1)?.totalAmount !== undefined
-              ? `Tổng: ${Number(quote.revisions.at(-1)?.totalAmount).toLocaleString('vi-VN')} ₫.`
-              : 'Tiệm chưa phát hành số tiền.'}
+            Mã yêu cầu: <strong>{created.id.slice(0, 8)}</strong>. Tiệm sẽ xem và báo giá; bạn theo
+            dõi và duyệt báo giá trong trang tra cứu.
           </p>
-          {quote.revisions.at(-1) && (
-            <div>
-              <p>
-                Tiền cọc theo báo giá:{' '}
-                {Number(quote.revisions.at(-1)?.depositAmount ?? 0).toLocaleString('vi-VN')} ₫ · Dự
-                kiến hoàn thiện: {quote.revisions.at(-1)?.completionDate}.
-              </p>
-              <p>
-                Hạn duyệt: {quote.revisions.at(-1)?.expiresAt}. Lưu ý của tiệm:{' '}
-                {quote.revisions.at(-1)?.adminNote || 'Không có'}.
-              </p>
-              <p>
-                Duyệt báo giá không phải thanh toán. Checkout chỉ tạo đơn chờ xử lý, chưa thu tiền.
-              </p>
-            </div>
-          )}
-          <button
-            type="button"
-            className="button"
-            disabled={pending || quote.status.toLowerCase() !== 'quoted'}
-            onClick={approve}
-          >
-            Duyệt báo giá này
-          </button>
-          <button type="button" className="text-link" disabled={pending} onClick={reloadQuote}>
-            Tải lại báo giá
-          </button>
-          {quote.status.toLowerCase() === 'approved' && !completed && (
-            <>
-              <label className="field full" style={{ marginTop: 16 }}>
-                Địa chỉ giao hàng *
-                <textarea value={address} onChange={(e) => setAddress(e.target.value)} required />
-              </label>
-              <button type="button" className="button" disabled={pending} onClick={checkout}>
-                Tạo đơn đặt riêng
-              </button>
-            </>
-          )}
-          {completed && (
-            <p>
-              Đã tạo đơn <strong>{completed.orderCode}</strong>. Chưa xác nhận thu tiền.{' '}
-              <Link href="/tra-cuu">Xem trạng thái đơn trong tra cứu</Link>.
-            </p>
-          )}
+          <Link href={`/tra-cuu?yeu-cau=${encodeURIComponent(created.id)}`} className="text-link">
+            Xem tiến độ yêu cầu <ArrowUpRight size={16} />
+          </Link>
         </div>
       )}
     </form>
