@@ -1,0 +1,532 @@
+.custom-design .bouquet-page {
+  width: min(1160px, calc(100% - 36px));
+  max-width: none;
+  padding-inline: 0;
+}
+.custom-design .custom-builder {
+  padding-top: clamp(24px, 4vw, 48px);
+}
+.bouquet-page > h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  margin: 0;
+  line-height: 1.08;
+}
+.bouquet-lead {
+  margin: 12px 0 28px;
+  max-width: 62ch;
+}
+.bouquet,
+.bouquet-tip {
+  --ink: #651b3e;
+  --edge: #e4cbd4;
+  --wash: #f4e8ee;
+  --pale: #fdf8f7;
+  color: #1c171a;
+}
+.bouquet {
+  border: 1px solid #c994a9;
+  border-radius: 21px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 15px 35px #651b3e16;
+}
+.bouquet button {
+  cursor: pointer;
+}
+.bouquet button:disabled {
+  cursor: default;
+}
+.bouquet button:focus-visible,
+.bouquet select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -3px;
+}
+.bouquet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  min-height: 74px;
+  border-bottom: 1px solid var(--edge);
+}
+.bouquet-head h2,
+.bouquet-palette h3,
+.bouquet-card h4,
+.bouquet-tip strong {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.bouquet-head h2 {
+  font-size: clamp(19px, 2.2vw, 26px);
+}
+.bouquet-head p,
+.bouquet-summary small {
+  margin: 5px 0 0;
+  color: #72535e;
+  font-size: 11px;
+}
+.bouquet-meter {
+  text-align: right;
+  color: var(--ink);
+  min-width: 96px;
+}
+.bouquet-meter [role='progressbar'] {
+  border-radius: 9px;
+  height: 5px;
+  margin-top: 7px;
+  background: var(--edge);
+  overflow: hidden;
+}
+.bouquet-meter i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+.bouquet-body,
+.bouquet-foot {
+  display: grid;
+  grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
+}
+.bouquet-stage {
+  position: relative;
+  min-height: 690px;
+  overflow: hidden;
+  background-color: #fff;
+  background-image:
+    linear-gradient(#e9d7df55 1px, transparent 1px),
+    linear-gradient(90deg, #e9d7df55 1px, transparent 1px);
+  background-size: 24px 24px;
+  border-right: 1px solid var(--edge);
+  display: grid;
+  place-items: center;
+}
+.bouquet-tools,
+.bouquet-wrap {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bouquet-tools {
+  left: 12px;
+}
+.bouquet-wrap {
+  right: 12px;
+  padding: 0 8px;
+  min-height: 44px;
+}
+.bouquet-tools button,
+.bouquet-wrap {
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 5px 12px #651b3e0c;
+}
+.bouquet-tools button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+.bouquet-tools button:disabled {
+  opacity: 0.45;
+}
+.bouquet-wrap select {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  min-height: 40px;
+  max-width: min(200px, 43vw);
+}
+.bouquet-art {
+  width: min(82%, 520px);
+  height: 84%;
+  min-height: 460px;
+  max-height: 560px;
+  position: relative;
+  isolation: isolate;
+}
+.bouquet-stem {
+  border: 0;
+  background: transparent;
+  position: absolute;
+  padding: 0;
+  transform-origin: 50% 100%;
+  touch-action: none;
+  cursor: grab !important;
+}
+.bouquet-stem:active {
+  z-index: 2;
+  cursor: grabbing !important;
+}
+.bouquet-stem img {
+  width: auto;
+  max-width: none;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+.bouquet-paper {
+  width: 56%;
+  height: 48%;
+  object-fit: fill;
+  position: absolute;
+  left: 22%;
+  top: 53%;
+  pointer-events: none;
+}
+.bouquet-paper-front {
+  z-index: 3;
+  clip-path: polygon(0 14%, 49% 39%, 100% 13%, 100% 100%, 0 100%);
+}
+.bouquet-paper-back {
+  opacity: 0.85;
+}
+.bouquet-stage:has(.bouquet-wrap select option[value='classic']:checked) .bouquet-paper {
+  filter: saturate(0.78) brightness(1.1);
+}
+.bouquet-empty {
+  padding: 20px;
+  text-align: center;
+  color: #72535e;
+}
+.bouquet-palette {
+  padding: 24px;
+  min-width: 0;
+}
+.bouquet-palette h3 {
+  font-size: 17px;
+  margin-bottom: 22px;
+}
+.bouquet-tabs {
+  padding: 4px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  background: var(--wash);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.bouquet-tabs button {
+  border: 0;
+  min-height: 44px;
+  border-radius: 8px;
+  background: none;
+  font-size: 11px;
+  font-weight: 800;
+  color: #72535e;
+  text-transform: uppercase;
+}
+.bouquet-tabs button[aria-pressed='true'] {
+  background: var(--ink);
+  color: white;
+}
+.bouquet-cards {
+  max-height: 565px;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  align-items: start;
+  align-content: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  scrollbar-width: thin;
+  scrollbar-color: #d7b8c6 transparent;
+  padding: 1px 5px 1px 1px;
+}
+.bouquet-card {
+  min-width: 0;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+.bouquet-card[data-active='true'] {
+  border-color: var(--ink);
+}
+.bouquet-card-head {
+  min-height: 82px;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(44px, 35%) 1fr;
+  background: var(--pale);
+}
+.bouquet-card-head > button {
+  background: #f7e8ed;
+  border: 0;
+  border-right: 1px solid var(--edge);
+  padding: 5px;
+  display: grid;
+  place-items: center;
+}
+.bouquet-card-head img {
+  width: auto;
+  max-width: 100%;
+  height: 72px;
+  object-fit: contain;
+}
+.bouquet-card-head > div {
+  padding: 10px 7px;
+  min-width: 0;
+}
+.bouquet-card h4 {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.bouquet-card p {
+  color: #72535e;
+  font-size: 10px;
+  margin: 6px 0 0;
+}
+.bouquet-card-head > span {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 20px;
+  min-width: 22px;
+  text-align: center;
+  padding: 4px 6px;
+  color: #fff;
+  background: var(--ink);
+  font-size: 9px;
+  font-weight: 800;
+}
+.bouquet-colors {
+  border-top: 1px solid var(--edge);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-height: 51px;
+  padding: 3px 5px;
+}
+.bouquet-colors > span {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.bouquet-colors > div {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding: 2px 3px;
+  gap: 4px;
+}
+.bouquet-colors button {
+  position: relative;
+  min-width: 33px;
+  min-height: 36px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: transparent;
+  color: #301123;
+}
+.bouquet-colors button::before {
+  content: '';
+  position: absolute;
+  inset: 5px 3px;
+  border-radius: 50%;
+  background: var(--swatch);
+  border: 1px solid #651b3e33;
+}
+.bouquet-colors button[aria-pressed='true']::before {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+.bouquet-colors svg,
+.bouquet-colors small {
+  z-index: 1;
+}
+.bouquet-colors small {
+  position: absolute;
+  right: -1px;
+  top: 0;
+  padding: 1px 3px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 8px;
+}
+.bouquet-quantity {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  border-top: 1px solid var(--edge);
+  font-weight: 800;
+  text-align: center;
+}
+.bouquet-quantity button {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+}
+.bouquet-quantity button:first-child {
+  border-right: 1px solid var(--edge);
+}
+.bouquet-quantity button:last-child {
+  border-left: 1px solid var(--edge);
+}
+.bouquet-quantity button:disabled {
+  color: #a88d99;
+}
+.bouquet-foot {
+  border-top: 1px solid var(--edge);
+}
+.bouquet-summary {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-right: 1px solid var(--edge);
+}
+.bouquet-summary strong {
+  display: block;
+  font-size: 12px;
+}
+.bouquet-summary div:last-child {
+  text-align: right;
+}
+.bouquet-summary div:last-child strong {
+  font-size: 19px;
+}
+.bouquet-summary small {
+  display: block;
+}
+.bouquet-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px 24px;
+}
+.bouquet-action button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: min(100%, 390px);
+  min-height: 57px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 17px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.bouquet-action button:disabled {
+  background: #895872;
+}
+.bouquet-tip {
+  width: min(100%, 760px);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin: 18px 0 0;
+  background: var(--pale);
+}
+.bouquet-tip svg {
+  flex: none;
+  color: var(--ink);
+}
+.bouquet-tip p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #72535e;
+}
+.bouquet-form-title {
+  margin: 42px 0 18px;
+  scroll-margin-top: 100px;
+}
+.bouquet-request {
+  margin: 0 0 14px;
+  padding: 16px;
+  border: 1px solid #e4cbd4;
+  border-radius: 12px;
+  background: #fdf8f7;
+}
+.bouquet-request ul {
+  margin: 8px 0;
+  padding-left: 22px;
+}
+.bouquet-request p {
+  margin: 8px 0;
+}
+.bouquet-unavailable {
+  padding: 15px;
+  border: 1px solid #e4cbd4;
+  border-radius: 12px;
+}
+
+@media (max-width: 760px) {
+  .bouquet-body,
+  .bouquet-foot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bouquet-stage {
+    min-height: 350px;
+    height: min(88vw, 490px);
+    border-right: 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .bouquet-art {
+    height: 78%;
+    min-height: 255px;
+    width: min(78%, 415px);
+  }
+  .bouquet-palette {
+    padding: 13px;
+  }
+  .bouquet-palette h3 {
+    margin-bottom: 10px;
+  }
+  .bouquet-cards {
+    max-height: 365px;
+    gap: 8px;
+  }
+  .bouquet-summary {
+    border-right: 0;
+    padding: 13px;
+  }
+  .bouquet-action {
+    padding: 0 13px 13px;
+  }
+  .bouquet-action button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 375px) {
+  .custom-design .bouquet-page {
+    width: calc(100% - 20px);
+  }
+  .bouquet-card-head > div {
+    padding: 8px 4px;
+  }
+  .bouquet-palette {
+    padding-inline: 9px;
+  }
+  .bouquet-colors {
+    display: block;
+    min-height: 0;
+  }
+}

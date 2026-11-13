@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useStore } from './store-provider';
 import { storeRequest } from '@/lib/browser-api';
 import type { CustomRequest, CustomRequestInput } from '@/lib/api/client';
+import type { BouquetSelection } from './bouquet-builder';
 
 const occasions = ['Sinh nhật', 'Kỷ niệm', 'Cảm ơn', 'Xin lỗi', 'Chúc mừng', 'Không cần dịp'];
 const budgets = [
@@ -91,7 +92,7 @@ function IdeaBouquet({ colors }: { colors: string[] }) {
   );
 }
 
-export default function CustomForm() {
+export default function CustomForm({ bouquet }: { bouquet: BouquetSelection | null }) {
   const { mode, products } = useStore();
   const router = useRouter();
   const customizable = products.filter((p) =>
@@ -110,6 +111,7 @@ export default function CustomForm() {
   const [wardId, setWardId] = useState('');
   const [wardsLoading, setWardsLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [locationRetry, setLocationRetry] = useState(0);
   const submitting = useRef(false);
   const uploaded = useRef<{ file: File; url: string } | null>(null);
   useEffect(
@@ -141,7 +143,7 @@ export default function CustomForm() {
     return () => {
       active = false;
     };
-  }, [mode, step]);
+  }, [mode, step, locationRetry]);
   useEffect(() => {
     if (!provinceId) {
       setWards([]);
@@ -166,7 +168,7 @@ export default function CustomForm() {
     return () => {
       active = false;
     };
-  }, [provinceId]);
+  }, [provinceId, locationRetry]);
   function selectImage(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -196,8 +198,9 @@ export default function CustomForm() {
   function validate(current: number) {
     if (current === 0 && (!fields.occasion || !fields.budget))
       return 'Hãy chọn dịp và khoảng ngân sách nhé.';
-    if (current === 1 && !fields.palette) return 'Hãy chọn bảng màu hoặc để tiệm gợi ý nhé.';
-    if (current === 1 && mode === 'connected' && !fields.productId)
+    if (current === 1 && !bouquet && !fields.palette)
+      return 'Hãy chọn bảng màu hoặc để tiệm gợi ý nhé.';
+    if (current === 1 && mode === 'connected' && !(bouquet?.productId || fields.productId))
       return 'Hãy chọn sản phẩm nền có thể tùy biến.';
     if (
       current === 1 &&
@@ -212,7 +215,12 @@ export default function CustomForm() {
     if (current === 3 && !fields.name.trim()) return 'Hãy cho tiệm biết tên của bạn.';
     if (current === 3 && !/^[+0-9 ()-]{9,20}$/.test(fields.phone.trim()))
       return 'Số điện thoại chưa hợp lệ, bạn kiểm tra lại nhé.';
-    if (current === 3 && provinces.length > 0 && (!provinceId || !wardId))
+    if (
+      current === 3 &&
+      mode === 'connected' &&
+      (bouquet || provinces.length > 0) &&
+      (!selectedProvince || !selectedWard)
+    )
       return 'Chọn tỉnh và phường nhận hoa để tiệm báo đúng phí giao.';
     return '';
   }
@@ -235,12 +243,13 @@ export default function CustomForm() {
     if (mode !== 'connected' || submitting.current) return;
     const wish = fields.date ? new Date(`${fields.date}T12:00:00`).toISOString() : undefined;
     const body: CustomRequestInput = {
-      productId: fields.productId,
+      productId: bouquet?.productId ?? fields.productId,
       quantity: Number(fields.quantity),
       requestedCompletionDate: wish,
       provinceId: provinceId ? Number(provinceId) : undefined,
       wardId: wardId ? Number(wardId) : undefined,
-      description: `Liên hệ: ${fields.name.trim()} — ${fields.phone.trim()}\n${fields.occasion}; ngân sách ${fields.budget}; bảng màu ${fields.palette}\n${fields.message.trim()}`,
+      bouquet: bouquet?.input,
+      description: `Liên hệ: ${fields.name.trim()} — ${fields.phone.trim()}\n${fields.occasion}; ngân sách ${fields.budget}${bouquet ? '' : `; bảng màu ${fields.palette}`}\n${fields.message.trim()}`,
     };
     submitting.current = true;
     setPending(true);
@@ -310,7 +319,7 @@ export default function CustomForm() {
                 </div>
                 <div>
                   <dt>Bảng màu</dt>
-                  <dd>{fields.palette}</dd>
+                  <dd>{bouquet ? 'Theo cấu hình bó' : fields.palette}</dd>
                 </div>
                 <div>
                   <dt>Điều gửi gắm</dt>
@@ -331,7 +340,11 @@ export default function CustomForm() {
                 {mode === 'connected' && (
                   <div>
                     <dt>Sản phẩm nền</dt>
-                    <dd>{customizable.find((p) => p.id === fields.productId)?.name}</dd>
+                    <dd>
+                      {bouquet
+                        ? 'Bó hoa tự phối'
+                        : customizable.find((p) => p.id === fields.productId)?.name}
+                    </dd>
                   </div>
                 )}
                 {image && (
@@ -384,26 +397,30 @@ export default function CustomForm() {
               )}
               {step === 1 && (
                 <>
-                  <h3 className="x-q">Bảng màu bạn thích</h3>
-                  <div className="x-swatches">
-                    {palettes.map((p) => (
-                      <button
-                        type="button"
-                        className={`custom-swatch ${fields.palette === p.label ? 'selected' : ''}`}
-                        aria-pressed={fields.palette === p.label}
-                        onClick={() => update('palette', p.label)}
-                        key={p.label}
-                      >
-                        <i
-                          style={{
-                            background: `conic-gradient(${p.colors.join(',')}, ${p.colors[0]})`,
-                          }}
-                        />
-                        {p.label}
-                      </button>
-                    ))}
-                  </div>
-                  {mode === 'connected' && (
+                  {!bouquet && (
+                    <>
+                      <h3 className="x-q">Bảng màu bạn thích</h3>
+                      <div className="x-swatches">
+                        {palettes.map((p) => (
+                          <button
+                            type="button"
+                            className={`custom-swatch ${fields.palette === p.label ? 'selected' : ''}`}
+                            aria-pressed={fields.palette === p.label}
+                            onClick={() => update('palette', p.label)}
+                            key={p.label}
+                          >
+                            <i
+                              style={{
+                                background: `conic-gradient(${p.colors.join(',')}, ${p.colors[0]})`,
+                              }}
+                            />
+                            {p.label}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {mode === 'connected' && !bouquet && (
                     <label className="custom-field">
                       Sản phẩm nền *
                       <select
@@ -585,6 +602,23 @@ export default function CustomForm() {
                       {locationError && (
                         <p className="custom-upload-hint" role="status">
                           {locationError}
+                          {bouquet && (
+                            <>
+                              {' '}
+                              {locationError.includes('Đăng nhập') && (
+                                <Link href="/tai-khoan" target="_blank" rel="noopener noreferrer">
+                                  Mở trang đăng nhập
+                                </Link>
+                              )}{' '}
+                              <button
+                                type="button"
+                                className="x-textlink"
+                                onClick={() => setLocationRetry((attempt) => attempt + 1)}
+                              >
+                                Tải lại khu vực
+                              </button>
+                            </>
+                          )}
                         </p>
                       )}
                     </>
@@ -626,7 +660,11 @@ export default function CustomForm() {
                 {step === 3 ? 'Xem bản nháp' : 'Tiếp theo'} →
               </button>
             ) : mode === 'connected' ? (
-              <button type="submit" className="x-btn" disabled={pending || !customizable.length}>
+              <button
+                type="submit"
+                className="x-btn"
+                disabled={pending || !(bouquet?.productId || customizable.length)}
+              >
                 {pending ? 'Đang gửi…' : 'Gửi yêu cầu báo giá'} ↗
               </button>
             ) : (

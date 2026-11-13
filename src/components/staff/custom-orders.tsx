@@ -12,7 +12,9 @@ import {
   Image as ImageIcon,
 } from 'lucide-react';
 import { storeRequest } from '@/lib/browser-api';
+import type { BouquetSnapshot } from '@/lib/api/client';
 import {
+  bouquetSummary,
   customStatusLabel,
   customStatusTone,
   safeHttpUrl,
@@ -36,6 +38,7 @@ type CustomRequestItem = {
   depositReady: boolean;
   fullyPaid: boolean;
   deliveryComplete: boolean;
+  bouquet?: BouquetSnapshot | null;
 };
 
 const toneClass: Record<CustomStatusTone, string> = {
@@ -203,6 +206,11 @@ export default function StaffCustomOrders() {
                     <strong>{item.productName || item.productId}</strong>
                   </p>
                   <p className="staff-custom-desc">{item.description || 'Không có mô tả.'}</p>
+                  {item.bouquet && (
+                    <p className="staff-custom-desc">
+                      {item.quantity} bó · Mỗi bó: {bouquetSummary(item.bouquet)}
+                    </p>
+                  )}
 
                   <div className="staff-custom-details-meta">
                     <span>

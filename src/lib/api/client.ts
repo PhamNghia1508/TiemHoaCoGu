@@ -151,6 +151,13 @@ export type Delivery = {
   deliveryStatus: string;
   items: { orderItemId: string; quantity: number }[];
 };
+export type BouquetInput = { wrapId: string; lines: { id: string; quantity: number }[] };
+export type BouquetSnapshot = {
+  wrapId: string;
+  wrapName: string;
+  lines: { id: string; name: string; color?: string; quantity: number }[];
+  estimatedUnitPrice?: number;
+};
 export type CustomRequest = {
   id: string;
   productId: string;
@@ -172,6 +179,7 @@ export type CustomRequest = {
   deliveryProvinceName?: string;
   deliveryWardId?: number;
   deliveryWardName?: string;
+  bouquet?: BouquetSnapshot | null;
 };
 export type CustomQuote = {
   id: string;
@@ -196,6 +204,7 @@ export type CustomQuoteRevision = {
   adminNote: string;
   createdAt: string;
   status: string;
+  bouquet?: BouquetSnapshot | null;
 };
 export type CustomRequestInput = {
   productId: string;
@@ -206,6 +215,7 @@ export type CustomRequestInput = {
   quoteVersion?: number;
   provinceId?: number;
   wardId?: number;
+  bouquet?: BouquetInput;
 };
 export type CustomCheckout = {
   orderId: string;
@@ -219,6 +229,7 @@ export type CustomCheckout = {
 };
 export type CustomCheckoutInput = {
   shippingAddress: string;
+  quoteVersion?: number;
   provinceId?: number;
   wardId?: number;
   note?: string;

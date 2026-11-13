@@ -95,6 +95,12 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['custom-orders', id, 'refund'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['custom-orders', 'not-a-guid', 'cancel'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['custom-orders', id], 'DELETE')).toBeNull();
+    expect(resolveStoreRoute(['custom-orders', 'bouquet-catalog'], 'GET')).toEqual({
+      upstream: '/api/custom-orders/bouquet-catalog',
+      protected: false,
+      write: false,
+    });
+    expect(resolveStoreRoute(['custom-orders', 'bouquet-catalog'], 'POST')).toBeNull();
   });
   it('requires exact request URL origin', () => {
     expect(

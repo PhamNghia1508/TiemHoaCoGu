@@ -5,6 +5,7 @@ import { ArrowUpRight, CheckCircle2, Clock, History, RefreshCw } from 'lucide-re
 import { money } from '@/lib/catalog';
 import { storeRequest } from '@/lib/browser-api';
 import {
+  bouquetSummary,
   CUSTOM_STEPS,
   customStatusLabel,
   customStatusTone,
@@ -314,6 +315,7 @@ export default function CustomRequestPanel({
     try {
       const body: CustomCheckoutInput = {
         shippingAddress: address,
+        quoteVersion: quote.currentRevision,
         provinceId: selectedProvince.id,
         wardId: selectedWard.id,
         receiverName: name,
@@ -447,6 +449,20 @@ export default function CustomRequestPanel({
             <dt>Mô tả</dt>
             <dd style={{ whiteSpace: 'pre-wrap' }}>{request.description || '—'}</dd>
           </div>
+          {request.bouquet && (
+            <div>
+              <dt>Cấu hình bó hoa</dt>
+              <dd>
+                {request.bouquet.lines
+                  .map(
+                    (line) =>
+                      `${line.name}${line.color ? ` · ${line.color}` : ''} × ${line.quantity}`,
+                  )
+                  .join(', ')}{' '}
+                · {request.bouquet.wrapName}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>Ảnh tham khảo</dt>
             <dd>
@@ -478,6 +494,7 @@ export default function CustomRequestPanel({
             <p className="custom-panel-meta">
               Phiên bản {currentRevision.version} · {revisionLabel(currentRevision.status)}
             </p>
+            {currentRevision.bouquet && <p>{bouquetSummary(currentRevision.bouquet)}</p>}
             <dl className="custom-money">
               <div>
                 <dt>Tổng (đã gồm giao hàng)</dt>

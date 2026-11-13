@@ -190,6 +190,23 @@ test('tìm kiếm dialog dùng tên sản phẩm thật và Escape', async ({ pa
   await expect(search).not.toBeVisible();
 });
 
+test('tự phối hoa giữ số lượng từng màu và mang cấu hình vào bản nháp', async ({ page }) => {
+  test.skip(connectedMode, 'Dùng catalog minh họa trong chế độ preview.');
+  await page.goto('/dat-rieng');
+  const builder = page.getByRole('region', { name: 'Bó hoa của bạn' });
+  await builder.getByRole('button', { name: 'Xóa bó hoa' }).click();
+  await builder.getByRole('button', { name: 'Thêm Hồng sáp Hồng' }).click({ clickCount: 3 });
+  await builder.getByRole('button', { name: 'Hồng sáp Đỏ', exact: true }).click();
+  await builder.getByRole('button', { name: 'Thêm Hồng sáp Đỏ' }).click({ clickCount: 4 });
+  await expect(builder.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
+  await expect(builder.getByText(/146\.000/)).toBeVisible();
+  await builder.getByRole('button', { name: 'Xáo vị trí hoa' }).click();
+  await expect(builder.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
+  await builder.getByRole('button', { name: 'Tiếp tục với bó này' }).click();
+  await expect(page.getByText('Hồng sáp · Hồng × 3')).toBeVisible();
+  await expect(page.getByText('Hồng sáp · Đỏ × 4')).toBeVisible();
+});
+
 test('đặt riêng: preview không gửi API, chế độ thật yêu cầu đăng nhập', async ({ page }) => {
   const writes: string[] = [];
   page.on('request', (r) => {

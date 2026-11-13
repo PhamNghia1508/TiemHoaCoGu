@@ -2,7 +2,8 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { storeRequest } from '@/lib/browser-api';
-import { customStatusLabel, safeHttpUrl } from '@/lib/custom-order-status';
+import { bouquetSummary, customStatusLabel, safeHttpUrl } from '@/lib/custom-order-status';
+import type { BouquetSnapshot } from '@/lib/api/client';
 import {
   AdminDialog,
   AdminEmpty,
@@ -64,6 +65,9 @@ type CustomRequest = {
   depositReady: boolean;
   fullyPaid: boolean;
   deliveryComplete: boolean;
+  bouquet?: BouquetSnapshot | null;
+  deliveryProvinceName?: string;
+  deliveryWardName?: string;
 };
 type Quote = {
   id: string;
@@ -496,6 +500,7 @@ export default function AdminOperations(
           depositPercent: Number(quoteForm.depositPercent),
           completionDate: new Date(quoteForm.completionDate).toISOString(),
           adminNote: quoteForm.adminNote,
+          ...(selectedRequest.bouquet ? { requestUpdatedAt: selectedRequest.updatedAt } : {}),
           ...(quoteForm.expiresAt
             ? { expiresAt: new Date(quoteForm.expiresAt).toISOString() }
             : {}),
@@ -904,6 +909,27 @@ export default function AdminOperations(
                         </p>
                       )}
                       <p>{selectedRequest.description}</p>
+                      {selectedRequest.bouquet && (
+                        <>
+                          <p>
+                            <strong>Thành phần mỗi bó:</strong>{' '}
+                            {bouquetSummary(selectedRequest.bouquet)}
+                          </p>
+                          <p>
+                            <strong>Khu vực giao:</strong>{' '}
+                            {[
+                              selectedRequest.deliveryWardName,
+                              selectedRequest.deliveryProvinceName,
+                            ]
+                              .filter(Boolean)
+                              .join(', ')}
+                          </p>
+                          <p className="admin-helper">
+                            Kiểm tra vật tư và lịch làm trước khi báo giá. Tính phí giao vào đơn giá
+                            đã chốt.
+                          </p>
+                        </>
+                      )}
                       <p>
                         <strong>Ảnh tham khảo:</strong>{' '}
                         {safeHttpUrl(selectedRequest.referenceImageUrl) ? (

@@ -3,7 +3,18 @@
  * shared by the storefront, staff and admin client components.
  */
 
+import type { BouquetSnapshot } from './api/client';
+
 export type CustomStatusTone = 'waiting' | 'active' | 'done' | 'stopped';
+
+export function bouquetSummary(bouquet: BouquetSnapshot) {
+  return [
+    ...bouquet.lines.map(
+      ({ name, color, quantity }) => `${name}${color ? ` (${color})` : ''} × ${quantity}`,
+    ),
+    bouquet.wrapName,
+  ].join(' · ');
+}
 
 export const CUSTOM_STEPS = [
   'Gửi yêu cầu',

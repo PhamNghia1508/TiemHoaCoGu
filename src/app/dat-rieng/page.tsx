@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import CustomForm from '@/components/custom-form';
+import BouquetOrder from '@/components/bouquet-builder';
 import './redesign.css';
+import './bouquet-builder.css';
 
 export const metadata: Metadata = { title: 'Hoa theo ý bạn — Bạn chọn gu' };
 
@@ -9,15 +10,28 @@ export default function CustomPage() {
   const connected = Boolean(process.env.API_BASE_URL);
   return (
     <div className="x-site custom-design">
+      <section
+        className="x-sec custom-builder"
+        id="custom-form"
+        aria-labelledby="custom-builder-title"
+      >
+        <div className="x-wrap bouquet-page">
+          <h1 id="custom-builder-title">Tự phối bó hoa</h1>
+          <p className="bouquet-lead">
+            Chọn hoa, phối màu và xem bó hoa của bạn thay đổi theo từng lựa chọn.
+          </p>
+          <BouquetOrder />
+        </div>
+      </section>
       <section className="x-hero" aria-labelledby="custom-title">
         <div className="x-wrap x-hero__grid">
           <div>
             <p className="x-eyebrow">HOA THEO Ý BẠN / CUSTOM ORDER</p>
-            <h1 className="x-h1" id="custom-title">
+            <h2 className="x-h1" id="custom-title">
               Bạn chọn <span className="x-serif">gu.</span>
               <br />
               Tiệm làm <span className="x-serif">phần còn lại.</span>
-            </h1>
+            </h2>
             <p className="custom-lead">
               Kể tiệm nghe về người nhận, màu sắc và cảm giác bạn muốn gửi.{' '}
               {connected
@@ -25,7 +39,7 @@ export default function CustomPage() {
                 : 'Cùng phác một ý tưởng dành riêng cho người ấy.'}
             </p>
             <div className="custom-cta">
-              <a className="x-btn" href="#custom-form">
+              <a className="x-btn" href="#custom-request-form">
                 Bắt đầu kể ↓
               </a>
               <a className="x-textlink" href="#quy-trinh">
@@ -105,19 +119,6 @@ export default function CustomPage() {
               <p>Bạn duyệt báo giá trước khi tạo đơn và đặt cọc.</p>
             </article>
           </div>
-        </div>
-      </section>
-      <section
-        className="x-sec custom-builder"
-        id="custom-form"
-        aria-labelledby="custom-builder-title"
-      >
-        <div className="x-wrap">
-          <p className="x-eyebrow">HOA THEO Ý BẠN</p>
-          <h2 className="x-h2" id="custom-builder-title">
-            Kể tiệm nghe <span className="x-serif">một chút.</span>
-          </h2>
-          <CustomForm />
         </div>
       </section>
     </div>
