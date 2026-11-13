@@ -234,8 +234,8 @@ export function StatusBadge({ status }: { status: string }) {
       ? 'info'
       : ['paid', 'completed', 'delivered', 'active', 'attended', 'confirmed'].includes(lower)
         ? 'success'
-      : ['cancelled', 'inactive', 'failed', 'refunded', 'returned'].includes(lower)
-        ? 'neutral'
+        : ['cancelled', 'inactive', 'failed', 'refunded', 'returned'].includes(lower)
+          ? 'neutral'
           : ['unknown', 'unpaid', 'pending', 'partiallypaid'].includes(lower)
             ? 'warning'
             : 'info';

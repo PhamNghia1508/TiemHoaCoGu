@@ -91,7 +91,8 @@ const money = (n: number) =>
 const dateTime = (value: string) => new Date(value).toLocaleString('vi-VN');
 const errText = (e: unknown) => (e instanceof Error ? e.message : 'Không thể thực hiện yêu cầu.');
 const countItems = (items: OrderItem[] = []) => items.reduce((sum, item) => sum + item.quantity, 0);
-const countLines = (lines: DeliveryLine[] = []) => lines.reduce((sum, line) => sum + line.quantity, 0);
+const countLines = (lines: DeliveryLine[] = []) =>
+  lines.reduce((sum, line) => sum + line.quantity, 0);
 const toneOf = (status: string) =>
   status === 'Cancelled'
     ? 'cancelled'
@@ -417,7 +418,10 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
   const deliveryTransition = async (delivery: Delivery, next: string) => {
     if (!selected || readOnly || busy || detailLoading) return;
     const isCancel = next === 'Cancelled';
-    const copy: Record<string, { title: string; description: string; confirmLabel: string; destructive?: boolean }> = {
+    const copy: Record<
+      string,
+      { title: string; description: string; confirmLabel: string; destructive?: boolean }
+    > = {
       Cancelled: {
         title: 'Hủy phiếu giao?',
         description: `Phiếu ${delivery.deliveryCode} sẽ chuyển sang Đã hủy.`,
@@ -498,7 +502,9 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
           ? ['Completed', 'Hoàn tất đơn']
           : null;
   const selectedItems = selected?.items ?? [];
-  const stepIndex = selected ? LIFECYCLE.findIndex((step) => step.key === selected.orderStatus) : -1;
+  const stepIndex = selected
+    ? LIFECYCLE.findIndex((step) => step.key === selected.orderStatus)
+    : -1;
   const hasFilters = Boolean(debouncedSearch || status || from || to);
 
   return (
@@ -854,8 +860,8 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
                       {payOpen && (
                         <div className="admin-ord-pay-form">
                           <p className="admin-helper">
-                            Dùng khi khách chuyển khoản, trả tiền mặt hoặc shipper thu hộ COD. Mã giao dịch
-                            để chống ghi trùng.
+                            Dùng khi khách chuyển khoản, trả tiền mặt hoặc shipper thu hộ COD. Mã
+                            giao dịch để chống ghi trùng.
                           </p>
                           <div className="admin-ord-create-grid">
                             <label className="admin-field">
@@ -874,9 +880,7 @@ export default function AdminOrderOperations({ readOnly = false, initialStatus =
                               <select
                                 value={payMethod}
                                 disabled={busy || readOnly}
-                                onChange={(e) =>
-                                  setPayMethod(e.target.value as typeof payMethod)
-                                }
+                                onChange={(e) => setPayMethod(e.target.value as typeof payMethod)}
                               >
                                 <option value="Cash">Tiền mặt (Cash)</option>
                                 <option value="BankTransfer">Chuyển khoản (BankTransfer)</option>
