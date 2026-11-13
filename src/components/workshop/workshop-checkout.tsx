@@ -79,7 +79,9 @@ function safeVnPayUrl(value?: string): string | null {
     const url = new URL(value);
     if (url.protocol !== 'https:') return null;
     const host = url.hostname.toLowerCase();
-    return host === 'sandbox.vnpayment.vn' || host.endsWith('.vnpayment.vn') ? url.toString() : null;
+    return host === 'sandbox.vnpayment.vn' || host.endsWith('.vnpayment.vn')
+      ? url.toString()
+      : null;
   } catch {
     return null;
   }
@@ -299,7 +301,11 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
       }
       inFlight = true;
       try {
-        const result = await storeRequest<VnPaySync>(`bookings/${bookingId}/vnpay/sync`, {}, 'POST');
+        const result = await storeRequest<VnPaySync>(
+          `bookings/${bookingId}/vnpay/sync`,
+          {},
+          'POST',
+        );
         if (stopped) return;
         if (result.lastResult === 'paid' || isConfirmedStatus(result.bookingStatus)) {
           stopped = true;
@@ -313,9 +319,7 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
         if (result.lastResult === 'canceled') {
           stopped = true;
           setBooking((prev) =>
-            prev
-              ? { ...prev, bookingStatus: result.bookingStatus || prev.bookingStatus }
-              : prev,
+            prev ? { ...prev, bookingStatus: result.bookingStatus || prev.bookingStatus } : prev,
           );
           setVnpayPhase('canceled');
           startRequestedRef.current = false;
@@ -436,8 +440,7 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
     ? `${session.startTime.slice(0, 5)} - ${session.endTime.slice(0, 5)}`
     : '—';
   const sessionVenue = session?.location || 'Xưởng Tiệm Hoa Có Gu';
-  const isConfirmed =
-    isConfirmedStatus(booking?.bookingStatus) && remainingAmount === 0;
+  const isConfirmed = isConfirmedStatus(booking?.bookingStatus) && remainingAmount === 0;
   const isFree = totalAmount === 0;
   const bookingExpired = isClosedStatus(booking?.bookingStatus);
   const ticketUrl = `/tra-cuu?ve=${encodeURIComponent(bookingId)}`;
@@ -512,7 +515,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ShieldCheck size={16} style={{ color: '#10b981' }} aria-hidden="true" />
-          <span>Nội dung chuyển khoản: <strong>{bookingCode}</strong></span>
+          <span>
+            Nội dung chuyển khoản: <strong>{bookingCode}</strong>
+          </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ShieldCheck size={16} style={{ color: '#10b981' }} aria-hidden="true" />
@@ -758,9 +763,7 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
         <div className="ws-checkout-layout">
           <div className="ws-checkout-card">
             <h2>
-              <span>
-                {vnpayPhase === 'awaiting' ? 'Chờ xác nhận VNPAY' : 'Thanh toán giữ chỗ'}
-              </span>
+              <span>{vnpayPhase === 'awaiting' ? 'Chờ xác nhận VNPAY' : 'Thanh toán giữ chỗ'}</span>
               {countdown > 0 && (
                 <span className="ws-timer-badge">
                   <Clock size={13} aria-hidden="true" /> Giữ chỗ còn: {timeFormatted}

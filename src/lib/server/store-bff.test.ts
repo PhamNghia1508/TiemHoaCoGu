@@ -210,11 +210,7 @@ describe('store BFF security', () => {
   });
   it('allows only protected POST bookings/{guid}/vnpay, vnpay/return and vnpay/sync', () => {
     const guid = '00000000-0000-4000-8000-000000000001';
-    for (const path of [
-      ['vnpay'],
-      ['vnpay', 'return'],
-      ['vnpay', 'sync'],
-    ]) {
+    for (const path of [['vnpay'], ['vnpay', 'return'], ['vnpay', 'sync']]) {
       expect(resolveStoreRoute(['bookings', guid, ...path], 'POST')).toEqual({
         upstream: `/api/bookings/${guid}/${path.join('/')}`,
         protected: true,

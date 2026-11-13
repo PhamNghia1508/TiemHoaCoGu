@@ -577,7 +577,14 @@ export default function StaffWorkshopRoster() {
                             )}
                           </td>
                           <td style={{ textAlign: 'right' }}>
-                            <div style={{ display: 'inline-flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                            <div
+                              style={{
+                                display: 'inline-flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-end',
+                              }}
+                            >
                               {pendingAmount > 0 && booking.pendingTransactionCode && (
                                 <button
                                   type="button"
