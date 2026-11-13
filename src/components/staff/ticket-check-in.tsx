@@ -145,7 +145,11 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
     setStatus('loading');
     setMessage('');
     try {
-      const result = await storeRequest<TicketScan>(`bookings/tickets/${token}/check-in`, {}, 'POST');
+      const result = await storeRequest<TicketScan>(
+        `bookings/tickets/${token}/check-in`,
+        {},
+        'POST',
+      );
       setScan(result);
       setStatus('checked-in');
       setMessage(`Đã check-in ${result.customerName} · ${result.ticketCount} vé`);
@@ -168,11 +172,19 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
 
   async function startCamera() {
     setCameraError('');
-    const Detector = (window as unknown as { BarcodeDetector?: new (o: { formats: string[] }) => { detect: (s: ImageBitmapSource) => Promise<Array<{ rawValue: string }>> } }).BarcodeDetector;
+    const Detector = (
+      window as unknown as {
+        BarcodeDetector?: new (o: { formats: string[] }) => {
+          detect: (s: ImageBitmapSource) => Promise<Array<{ rawValue: string }>>;
+        };
+      }
+    ).BarcodeDetector;
     if (!Detector) return;
     try {
       setCameraOn(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
+      });
       streamRef.current = stream;
       const video = videoRef.current;
       if (!video) return;
@@ -235,15 +247,28 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
               aria-label="Mã vé hoặc liên kết check-in"
             />
           </label>
-          <button type="submit" className="staff-btn staff-btn-primary" disabled={status === 'loading'}>
-            {status === 'loading' ? <Loader2 size={16} className="spin-anim" aria-hidden="true" /> : <QrCode size={16} aria-hidden="true" />}
+          <button
+            type="submit"
+            className="staff-btn staff-btn-primary"
+            disabled={status === 'loading'}
+          >
+            {status === 'loading' ? (
+              <Loader2 size={16} className="spin-anim" aria-hidden="true" />
+            ) : (
+              <QrCode size={16} aria-hidden="true" />
+            )}
             Tra cứu
           </button>
         </form>
 
         <div className="staff-checkin-camera-actions">
           {supportsBarcodeDetector ? (
-            <button type="button" className="staff-btn staff-btn-secondary" onClick={() => void startCamera()} disabled={cameraOn}>
+            <button
+              type="button"
+              className="staff-btn staff-btn-secondary"
+              onClick={() => void startCamera()}
+              disabled={cameraOn}
+            >
               <Camera size={16} aria-hidden="true" /> {cameraOn ? 'Camera đang mở' : 'Mở camera'}
             </button>
           ) : (
@@ -267,7 +292,13 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
         )}
 
         <div className="staff-checkin-video-wrap" hidden={!cameraOn}>
-          <video ref={videoRef} className="staff-checkin-video" muted playsInline aria-label="Camera quét mã QR" />
+          <video
+            ref={videoRef}
+            className="staff-checkin-video"
+            muted
+            playsInline
+            aria-label="Camera quét mã QR"
+          />
         </div>
       </div>
 
@@ -284,7 +315,9 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
             <div className="staff-checkin-success">
               <CheckCircle2 size={22} aria-hidden="true" />
               <div>
-                <strong>{message || `Đã check-in ${scan.customerName} · ${scan.ticketCount} vé`}</strong>
+                <strong>
+                  {message || `Đã check-in ${scan.customerName} · ${scan.ticketCount} vé`}
+                </strong>
                 <p className="staff-muted" style={{ margin: '4px 0 0' }}>
                   {scan.workshopName} · {formatUtc(scan.sessionStartUtc)}
                 </p>
@@ -294,7 +327,11 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
             <>
               <div className="staff-checkin-guest-head">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Ticket size={18} aria-hidden="true" style={{ color: 'var(--accent, #243db5)' }} />
+                  <Ticket
+                    size={18}
+                    aria-hidden="true"
+                    style={{ color: 'var(--accent, #243db5)' }}
+                  />
                   <div>
                     <strong style={{ fontSize: '17px' }}>{scan.customerName}</strong>
                     <div className="staff-muted" style={{ fontSize: '13px' }}>
@@ -302,18 +339,37 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
                     </div>
                   </div>
                 </div>
-                <span className={`staff-badge ${scan.canCheckIn ? 'badge-confirmed' : scan.checkedInAt ? 'badge-completed' : 'badge-amber'}`}>
+                <span
+                  className={`staff-badge ${scan.canCheckIn ? 'badge-confirmed' : scan.checkedInAt ? 'badge-completed' : 'badge-amber'}`}
+                >
                   {bookingStatusLabel(scan.bookingStatus)}
                 </span>
               </div>
 
               <div className="staff-checkin-details">
-                <div><strong>Workshop:</strong> {scan.workshopName}</div>
-                <div><strong>Thời gian:</strong> {formatUtc(scan.sessionStartUtc)} - {formatUtc(scan.sessionEndUtc)}</div>
-                <div><strong>Địa điểm:</strong> {scan.location || 'Xưởng Tiệm Hoa Có Gu'}</div>
-                <div><strong>Thanh toán đủ:</strong> {scan.fullyPaid ? 'Có' : 'Chưa'}</div>
-                {scan.checkedInAt && <div><strong>Đã check-in:</strong> {formatUtc(scan.checkedInAt)}</div>}
-                {scan.reason && <div><strong>Ghi chú:</strong> {scan.reason}</div>}
+                <div>
+                  <strong>Workshop:</strong> {scan.workshopName}
+                </div>
+                <div>
+                  <strong>Thời gian:</strong> {formatUtc(scan.sessionStartUtc)} -{' '}
+                  {formatUtc(scan.sessionEndUtc)}
+                </div>
+                <div>
+                  <strong>Địa điểm:</strong> {scan.location || 'Xưởng Tiệm Hoa Có Gu'}
+                </div>
+                <div>
+                  <strong>Thanh toán đủ:</strong> {scan.fullyPaid ? 'Có' : 'Chưa'}
+                </div>
+                {scan.checkedInAt && (
+                  <div>
+                    <strong>Đã check-in:</strong> {formatUtc(scan.checkedInAt)}
+                  </div>
+                )}
+                {scan.reason && (
+                  <div>
+                    <strong>Ghi chú:</strong> {scan.reason}
+                  </div>
+                )}
               </div>
 
               {message && status === 'ready' && (
@@ -330,7 +386,11 @@ export default function StaffTicketCheckIn({ initialToken = '' }: { initialToken
                   onClick={() => void handleCheckIn()}
                   disabled={!scan.canCheckIn || status === 'loading'}
                 >
-                  {status === 'loading' ? <Loader2 size={16} className="spin-anim" aria-hidden="true" /> : <UserCheck size={16} aria-hidden="true" />}
+                  {status === 'loading' ? (
+                    <Loader2 size={16} className="spin-anim" aria-hidden="true" />
+                  ) : (
+                    <UserCheck size={16} aria-hidden="true" />
+                  )}
                   Check-in
                 </button>
               </div>

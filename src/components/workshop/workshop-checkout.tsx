@@ -458,7 +458,8 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
                 margin: '12px 0 0',
               }}
             >
-              Tiệm sẽ xác nhận khi nhận được tiền. Vé QR chỉ phát hành sau khi đặt chỗ được xác nhận.
+              Tiệm sẽ xác nhận khi nhận được tiền. Vé QR chỉ phát hành sau khi đặt chỗ được xác
+              nhận.
             </p>
           </div>
 
@@ -527,7 +528,9 @@ export default function WorkshopCheckout({ bookingId }: WorkshopCheckoutProps) {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <ShieldCheck size={16} style={{ color: '#10b981' }} aria-hidden="true" />
-                <span>Nội dung chuyển khoản: <strong>{bookingCode}</strong></span>
+                <span>
+                  Nội dung chuyển khoản: <strong>{bookingCode}</strong>
+                </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <ShieldCheck size={16} style={{ color: '#10b981' }} aria-hidden="true" />

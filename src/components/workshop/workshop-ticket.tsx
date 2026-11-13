@@ -70,7 +70,8 @@ function reasonText(ticket: WorkshopTicket) {
   if (status === 'attended') return 'Vé đã được check-in.';
   if (status === 'cancelled') return 'Đặt chỗ đã hủy, vé không còn hiệu lực.';
   if (status === 'expired') return 'Đặt chỗ đã hết hạn.';
-  if (status === 'pending' || status === 'held') return 'Chờ tiệm xác nhận thanh toán để phát hành vé QR.';
+  if (status === 'pending' || status === 'held')
+    return 'Chờ tiệm xác nhận thanh toán để phát hành vé QR.';
   if (status === 'confirmed') return 'Vé chưa được phát hành. Vui lòng thử tải lại sau ít phút.';
   return 'Vé chưa sẵn sàng.';
 }
@@ -102,7 +103,16 @@ export default function WorkshopTicketView({ bookingId }: { bookingId: string })
   if (loading) return <p style={{ color: '#64748b', fontSize: '13px', margin: 0 }}>Đang tải vé…</p>;
   if (error)
     return (
-      <div role="alert" style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', color: '#991b1b', fontSize: '13px' }}>
+      <div
+        role="alert"
+        style={{
+          display: 'flex',
+          gap: '8px',
+          alignItems: 'flex-start',
+          color: '#991b1b',
+          fontSize: '13px',
+        }}
+      >
         <AlertCircle size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: 1 }} />
         <span>{error}</span>
       </div>
@@ -139,10 +149,25 @@ export default function WorkshopTicketView({ bookingId }: { bookingId: string })
             height={180}
             style={{ borderRadius: '12px', border: '1px solid #e2e8f0', background: '#fff' }}
           />
-          <div style={{ display: 'grid', gap: '8px', fontSize: '13.5px', color: '#334155', minWidth: 220, flex: 1 }}>
-            <p style={{ margin: 0, fontWeight: 700, color: '#1c2326', fontSize: '15px' }}>{ticket.workshopName}</p>
+          <div
+            style={{
+              display: 'grid',
+              gap: '8px',
+              fontSize: '13.5px',
+              color: '#334155',
+              minWidth: 220,
+              flex: 1,
+            }}
+          >
+            <p style={{ margin: 0, fontWeight: 700, color: '#1c2326', fontSize: '15px' }}>
+              {ticket.workshopName}
+            </p>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-              <CalendarDays size={15} aria-hidden="true" style={{ marginTop: 2, color: '#243db5' }} />
+              <CalendarDays
+                size={15}
+                aria-hidden="true"
+                style={{ marginTop: 2, color: '#243db5' }}
+              />
               <span>{formatSessionRange(ticket.sessionStartUtc, ticket.sessionEndUtc)}</span>
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
@@ -151,7 +176,9 @@ export default function WorkshopTicketView({ bookingId }: { bookingId: string })
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
               <Users size={15} aria-hidden="true" style={{ marginTop: 2, color: '#243db5' }} />
-              <span>{ticket.customerName} · {ticket.ticketCount} vé</span>
+              <span>
+                {ticket.customerName} · {ticket.ticketCount} vé
+              </span>
             </div>
             {ticket.checkedInAt && (
               <p style={{ margin: '4px 0 0', color: '#047857', fontWeight: 600 }}>
@@ -176,9 +203,15 @@ export default function WorkshopTicketView({ bookingId }: { bookingId: string })
             fontSize: '13.5px',
           }}
         >
-          <Clock size={16} aria-hidden="true" style={{ flexShrink: 0, marginTop: 2, color: '#64748b' }} />
+          <Clock
+            size={16}
+            aria-hidden="true"
+            style={{ flexShrink: 0, marginTop: 2, color: '#64748b' }}
+          />
           <div>
-            <p style={{ margin: '0 0 4px', fontWeight: 600, color: '#1c2326' }}>{ticket.workshopName}</p>
+            <p style={{ margin: '0 0 4px', fontWeight: 600, color: '#1c2326' }}>
+              {ticket.workshopName}
+            </p>
             <p style={{ margin: 0 }}>{reasonText(ticket)}</p>
           </div>
         </div>
