@@ -208,4 +208,22 @@ describe('store BFF security', () => {
     expect(resolveStoreRoute(['payments', 'booking', guid, 'confirm', 'extra'], 'POST')).toBeNull();
     expect(resolveStoreRoute(['payments', 'booking', 'not-a-guid', 'confirm'], 'POST')).toBeNull();
   });
+  it('allows only protected POST bookings/{guid}/vnpay, vnpay/return and vnpay/sync', () => {
+    const guid = '00000000-0000-4000-8000-000000000001';
+    for (const path of [['vnpay'], ['vnpay', 'return'], ['vnpay', 'sync']]) {
+      expect(resolveStoreRoute(['bookings', guid, ...path], 'POST')).toEqual({
+        upstream: `/api/bookings/${guid}/${path.join('/')}`,
+        protected: true,
+        write: true,
+      });
+      expect(resolveStoreRoute(['bookings', guid, ...path], 'GET')).toBeNull();
+      expect(resolveStoreRoute(['bookings', 'not-a-guid', ...path], 'POST')).toBeNull();
+    }
+    expect(resolveStoreRoute(['bookings', guid, 'vnpay', 'other'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['bookings', guid, 'vnpay', 'return', 'other'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['bookings', guid, 'vnpay', 'sync', 'other'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['bookings', guid, 'vnpay', 'ipn'], 'POST')).toBeNull();
+    expect(resolveStoreRoute(['vnpay', 'ipn'], 'GET')).toBeNull();
+    expect(resolveStoreRoute(['vnpay'], 'POST')).toBeNull();
+  });
 });
