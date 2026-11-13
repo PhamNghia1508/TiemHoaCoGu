@@ -32,6 +32,7 @@ const revisionLabels: Record<string, string> = {
   superseded: 'Đã thay thế',
 };
 const revisionLabel = (status: string) => revisionLabels[lower(status)] ?? status;
+type ShippingArea = { id: number; name: string; parentId?: number | null };
 
 function toDateInput(iso?: string): string {
   if (!iso) return '';
@@ -70,6 +71,12 @@ export default function CustomRequestPanel({
     referenceImageUrl: request.referenceImageUrl ?? '',
   });
   const [receiver, setReceiver] = useState({ name: '', phone: '', address: '' });
+  const [provinces, setProvinces] = useState<ShippingArea[]>([]);
+  const [wards, setWards] = useState<ShippingArea[]>([]);
+  const [provinceId, setProvinceId] = useState('');
+  const [wardId, setWardId] = useState('');
+  const [wardsLoading, setWardsLoading] = useState(false);
+  const [locationError, setLocationError] = useState('');
   const checkoutAttempt = useRef<{ fingerprint: string; key: string } | null>(null);
   const payAttempt = useRef<{ fingerprint: string; key: string } | null>(null);
 
@@ -105,6 +112,70 @@ export default function CustomRequestPanel({
   useEffect(() => {
     void load();
   }, [load]);
+
+  useEffect(() => {
+    if (!checkoutOpen) return;
+    let active = true;
+    setLocationError('');
+    storeRequest<ShippingArea[]>('shipping/locations/provinces')
+      .then((areas) => {
+        if (!active) return;
+        setProvinces(areas);
+        if (!areas.length) setLocationError('Danh mục tỉnh GHN staging hiện chưa sẵn sàng.');
+      })
+      .catch((err) => {
+        if (!active) return;
+        const message = err instanceof Error ? err.message : '';
+        setLocationError(
+          message.includes('đăng nhập')
+            ? 'Phiên đăng nhập đã hết hạn (sau 15 phút). Vui lòng đăng nhập lại.'
+            : 'Không tải được danh mục tỉnh GHN staging.',
+        );
+      });
+    return () => {
+      active = false;
+    };
+  }, [checkoutOpen]);
+
+  useEffect(() => {
+    if (!checkoutOpen || !provinceId) {
+      setWards([]);
+      return;
+    }
+    let active = true;
+    setWardsLoading(true);
+    setLocationError('');
+    storeRequest<ShippingArea[]>(`shipping/locations/wards?provinceId=${provinceId}`)
+      .then((areas) => {
+        if (!active) return;
+        setWards(areas);
+        if (!areas.length) setLocationError('GHN không trả danh mục phường cho tỉnh đã chọn.');
+      })
+      .catch((err) => {
+        if (!active) return;
+        const message = err instanceof Error ? err.message : '';
+        setLocationError(
+          message.includes('đăng nhập')
+            ? 'Phiên đăng nhập đã hết hạn (sau 15 phút). Vui lòng đăng nhập lại.'
+            : 'Không tải được danh mục phường GHN staging.',
+        );
+      })
+      .finally(() => {
+        if (active) setWardsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [checkoutOpen, provinceId]);
+
+  // Điền sẵn khu vực khách đã chọn lúc gửi yêu cầu, đúng một lần, để khách vẫn xóa/chọn lại được.
+  const prefilledArea = useRef(false);
+  useEffect(() => {
+    if (!checkoutOpen || prefilledArea.current) return;
+    prefilledArea.current = true;
+    if (request.deliveryProvinceId) setProvinceId(String(request.deliveryProvinceId));
+    if (request.deliveryWardId) setWardId(String(request.deliveryWardId));
+  }, [checkoutOpen, request.deliveryProvinceId, request.deliveryWardId]);
 
   async function refreshRequest(): Promise<CustomRequest | null> {
     const list = await storeRequest<CustomRequest[]>('custom-orders');
@@ -220,7 +291,21 @@ export default function CustomRequestPanel({
       setError('Hãy nhập tên người nhận, số điện thoại và địa chỉ giao hoa.');
       return;
     }
-    const fingerprint = JSON.stringify([request.id, quote.currentRevision, name, phone, address]);
+    const selectedProvince = provinces.find((area) => String(area.id) === provinceId);
+    const selectedWard = wards.find((area) => String(area.id) === wardId);
+    if (!selectedProvince || !selectedWard) {
+      setError('Hãy chọn tỉnh/thành phố và phường/xã theo danh mục GHN trước khi tạo đơn.');
+      return;
+    }
+    const fingerprint = JSON.stringify([
+      request.id,
+      quote.currentRevision,
+      name,
+      phone,
+      address,
+      selectedProvince.id,
+      selectedWard.id,
+    ]);
     if (!checkoutAttempt.current || checkoutAttempt.current.fingerprint !== fingerprint)
       checkoutAttempt.current = { fingerprint, key: crypto.randomUUID() };
     setPending(true);
@@ -229,6 +314,8 @@ export default function CustomRequestPanel({
     try {
       const body: CustomCheckoutInput = {
         shippingAddress: address,
+        provinceId: selectedProvince.id,
+        wardId: selectedWard.id,
         receiverName: name,
         receiverPhone: phone,
         note: 'Checkout custom order',
@@ -508,16 +595,6 @@ export default function CustomRequestPanel({
                     onChange={(e) => setRevise({ ...revise, description: e.target.value })}
                   />
                 </label>
-                <label className="field full">
-                  Ảnh tham khảo (URL, không bắt buộc)
-                  <input
-                    type="url"
-                    maxLength={1000}
-                    placeholder="https://…"
-                    value={revise.referenceImageUrl}
-                    onChange={(e) => setRevise({ ...revise, referenceImageUrl: e.target.value })}
-                  />
-                </label>
               </div>
               <button type="submit" className="button" disabled={pending}>
                 Gửi thay đổi <ArrowUpRight size={18} />
@@ -565,15 +642,66 @@ export default function CustomRequestPanel({
                       />
                     </label>
                     <label className="field full">
-                      Địa chỉ giao hoa *
+                      Số nhà, tên đường *
                       <textarea
                         required
                         maxLength={500}
                         autoComplete="shipping street-address"
+                        placeholder="Số nhà, tên đường (phường/xã và tỉnh/thành phố chọn bên dưới)"
                         value={receiver.address}
                         onChange={(e) => setReceiver({ ...receiver, address: e.target.value })}
                       />
                     </label>
+                    <label className="field">
+                      Tỉnh/thành phố *
+                      <select
+                        required
+                        value={provinceId}
+                        disabled={provinces.length === 0}
+                        onChange={(event) => {
+                          setProvinceId(event.currentTarget.value);
+                          setWardId('');
+                          setWards([]);
+                          setLocationError('');
+                        }}
+                      >
+                        <option value="">
+                          {provinces.length === 0
+                            ? locationError
+                              ? 'Danh mục tỉnh chưa sẵn sàng'
+                              : 'Đang tải tỉnh…'
+                            : 'Chọn tỉnh/thành phố'}
+                        </option>
+                        {provinces.map((area) => (
+                          <option key={area.id} value={area.id}>
+                            {area.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="field">
+                      Phường/xã *
+                      <select
+                        required
+                        value={wardId}
+                        disabled={!provinceId || wardsLoading || wards.length === 0}
+                        onChange={(event) => setWardId(event.currentTarget.value)}
+                      >
+                        <option value="">
+                          {wardsLoading ? 'Đang tải phường…' : 'Chọn phường/xã'}
+                        </option>
+                        {wards.map((area) => (
+                          <option key={area.id} value={area.id}>
+                            {area.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {locationError && (
+                      <div className="field full form-status" role="alert">
+                        <p>{locationError}</p>
+                      </div>
+                    )}
                   </div>
                   <button type="submit" className="button" disabled={pending}>
                     Tạo đơn <ArrowUpRight size={18} />

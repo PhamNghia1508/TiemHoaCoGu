@@ -41,6 +41,7 @@ export function resolveStoreRoute(path: string[], method: string): StoreRoute | 
     cart: { methods: ['GET', 'POST'], protected: true },
     addresses: { methods: ['GET', 'POST'], protected: true },
     bookings: { methods: ['GET'], protected: true },
+    'custom-orders/reference-images': { methods: ['POST'], protected: true },
   };
   const found = exact[p];
   if (found?.methods.includes(m))

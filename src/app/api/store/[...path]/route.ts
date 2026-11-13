@@ -52,7 +52,9 @@ async function handler(request: Request, ctx: Ctx): Promise<NextResponse> {
   if (route.write && !sameOrigin(request)) return jsonError('Origin không hợp lệ.', 403);
   if (route.write && request.method !== 'DELETE' && !endpoint.startsWith('auth/logout')) {
     const contentType = request.headers.get('content-type')?.split(';', 1)[0].trim().toLowerCase();
-    const mediaUpload = endpoint === 'management/media' && request.method === 'POST';
+    const mediaUpload =
+      ['management/media', 'custom-orders/reference-images'].includes(endpoint) &&
+      request.method === 'POST';
     if (mediaUpload ? contentType !== 'multipart/form-data' : contentType !== 'application/json')
       return jsonError(
         mediaUpload ? 'Chỉ hỗ trợ multipart upload.' : 'Chỉ hỗ trợ nội dung JSON.',
